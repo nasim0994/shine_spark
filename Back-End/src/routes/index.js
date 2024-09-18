@@ -21,7 +21,6 @@ const aboutRouter = require("./aboutRoutes");
 const productRouter = require("./productRoutes");
 const flashDealRouter = require("./flashDealRoutes");
 const reviewRouter = require("./reveiwRoutes");
-const campaignBannerRouter = require("./campaignBannerRoutes");
 const topCampaignBannerRouter = require("./TopCampaignBannerRoutes");
 
 const couponRouter = require("./couponRoutes");
@@ -56,7 +55,6 @@ router.use("/about", aboutRouter);
 router.use("/product", productRouter);
 router.use("/flash-deal", flashDealRouter);
 router.use("/review", reviewRouter);
-router.use("/campaignBanner", campaignBannerRouter);
 router.use("/topCampaignBanner", topCampaignBannerRouter);
 
 router.use("/coupon", couponRouter);

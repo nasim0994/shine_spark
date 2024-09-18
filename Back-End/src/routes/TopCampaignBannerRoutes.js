@@ -11,7 +11,7 @@ const {
 // File Updload
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "./uploads/banner");
+    cb(null, "./uploads/campaignBanner");
   },
   filename: function (req, file, cb) {
     cb(null, `${Date.now()}-${file.originalname}`);

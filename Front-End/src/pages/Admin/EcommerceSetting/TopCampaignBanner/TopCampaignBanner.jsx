@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AiFillDelete } from "react-icons/ai";
 import ImageUploading from "react-images-uploading";
 import Swal from "sweetalert2";
@@ -109,7 +109,7 @@ export default function TopCampaignBanner() {
 
                 {data?.data[0]?.image && images?.length >= 0 && (
                   <img
-                    src={`${import.meta.env.VITE_BACKEND_URL}/banner/${
+                    src={`${import.meta.env.VITE_BACKEND_URL}/campaignBanner/${
                       data?.data[0]?.image
                     }`}
                     alt=""

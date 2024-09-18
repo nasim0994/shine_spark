@@ -17,7 +17,7 @@ export default function TopCampaignBanner() {
           <div className="w-full h-28 sm:h-40 lg:h-60 relative">
             <Link to="/shops">
               <img
-                src={`${import.meta.env.VITE_BACKEND_URL}/banner/${
+                src={`${import.meta.env.VITE_BACKEND_URL}/campaignBanner/${
                   data?.data[0]?.image
                 }`}
                 alt=""

@@ -1,5 +1,5 @@
 import { IoIosArrowForward } from "react-icons/io";
-import MobileSubCategoriesList from "./MobileSubCategoriesList";
+import MobileSubCategoriesList from "./SubCategoriesList";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -15,18 +15,16 @@ export default function MobileCategoriesList({ category }) {
 
   if (category?.subCategories?.length > 0) {
     return (
-      <li className="relative dropdown_item">
-        <div className="p-2 flex items-center justify-between hover:bg-gray-100 duration-300">
+      <li className="dropdown_item relative">
+        <div className="flex items-center justify-between p-2 duration-300 hover:bg-gray-100">
           <Link
             to={`/shops/${category?.slug}`}
             className="flex items-center gap-2"
           >
             <img
-              src={`${import.meta.env.VITE_BACKEND_URL}/categories/${
-                category?.icon
-              }`}
+              src={`${import.meta.env.VITE_BACKEND_URL}/${category?.icon}`}
               alt=""
-              className="w-6 h-6"
+              className="h-6 w-6"
             />
             {category?.name}
           </Link>
@@ -57,14 +55,12 @@ export default function MobileCategoriesList({ category }) {
       <li>
         <Link
           to={`/shops/${category?.slug}`}
-          className="p-2 flex items-center gap-2 hover:bg-gray-100 duration-300"
+          className="flex items-center gap-2 p-2 duration-300 hover:bg-gray-100"
         >
           <img
-            src={`${import.meta.env.VITE_BACKEND_URL}/categories/${
-              category?.icon
-            }`}
+            src={`${import.meta.env.VITE_BACKEND_URL}/${category?.icon}`}
             alt=""
-            className="w-6 h-6"
+            className="h-6 w-6"
           />
           <p>{category?.name}</p>
         </Link>

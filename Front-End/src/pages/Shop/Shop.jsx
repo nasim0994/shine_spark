@@ -2,7 +2,7 @@ import { useState } from "react";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { Link, useParams } from "react-router-dom";
 import { useGetAllProductsQuery } from "../../Redux/product/productApi";
-import MobileCategoriesSidebar from "../../components/MobileCategoriesSidebar/MobileCategoriesSidebar";
+
 import ProductCard from "../../components/ProductCard/ProductCard";
 import ProductCards from "../../components/Skeleton/ProductCards/ProductCards";
 import Pagination from "../../components/Pagination/Pagination";
@@ -40,13 +40,13 @@ export default function Shop() {
     ));
   }
   if (!isLoading && !isError && data?.data?.length == 0) {
-    content = <div className="text-red-500 p-4">No Product available</div>;
+    content = <div className="p-4 text-red-500">No Product available</div>;
   }
 
   return (
-    <section className="py-5 bg-gray-50 min-h-[70vh]">
+    <section className="min-h-[70vh] bg-gray-50 py-5">
       <div className="container">
-        <ul className="flex gap-2 items-center text-neutral-content text-sm">
+        <ul className="text-neutral-content flex items-center gap-2 text-sm">
           <li>
             <Link to="/" className="text-primary">
               Home
@@ -119,18 +119,18 @@ export default function Shop() {
           )}
         </ul>
 
-        <div className="md:flex gap-4 mt-4">
-          <div className="hidden md:block shop_categories h-full">
-            <h3 className="font-medium pb-1 border-b text-neutral">
+        <div className="mt-4 gap-4 md:flex">
+          <div className="shop_categories hidden h-full md:block">
+            <h3 className="border-b pb-1 font-medium text-neutral">
               Categories
             </h3>
             <div className="mt-2 text-[15px]">
-              <MobileCategoriesSidebar />
+              {/* <MobileCategoriesSidebar /> */}
             </div>
           </div>
 
           <div className="shop_products min-h-[70vh]">
-            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 gap-2 lg:grid-cols-3 xl:grid-cols-4">
               {content}
             </div>
 

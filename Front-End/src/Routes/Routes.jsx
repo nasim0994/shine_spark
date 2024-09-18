@@ -82,9 +82,6 @@ import Banner from "../pages/Admin/EcommerceSetting/Banner/Banner";
 import AddBanner from "../pages/Admin/EcommerceSetting/Banner/AddBanner";
 import EditBanner from "../pages/Admin/EcommerceSetting/Banner/EditBanner";
 
-import CampaignBanners from "../pages/Admin/EcommerceSetting/CampaignBanners/CampaignBanners";
-import AddCampaignBanner from "../pages/Admin/EcommerceSetting/CampaignBanners/AddCampaignBanner";
-import EditCampaignBanner from "../pages/Admin/EcommerceSetting/CampaignBanners/EditCampaignBanner";
 import TopCampaignBanner from "../pages/Admin/EcommerceSetting/TopCampaignBanner/TopCampaignBanner";
 
 //--------------Front-End
@@ -386,20 +383,6 @@ export const routes = createBrowserRouter([
       {
         path: "/admin/ecommerce-setting/top-campaign-banner",
         element: <TopCampaignBanner />,
-      },
-
-      //---------CampaignBanner
-      {
-        path: "/admin/ecommerce-setting/campaign-banner",
-        element: <CampaignBanners />,
-      },
-      {
-        path: "/admin/ecommerce-setting/add-campaign-banner",
-        element: <AddCampaignBanner />,
-      },
-      {
-        path: "/admin/ecommerce-setting/edit-campaign-banner/:id",
-        element: <EditCampaignBanner />,
       },
 
       //----------General Setting

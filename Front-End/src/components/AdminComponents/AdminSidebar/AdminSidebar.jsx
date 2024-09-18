@@ -115,12 +115,8 @@ const adminSidebarItems = [
         path: "/admin/ecommerce-setting/banner",
       },
       {
-        title: "Top Campaign Banner",
-        path: "/admin/ecommerce-setting/top-campaign-banner",
-      },
-      {
         title: "Campaign Banner",
-        path: "/admin/ecommerce-setting/campaign-banner",
+        path: "/admin/ecommerce-setting/top-campaign-banner",
       },
     ],
   },

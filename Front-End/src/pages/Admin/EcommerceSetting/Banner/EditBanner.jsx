@@ -41,6 +41,7 @@ export default function EditBanner() {
       </div>
       <form onSubmit={handleEditCampaign} className="p-4 flex flex-col gap-4">
         <div>
+          <p className="text-neutral-content text-sm pb-1">Max hight (350px)</p>
           <ImageUploading
             value={images}
             onChange={(icn) => setImages(icn)}

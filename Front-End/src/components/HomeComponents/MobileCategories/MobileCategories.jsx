@@ -26,6 +26,7 @@ export default function MobileCategories() {
       <Swiper
         slidesPerView={1}
         spaceBetween={10}
+        loop={true}
         modules={[Autoplay]}
         autoplay={{
           delay: 3000,
@@ -50,17 +51,15 @@ export default function MobileCategories() {
           <SwiperSlide key={category?._id}>
             <Link
               to={`shops/${category.slug}`}
-              className="shadow border rounded p-2 flex justify-center items-center text-center h-[90px]"
+              className="flex h-[90px] items-center justify-center text-center"
             >
               <div>
                 <img
-                  src={`${import.meta.env.VITE_BACKEND_URL}/categories/${
-                    category?.icon
-                  }`}
+                  src={`${import.meta.env.VITE_BACKEND_URL}/${category?.icon}`}
                   alt=""
-                  className="w-10 h-9 mx-auto"
+                  className="mx-auto h-9 w-10 rounded-full border-2 border-base-100 shadow"
                 />
-                <h6 className="mt-2 font-medium text-[10px]">
+                <h6 className="mt-2 text-[10px] font-medium">
                   {category?.name}
                 </h6>
               </div>

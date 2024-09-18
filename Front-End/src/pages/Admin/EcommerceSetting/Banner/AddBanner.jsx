@@ -48,9 +48,7 @@ export default function AddBanner() {
       </div>
       <form onSubmit={handleAddBanner} className="p-4">
         <div className="p-4">
-          <p className="text-neutral-content text-sm pb-1">
-            Max Size (1000px / 400px)
-          </p>
+          <p className="text-neutral-content text-sm pb-1">Max hight (350px)</p>
           <ImageUploading
             value={banners}
             onChange={(icn) => setbanners(icn)}

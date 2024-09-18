@@ -14,38 +14,38 @@ const ProductCard = ({ product }) => {
   } = product;
 
   return (
-    <div className="mt-2 hover:shadow-lg rounded overflow-hidden duration-300 border sm:border-0 product_card">
+    <div className="product_card mt-2 overflow-hidden rounded border duration-300 hover:shadow-lg sm:border-0">
       <Link to={`/product/${slug}`}>
-        <div className="overflow-hidden relative h-44 sm:h-56">
+        <div className="relative overflow-hidden">
           <img
             src={`${import.meta.env.VITE_BACKEND_URL}/products/${images[0]}`}
             alt=""
-            className="w-full h-full product_img"
+            className="product_img h-full w-full"
           />
           {/* Discount */}
           {discount > 0 && (
-            <div className="absolute top-1 text-base-100 right-0 bg-red-600 w-max rounded-l-full px-2 py-px">
+            <div className="absolute right-0 top-1 w-max rounded-l-full bg-red-600 px-2 py-px text-base-100">
               <p>{discount}%</p>
             </div>
           )}
         </div>
 
         <div className="p-2">
-          <h1 className="font-medium mb-1 text-sm sm:text-[15px] h-14 min-[410px]:h-10">
+          <h1 className="mb-1 h-14 text-sm font-medium min-[410px]:h-10 sm:text-[15px]">
             {title.length > 30 ? `${title.slice(0, 30)}...` : title}
           </h1>
           <div className="flex items-center gap-2">
-            <p className="text-primary text-sm sm:text-lg">
+            <p className="text-sm text-primary sm:text-lg">
               ৳
               {variants?.length > 0
                 ? parseInt(
                     variants[0]?.sellingPrice -
-                      (variants[0]?.sellingPrice * discount) / 100
+                      (variants[0]?.sellingPrice * discount) / 100,
                   )
                 : parseInt(sellingPrice - (sellingPrice * discount) / 100)}
             </p>
             {discount > 0 && (
-              <del className="text-neutral/70 text-xs sm:text-sm">
+              <del className="text-xs text-neutral/70 sm:text-sm">
                 ৳
                 {variants?.length > 0
                   ? parseInt((variants[0]?.sellingPrice * discount) / 100)
@@ -53,16 +53,16 @@ const ProductCard = ({ product }) => {
               </del>
             )}
           </div>
-          <div className="flex gap-1 items-center text-sm mt-1">
+          <div className="mt-1 flex items-center gap-1 text-sm">
             <Rating rating={rating || 0} />
-            <p className="text-xs text-neutral-content">
+            <p className="text-neutral-content text-xs">
               ({reviewer ? reviewer : 0})
             </p>
           </div>
         </div>
 
         <div className="p-2">
-          <button className="bg-primary text-base-100 w-full text-sm py-1.5">
+          <button className="w-full bg-primary py-1.5 text-sm text-base-100">
             Buy Now
           </button>
         </div>

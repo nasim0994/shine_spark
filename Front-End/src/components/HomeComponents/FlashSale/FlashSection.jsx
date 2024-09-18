@@ -22,24 +22,24 @@ export default function FlashSection({ deal, isLoading }) {
   }
 
   return (
-    <div className="container bg-base-100 p-4 rounded-lg shadow-lg">
-      <div className="flex justify-between sm:items-center border-b pb-2 border-primary">
-        <h1 className="md:text-xl font-medium md:font-semibold text-neutral">
+    <div className="container rounded-lg bg-base-100 shadow-lg">
+      <div className="flex justify-between border-b border-primary p-2 sm:items-center">
+        <h1 className="font-medium text-neutral md:text-xl md:font-semibold">
           {deal?.title}
         </h1>
 
         <div>
           <Link
             to="/shops"
-            className="w-max flex items-center text-primary font-semibold hover-go"
+            className="hover-go flex w-max items-center font-semibold text-primary"
           >
-            <h1 className="text-sm md:text-[15px] font-normal">Shop More</h1>
-            <MdKeyboardArrowRight className="text-[22px] pt-px duration-200" />
+            <h1 className="text-sm font-normal md:text-[15px]">Shop More</h1>
+            <MdKeyboardArrowRight className="pt-px text-[22px] duration-200" />
           </Link>
         </div>
       </div>
 
-      <div>
+      <div className="sm:p-3">
         <Swiper
           navigation={true}
           modules={[Navigation, Autoplay]}
@@ -66,7 +66,7 @@ export default function FlashSection({ deal, isLoading }) {
               spaceBetween: 10,
             },
           }}
-          className="mySwiper w-full h-full"
+          className="mySwiper h-full w-full"
         >
           {content}
         </Swiper>

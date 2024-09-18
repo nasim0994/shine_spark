@@ -3,7 +3,7 @@ import { FiMonitor } from "react-icons/fi";
 import { IoBagCheckOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { BiLogOutCircle } from "react-icons/bi";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { userLogout } from "../../Redux/user/userSlice";
 
 export default function AccountSidebar() {
@@ -22,9 +22,9 @@ export default function AccountSidebar() {
                 }`
           }
           alt=""
-          className="w-28 h-28 border rounded-full mx-auto"
+          className="mx-auto h-28 w-28 rounded-full border"
         />
-        <h3 className="text-center text-lg font-medium text-neutral-content">
+        <h3 className="text-neutral-content text-center text-lg font-medium">
           {loggedUser?.data?.firstName} {loggedUser?.data?.lastName}
         </h3>
       </div>
@@ -32,7 +32,7 @@ export default function AccountSidebar() {
       <ul className="mt-8 flex flex-col gap-2">
         <li>
           <NavLink to="/account/profile">
-            <span className="flex items-center gap-2 hover:text-primary duration-300">
+            <span className="flex items-center gap-2 duration-300 hover:text-primary">
               <FiMonitor className="text-lg" />
               View Profile
             </span>
@@ -40,7 +40,7 @@ export default function AccountSidebar() {
         </li>
         <li>
           <NavLink to="/account/wishlist">
-            <span className="flex items-center gap-2 hover:text-primary duration-300">
+            <span className="flex items-center gap-2 duration-300 hover:text-primary">
               <AiOutlineHeart className="text-xl" />
               My Wishlist
             </span>
@@ -48,7 +48,7 @@ export default function AccountSidebar() {
         </li>
         <li>
           <NavLink to="/account/orders">
-            <span className="flex items-center gap-2 hover:text-primary duration-300">
+            <span className="flex items-center gap-2 duration-300 hover:text-primary">
               <IoBagCheckOutline className="text-xl" />
               My Order List
             </span>
@@ -56,7 +56,7 @@ export default function AccountSidebar() {
         </li>
         <li>
           <NavLink to="/account/reviews">
-            <span className="flex items-center gap-2 hover:text-primary duration-300">
+            <span className="flex items-center gap-2 duration-300 hover:text-primary">
               <IoBagCheckOutline className="text-xl" />
               My Reviews
             </span>
@@ -64,7 +64,7 @@ export default function AccountSidebar() {
         </li>
         <li>
           <NavLink to="/account/setting">
-            <span className="flex items-center gap-2 hover:text-primary duration-300">
+            <span className="flex items-center gap-2 duration-300 hover:text-primary">
               <AiOutlineSetting className="text-xl" />
               Setting
             </span>
@@ -75,7 +75,7 @@ export default function AccountSidebar() {
             onClick={() => dispatch(userLogout())}
             className="text-red-500"
           >
-            <span className="flex items-center gap-2 hover:text-primary duration-300">
+            <span className="flex items-center gap-2 duration-300 hover:text-primary">
               <BiLogOutCircle /> Logout
             </span>
           </button>

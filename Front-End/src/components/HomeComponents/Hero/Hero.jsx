@@ -20,7 +20,7 @@ export default function Hero() {
           <img
             src={`${import.meta.env.VITE_BACKEND_URL}/banner/${banner?.image}`}
             alt=""
-            className="w-full h-full"
+            className="h-40 w-full sm:h-80"
           />
         </Link>
       </SwiperSlide>
@@ -29,20 +29,18 @@ export default function Hero() {
 
   return (
     <section>
-      <div className="max-h-[350px]">
-        <Swiper
-          navigation={true}
-          modules={[Navigation, Autoplay]}
-          loop={true}
-          autoplay={{
-            delay: 5000,
-            disableOnInteraction: false,
-          }}
-          className="mySwiper w-full h-full"
-        >
-          {content}
-        </Swiper>
-      </div>
+      <Swiper
+        navigation={true}
+        modules={[Navigation, Autoplay]}
+        loop={true}
+        autoplay={{
+          delay: 5000,
+          disableOnInteraction: false,
+        }}
+        className="mySwiper h-full w-full"
+      >
+        {content}
+      </Swiper>
     </section>
   );
 }

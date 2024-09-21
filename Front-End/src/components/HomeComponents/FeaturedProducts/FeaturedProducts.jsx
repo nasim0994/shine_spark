@@ -44,11 +44,15 @@ export default function FeaturedProducts() {
           </div>
         </div>
 
-        <div className="flex gap-3">
-          <div className="w-[25%]">
-            <img className="h-full" src="/images/side-img.jpeg" alt="side_img" />
+        <div className="grid gap-3 sm:grid-cols-5">
+          <div className="order-2 sm:order-1">
+            <img
+              className="h-full"
+              src="/images/side-img.jpeg"
+              alt="side_img"
+            />
           </div>
-          <div className="w-full h-full mt-2 grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4">
+          <div className="mt-2 grid h-full w-full grid-cols-2 gap-2 sm:order-2 sm:col-span-4 md:grid-cols-3 lg:grid-cols-4">
             {content}
           </div>
         </div>

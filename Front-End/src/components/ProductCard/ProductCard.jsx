@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import Rating from "../Rating/Rating";
+import { FaCartPlus } from "react-icons/fa";
 
 export default function ProductCard({ product }) {
   const {
@@ -15,7 +16,7 @@ export default function ProductCard({ product }) {
 
   return (
     <div className="product_card">
-      <div className="flex shadow rounded h-full flex-col justify-between">
+      <div className="flex h-full flex-col justify-between rounded shadow">
         <Link to={`/product/${slug}`}>
           <div className="relative h-56 overflow-hidden">
             <img
@@ -70,8 +71,9 @@ export default function ProductCard({ product }) {
             <button className="rounded bg-primary/20 py-1.5 text-sm text-primary duration-300 hover:bg-primary hover:text-base-100">
               Buy Now
             </button>
-            <button className="rounded bg-gray-200 py-1.5 text-sm duration-300 hover:bg-gray-500 hover:text-base-100">
-              Add to Cart
+            <button className="flex items-center justify-center gap-2 rounded bg-gray-200 py-1.5 text-sm duration-300 hover:bg-gray-500 hover:text-base-100">
+              <span className="hidden sm:block">Add to Cart</span>
+              <FaCartPlus className="sm:hidden" />
             </button>
           </div>
         </div>

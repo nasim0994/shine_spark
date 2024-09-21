@@ -64,7 +64,7 @@ import OrderDetails from "../pages/Admin/Order/OrderDetails";
 import AllReview from "../pages/Admin/AllReview/AllReview";
 
 //---------------User
-import AllUsers from "../pages/Admin/user/AllUsers";
+import AllUsers from "../pages/Admin/User/AllUsers";
 
 //---------------Administrator
 import AddAdministrator from "../pages/Admin/Administrator/AddAdministrator";

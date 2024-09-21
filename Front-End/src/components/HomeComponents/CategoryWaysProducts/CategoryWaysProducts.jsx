@@ -1,5 +1,5 @@
 import { useGetCategoriesQuery } from "../../../Redux/category/categoryApi";
-import ProductsSection from "../productsSection/productsSection";
+import ProductsSection from "../ProductsSection/ProductsSection";
 import CategoryWaysProduct from "../../Skeleton/CategoryWaysProduct/CategoryWaysProduct";
 
 

@@ -6,8 +6,6 @@ import FeaturedProducts from "../../components/HomeComponents/FeaturedProducts/F
 import FlashSale from "../../components/HomeComponents/FlashSale/FlashSale";
 import Hero from "../../components/HomeComponents/Hero/Hero";
 import MobileCategories from "../../components/HomeComponents/MobileCategories/MobileCategories";
-import PopularProducts from "../../components/HomeComponents/PopularProducts/PopularProducts";
-import Services from "../../components/HomeComponents/Services/Services";
 
 export default function Home() {
   window.scroll(0, 0);
@@ -19,10 +17,8 @@ export default function Home() {
       <FlashSale />
       <FeaturedProducts />
       <TopCampaignBanner />
-      <ChooseByBrand />
-      <PopularProducts />
       <CategoryWaysProducts />
-      <Services />
+      <ChooseByBrand />
     </>
   );
 }

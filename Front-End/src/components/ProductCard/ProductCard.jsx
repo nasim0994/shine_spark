@@ -14,8 +14,8 @@ export default function ProductCard({ product }) {
   } = product;
 
   return (
-    <div className="product_card mt-2">
-      <div className="flex h-full flex-col justify-between">
+    <div className="product_card">
+      <div className="flex shadow rounded h-full flex-col justify-between">
         <Link to={`/product/${slug}`}>
           <div className="relative h-56 overflow-hidden">
             <img

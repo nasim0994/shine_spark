@@ -21,15 +21,15 @@ export default function ChooseByBrand() {
       <SwiperSlide key={brand?._id}>
         <Link
           to={`shops/brand/${brand?.slug}`}
-          className="shadow border rounded p-4 flex justify-center items-center text-center hover:bg-primary/10 duration-200"
+          className="flex items-center justify-center rounded border p-4 text-center shadow duration-200 hover:bg-primary/10"
         >
           <div>
             <img
-              src={`${import.meta.env.VITE_BACKEND_URL}/brands/${brand?.icon}`}
+              src={`${import.meta.env.VITE_BACKEND_URL}/${brand?.icon}`}
               alt=""
-              className="w-10 sm:w-14 h-10 sm:h-14 mx-auto"
+              className="mx-auto h-10 w-10 rounded sm:h-14 sm:w-14"
             />
-            <h6 className="mt-2 font-medium text-xs sm:text-sm lg:text-base">
+            <h6 className="mt-2 text-xs font-medium sm:text-sm lg:text-base">
               {brand?.name}
             </h6>
           </div>
@@ -38,46 +38,48 @@ export default function ChooseByBrand() {
     ));
   }
 
-  return (
-    <div className="mt-4">
-      <div className="container">
-        <div className="sm:flex gap-8 items-center border-b pb-2 border-primary">
-          <h1 className="md:text-xl font-medium md:font-semibold text-neutral">
-            Featured Brands
-          </h1>
-        </div>
+  if (data?.data?.length > 0) {
+    return (
+      <div className="mt-4">
+        <div className="container">
+          <div className="items-center gap-8 border-b border-primary pb-2 sm:flex">
+            <h1 className="font-medium text-neutral md:text-xl md:font-semibold">
+              Featured Brands
+            </h1>
+          </div>
 
-        <Swiper
-          slidesPerView={1}
-          spaceBetween={10}
-          modules={[Autoplay]}
-          autoplay={{
-            delay: 3000,
-            disableOnInteraction: false,
-          }}
-          breakpoints={{
-            100: {
-              slidesPerView: 3,
-              spaceBetween: 3,
-            },
-            350: {
-              slidesPerView: 4,
-              spaceBetween: 3,
-            },
-            750: {
-              slidesPerView: 5,
-              spaceBetween: 3,
-            },
-            1024: {
-              slidesPerView: 6,
-              spaceBetween: 10,
-            },
-          }}
-          className="mt-2"
-        >
-          {content}
-        </Swiper>
+          <Swiper
+            slidesPerView={1}
+            spaceBetween={10}
+            modules={[Autoplay]}
+            autoplay={{
+              delay: 3000,
+              disableOnInteraction: false,
+            }}
+            breakpoints={{
+              100: {
+                slidesPerView: 3,
+                spaceBetween: 3,
+              },
+              350: {
+                slidesPerView: 4,
+                spaceBetween: 3,
+              },
+              750: {
+                slidesPerView: 5,
+                spaceBetween: 3,
+              },
+              1024: {
+                slidesPerView: 6,
+                spaceBetween: 10,
+              },
+            }}
+            className="mt-2"
+          >
+            {content}
+          </Swiper>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 }

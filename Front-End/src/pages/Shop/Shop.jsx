@@ -6,6 +6,7 @@ import { useGetAllProductsQuery } from "../../Redux/product/productApi";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import ProductCards from "../../components/Skeleton/ProductCards/ProductCards";
 import Pagination from "../../components/Pagination/Pagination";
+import PriceRangeSlider from "../../components/PriceRange/PriceRange";
 
 export default function Shop() {
   window.scroll(0, 0);
@@ -14,6 +15,12 @@ export default function Shop() {
   let subCategory = params?.subCategory ? params?.subCategory : "";
   let subSubCategory = params?.subSubCategory ? params?.subSubCategory : "";
   let brand = params?.brand ? params?.brand : "";
+
+  const [selectedOption, setSelectedOption] = useState("");
+
+  const handleChange = (e) => {
+    setSelectedOption(e.target.value);
+  };
 
   const query = {};
   const [currentPage, setCurrentPage] = useState(1);
@@ -42,6 +49,8 @@ export default function Shop() {
   if (!isLoading && !isError && data?.data?.length == 0) {
     content = <div className="p-4 text-red-500">No Product available</div>;
   }
+
+  console.log(data?.meta?.total);
 
   return (
     <section className="min-h-[70vh] bg-gray-50 py-5">
@@ -121,15 +130,49 @@ export default function Shop() {
 
         <div className="mt-4 gap-4 md:flex">
           <div className="shop_categories hidden h-full md:block">
-            <h3 className="border-b pb-1 font-medium text-neutral">
+            <PriceRangeSlider />
+            {/* <h3 className="border-b pb-1 font-medium text-neutral">
               Categories
-            </h3>
+            </h3> */}
             <div className="mt-2 text-[15px]">
               {/* <MobileCategoriesSidebar /> */}
             </div>
           </div>
 
           <div className="shop_products min-h-[70vh]">
+            <div className="my-2 flex justify-between">
+              <div>
+                {category && (
+                  <>
+                    <p className="font-semibold">
+                      {category.charAt(0).toUpperCase() +
+                        category.slice(1).toLowerCase()}
+                    </p>
+                  </>
+                )}
+                <p className="text-sm font-normal text-neutral">
+                  {data?.meta?.total} items found in {category}
+                </p>
+              </div>
+              <div className="w-48 text-neutral/50">
+                <select
+                  id="sort-by"
+                  value={selectedOption}
+                  onChange={handleChange}
+                  className="block w-full rounded-lg border border-gray-300 bg-white p-1 focus:border-blue-500 focus:outline-none"
+                >
+                  <option value="" disabled>
+                    Sort by
+                  </option>
+                  <option className="text-black" value="low-to-high">
+                    Price Low to High
+                  </option>
+                  <option className="text-black" value="high-to-low">
+                    Price High to Low
+                  </option>
+                </select>
+              </div>
+            </div>
             <div className="grid grid-cols-2 gap-2 lg:grid-cols-3 xl:grid-cols-4">
               {content}
             </div>

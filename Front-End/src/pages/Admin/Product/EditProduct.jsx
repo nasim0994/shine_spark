@@ -100,7 +100,7 @@ export default function EditProduct() {
     formData.append("featured", featured);
     formData.append(
       "description",
-      details.length > 0 ? details : product?.description
+      details.length > 0 ? details : product?.description,
     );
 
     formData.append("sellingPrice", sellingPrice);
@@ -140,10 +140,10 @@ export default function EditProduct() {
   if (!isLoading && !isError) {
     content = (
       <>
-        <h3 className="text-lg text-neutral font-medium mb-4">Edit Product</h3>
+        <h3 className="mb-4 text-lg font-medium text-neutral">Edit Product</h3>
         <form onSubmit={handleUpdateProduct} className="text-neutral-content">
-          <div className="mb-5 border rounded p-4">
-            <p className="text-sm mb-2">Add Images (max 5 images select)</p>
+          <div className="mb-5 rounded border p-4">
+            <p className="mb-2 text-sm">Add Images (max 5 images select)</p>
             <ImageUploading
               value={images}
               onChange={(img) => setImages(img)}
@@ -152,11 +152,11 @@ export default function EditProduct() {
               maxNumber={5}
             >
               {({ onImageUpload, onImageRemove, dragProps }) => (
-                <div className="grid sm:grid-cols-2 gap-4" {...dragProps}>
-                  <div className="flex flex-col items-center justify-center gap-2 border rounded border-dashed p-3">
+                <div className="grid gap-4 sm:grid-cols-2" {...dragProps}>
+                  <div className="flex flex-col items-center justify-center gap-2 rounded border border-dashed p-3">
                     <span
                       onClick={onImageUpload}
-                      className="px-4 py-1.5 rounded-2xl text-base-100 bg-primary cursor-pointer text-sm"
+                      className="cursor-pointer rounded-2xl bg-primary px-4 py-1.5 text-sm text-base-100"
                     >
                       Choose Image
                     </span>
@@ -164,17 +164,17 @@ export default function EditProduct() {
                     <p className="text-neutral-content">or Drop here</p>
                   </div>
 
-                  <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 border rounded border-dashed p-3">
+                  <div className="grid grid-cols-2 gap-4 rounded border border-dashed p-3 lg:grid-cols-3 xl:grid-cols-4">
                     {images?.map((img, index) => (
                       <div key={index} className="image-item relative">
                         <img
                           src={img["data_url"]}
                           alt=""
-                          className="w-full h-20"
+                          className="h-20 w-full"
                         />
                         <div
                           onClick={() => onImageRemove(index)}
-                          className="w-7 h-7 bg-primary rounded-full flex justify-center items-center text-base-100 absolute top-0 right-0 cursor-pointer"
+                          className="absolute right-0 top-0 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-primary text-base-100"
                         >
                           <AiFillDelete />
                         </div>
@@ -183,13 +183,14 @@ export default function EditProduct() {
 
                     {product?.images?.length &&
                       !images?.length &&
-                      product?.images?.map((img) => (
+                      product?.images?.map((img, i) => (
                         <img
+                          key={i}
                           src={`${
                             import.meta.env.VITE_BACKEND_URL
                           }/products/${img}`}
                           alt=""
-                          className="w-full h-20"
+                          className="h-20 w-full"
                         />
                       ))}
                   </div>
@@ -199,7 +200,7 @@ export default function EditProduct() {
           </div>
 
           <div className="form_group">
-            <div className="border rounded p-4  flex flex-col gap-3 mb-5">
+            <div className="mb-5 flex flex-col gap-3 rounded border p-4">
               <div>
                 <p className="text-sm">Product Title</p>
                 <input
@@ -210,7 +211,7 @@ export default function EditProduct() {
                 />
               </div>
 
-              <div className="grid md:grid-cols-3 gap-4">
+              <div className="grid gap-4 md:grid-cols-3">
                 <div>
                   <p className="text-sm">Category *</p>
                   <select
@@ -298,8 +299,8 @@ export default function EditProduct() {
             </div>
 
             {/* Variants */}
-            <div className="mt-4 border rounded p-4">
-              <div className="mt-2 border rounded p-3">
+            <div className="mt-4 rounded border p-4">
+              <div className="mt-2 rounded border p-3">
                 {!isVariants && (
                   <div className="grid grid-cols-3 gap-4">
                     <div>
@@ -333,8 +334,8 @@ export default function EditProduct() {
                 )}
 
                 {isVariants && (
-                  <div className="border rounded p-4 mt-5">
-                    <p className="mb-2 text-neutral-content text-sm">
+                  <div className="mt-5 rounded border p-4">
+                    <p className="text-neutral-content mb-2 text-sm">
                       Variants
                     </p>
                     <div className="relative overflow-x-auto">
@@ -363,7 +364,7 @@ export default function EditProduct() {
                                       handleInputChange(
                                         colorIndex,
                                         "quantity",
-                                        e.target.value
+                                        e.target.value,
                                       )
                                     }
                                   />
@@ -377,7 +378,7 @@ export default function EditProduct() {
                                       handleInputChange(
                                         colorIndex,
                                         "sellingPrice",
-                                        e.target.value
+                                        e.target.value,
                                       )
                                     }
                                   />
@@ -391,7 +392,7 @@ export default function EditProduct() {
                                       handleInputChange(
                                         colorIndex,
                                         "purchasePrice",
-                                        e.target.value
+                                        e.target.value,
                                       )
                                     }
                                   />
@@ -407,27 +408,27 @@ export default function EditProduct() {
             </div>
 
             {/*  Featured */}
-            <div className="mt-6 border rounded p-4">
+            <div className="mt-6 rounded border p-4">
               <p className="text-sm">Featured Product</p>
               <div className="mt-2">
                 <div className="flex items-center gap-2">
                   <p>Status:</p>
-                  <label class="relative inline-flex items-center cursor-pointer">
+                  <label className="relative inline-flex cursor-pointer items-center">
                     <input
                       onChange={() => setFeatured(!featured)}
                       type="checkbox"
                       value={featured}
-                      class="sr-only peer"
+                      className="peer sr-only"
                       checked={product?.featured && featured}
                     />
-                    <div class="w-11 h-[23px] bg-gray-200 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[1.5px] after:start-[1px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                    <div className="peer h-[23px] w-11 rounded-full bg-gray-200 after:absolute after:start-[1px] after:top-[1.5px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white rtl:peer-checked:after:-translate-x-full"></div>
                   </label>
                 </div>
               </div>
             </div>
 
             {/* Details */}
-            <div className="mt-6 add_product_details border rounded p-4">
+            <div className="add_product_details mt-6 rounded border p-4">
               <p className="text-sm">Description</p>
 
               <div className="mt-2">
@@ -448,7 +449,7 @@ export default function EditProduct() {
               <button
                 type="submit"
                 disabled={updateLoading && "disabled"}
-                className="bg-primary text-base-100 px-10 py-2 rounded"
+                className="rounded bg-primary px-10 py-2 text-base-100"
               >
                 {updateLoading ? "Loading..." : "Update Product"}
               </button>

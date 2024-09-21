@@ -169,8 +169,13 @@ h2 {
 .product_card .product_img {
   transition: all 0.3s ease;
 }
+
 .product_card:hover .product_img {
   transform: scale(1.2);
+}
+
+.product_card:hover .title {
+  color: var(--primary);
 }
 
 /* ---------------Shop page -------------------*/

@@ -1,9 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "../Layout/MainLayout";
-import AboutUs from "../pages/AboutUs/AboutUs";
-import Cart from "../pages/Cart/Cart";
-import FAQ from "../pages/FAQ/FAQ";
 import Home from "../pages/Home/Home";
+
+import Cart from "../pages/Cart/Cart";
 import Login from "../pages/Login/Login";
 import ProductDetails from "../pages/ProductDetails/ProductDetails";
 import Shop from "../pages/Shop/Shop";
@@ -46,6 +45,11 @@ import EditSubSubCategory from "../pages/Admin/Category/SubSubCategory/EditSubSu
 import AllBrands from "../pages/Admin/Brand/AllBrands";
 import AddBrand from "../pages/Admin/Brand/AddBrand";
 import EditBrand from "../pages/Admin/Brand/EditBrand";
+
+// ---------------Color
+import AllColor from "../pages/Admin/Color/AllColor";
+import AddColor from "../pages/Admin/Color/AddColor";
+import EditColor from "../pages/Admin/Color/EditColor";
 
 //---------------Product
 import AddProduct from "../pages/Admin/Product/AddProduct";
@@ -98,9 +102,6 @@ import EditFlashDeal from "../pages/Admin/FlashDeal/EditFlashDeal";
 
 //--------------SEO
 import SEOSetting from "../pages/Admin/SEOSetting/SEOSetting";
-import AllColor from "../pages/Admin/Color/AllColor";
-import AddColor from "../pages/Admin/Color/AddColor";
-import EditColor from "../pages/Admin/Color/EditColor";
 
 export const routes = createBrowserRouter([
   {
@@ -134,14 +135,6 @@ export const routes = createBrowserRouter([
       {
         path: "/product/:id",
         element: <ProductDetails />,
-      },
-      {
-        path: "/about-us",
-        element: <AboutUs />,
-      },
-      {
-        path: "/faq",
-        element: <FAQ />,
       },
       {
         path: "/login",

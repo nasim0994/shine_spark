@@ -25,9 +25,9 @@ export default function Footer() {
   }
 
   return (
-    <footer className="pt-8 pb-4 bg-gray-50">
+    <footer className="bg-base-100 pb-4 pt-8">
       <div className="container">
-        <div className="grid sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
+        <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5">
           <div className="md:col-span-2">
             <div className="w-max">
               <Link to="/">
@@ -48,7 +48,7 @@ export default function Footer() {
               {businessInfo?.tagline}
             </p>
 
-            <div className="mt-2 text-sm text-neutral-content">
+            <div className="text-neutral-content mt-2 text-sm">
               <p>{businessInfo?.bio}</p>
             </div>
           </div>
@@ -118,21 +118,21 @@ export default function Footer() {
           </div>
         </div>
 
-        <hr className="my-4 border-gray-200 sm:mx-auto dark:border-gray-700" />
+        <hr className="my-4 border-gray-200 dark:border-gray-700 sm:mx-auto" />
 
         <div>
           <img
             src="/images/sslcommerz-banner.png"
             alt=""
-            className="md:w-full md:h-[130px]"
+            className="md:h-[130px] md:w-full"
           />
         </div>
 
-        <hr className="my-4 border-gray-200 sm:mx-auto dark:border-gray-700" />
+        <hr className="my-4 border-gray-200 dark:border-gray-700 sm:mx-auto" />
 
         {/* bottom */}
         <div className="sm:flex sm:items-center sm:justify-between">
-          <span className="text-[15px] text-neutral-content">
+          <span className="text-neutral-content text-[15px]">
             Copyright© {yearNow != startYear && startYear + " -"} {yearNow}{" "}
             {businessInfo?.companyName}. All Rights Reserved. develop by{" "}
             <Link
@@ -143,10 +143,10 @@ export default function Footer() {
               eManager
             </Link>
           </span>
-          <ul className="flex items-center gap-2 text-neutral-content mt-3 sm:mt-0">
+          <ul className="text-neutral-content mt-3 flex items-center gap-2 sm:mt-0">
             <li>
               <Link to={contact?.data[0]?.facebookLink} target="_blank">
-                <BsFacebook className="text-lg hover:-mt-2 duration-300" />
+                <BsFacebook className="text-lg duration-300 hover:-mt-2" />
               </Link>
             </li>
             <li>
@@ -154,17 +154,17 @@ export default function Footer() {
                 to={`https://wa.me/${contact?.data[0]?.whatsapp}`}
                 target="_blank"
               >
-                <IoLogoWhatsapp className="text-xl hover:-mt-2 duration-300" />
+                <IoLogoWhatsapp className="text-xl duration-300 hover:-mt-2" />
               </Link>
             </li>
             <li>
               <Link to={contact?.data[0]?.instagramLink} target="_blank">
-                <AiFillInstagram className="text-xl hover:-mt-2 duration-300" />
+                <AiFillInstagram className="text-xl duration-300 hover:-mt-2" />
               </Link>
             </li>
             <li>
               <Link to="">
-                <BsYoutube className="text-xl hover:-mt-2 duration-300" />
+                <BsYoutube className="text-xl duration-300 hover:-mt-2" />
               </Link>
             </li>
           </ul>

@@ -29,26 +29,26 @@ export default function ProductsSection({ category }) {
   if (data?.data?.length > 0) {
     return (
       <div className="mt-4">
-        <div className="container p-4 rounded-lg ">
-          <div className="flex justify-between sm:items-center  pb-2">
-            <h1 className="md:text-xl font-medium md:font-semibold text-neutral">
+        <div className="container rounded-lg p-4">
+          <div className="flex justify-between pb-2 sm:items-center">
+            <h1 className="font-medium text-neutral md:text-xl md:font-semibold">
               {category?.name}
             </h1>
 
             <div>
               <Link
                 to={`/shops/${category?.slug}`}
-                className="w-max flex items-center text-primary font-semibold hover-go"
+                className="hover-go flex w-max items-center font-semibold text-primary"
               >
-                <h1 className="text-sm md:text-[15px] font-normal">
+                <h1 className="text-sm font-normal md:text-[15px]">
                   Shop More
                 </h1>
-                <MdKeyboardArrowRight className="text-[22px] pt-px duration-200" />
+                <MdKeyboardArrowRight className="pt-px text-[22px] duration-200" />
               </Link>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 mt-2">
+          <div className="mt-2 grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {content}
           </div>
         </div>

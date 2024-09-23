@@ -37,7 +37,7 @@ export default function ProductInfo({ product }) {
   const totakStock = variants?.length
     ? variants?.reduce(
         (quantity, item) => parseInt(quantity) + parseInt(item.quantity),
-        0
+        0,
       )
     : quantity;
   const price = variants?.length ? variants[0]?.sellingPrice : sellingPrice;
@@ -75,7 +75,7 @@ export default function ProductInfo({ product }) {
   useEffect(() => {
     const findVariant = variants?.find(
       (variant) =>
-        variant.color === selectedColor && variant.size === selectedSize
+        variant.color === selectedColor && variant.size === selectedSize,
     );
     setSelectedVariant(findVariant);
 
@@ -174,7 +174,7 @@ export default function ProductInfo({ product }) {
       (product) =>
         product._id === cartProduct._id &&
         product.size === cartProduct.size &&
-        product.color === cartProduct.color
+        product.color === cartProduct.color,
     );
 
     if (findProduct) {
@@ -201,20 +201,19 @@ export default function ProductInfo({ product }) {
   // const img = `${import.meta.env.VITE_BACKEND_URL}/products/${showImage}`;
 
   return (
-    <div className="lg:flex gap-6">
+    <div className="gap-6 lg:flex">
       {/* Image */}
       <div className="lg:w-[42%]">
         <div className="relative">
-          {/* <img src={img} alt="" className="w-full h-[350px] rounded" /> */}
           <img
             src={`${import.meta.env.VITE_BACKEND_URL}/products/${showImage}`}
             alt=""
-            className="w-full h-[350px] rounded"
+            className="h-[350px] w-full rounded"
           />
 
           {/* Discount */}
           {discount > 0 && (
-            <div className="absolute top-1 text-base-100 right-0 bg-red-600 w-max rounded-l-full px-2 py-px">
+            <div className="absolute right-0 top-1 w-max rounded-l-full bg-red-600 px-2 py-px text-base-100">
               <p>{discount}%</p>
             </div>
           )}
@@ -226,7 +225,7 @@ export default function ProductInfo({ product }) {
               <img
                 src={`${import.meta.env.VITE_BACKEND_URL}/products/${img}`}
                 alt=""
-                className="w-full h-12 rounded"
+                className="h-12 w-full rounded"
               />
             </div>
           ))}
@@ -234,7 +233,7 @@ export default function ProductInfo({ product }) {
       </div>
 
       {/* Details */}
-      <div className="lg:w-[58%] mt-4 lg:mt-0">
+      <div className="mt-4 lg:mt-0 lg:w-[58%]">
         {/* title  */}
         <div>
           <h1 className="text-2xl font-medium text-neutral">{title}</h1>
@@ -259,10 +258,10 @@ export default function ProductInfo({ product }) {
         </div>
 
         {/*  wishlist */}
-        <div className="flex justify-end items-center gap-4">
+        <div className="flex items-center justify-end gap-4">
           <button
             onClick={() => handelAddToWishlist(product)}
-            className={`shadow-lg p-3 rounded-full ${
+            className={`rounded-full p-3 shadow-lg ${
               isWishlist && "bg-primary text-base-100"
             }`}
           >
@@ -271,12 +270,12 @@ export default function ProductInfo({ product }) {
         </div>
 
         {/* Price */}
-        <div className="py-3 border-y mt-3">
-          <div className="flex gap-6 items-center">
+        <div className="mt-3 border-y py-3">
+          <div className="flex items-center gap-6">
             <p className="text-neutral opacity-70">Price: </p>
 
             <div className="flex items-end gap-2">
-              <p className="text-primary text-2xl font-medium">
+              <p className="text-2xl font-medium text-primary">
                 ৳ {parseInt(selectedPrice - (selectedPrice * discount) / 100)}
               </p>
               {discount > 0 && (
@@ -289,15 +288,15 @@ export default function ProductInfo({ product }) {
         </div>
 
         {colors?.length > 0 && (
-          <div className="flex gap-4 items-center my-4">
+          <div className="my-4 flex items-center gap-4">
             <p>Color :</p>
 
-            <div className="flex gap-2 items-center">
+            <div className="flex items-center gap-2">
               {colors?.map((clr) => (
                 <button
                   key={clr._id}
                   onClick={() => handelColorSelect(clr)}
-                  className={`text-sm p-4 rounded-full border scale-[.96] hover:scale-[1] duration-300`}
+                  className={`scale-[.96] rounded-full border p-4 text-sm duration-300 hover:scale-[1]`}
                   style={{
                     backgroundColor: clr.colorCode,
                     borderColor:
@@ -311,17 +310,17 @@ export default function ProductInfo({ product }) {
 
         {/* Sizes */}
         {sizes?.length > 0 && sizes[0] && (
-          <div className="flex gap-4 items-center my-4">
+          <div className="my-4 flex items-center gap-4">
             <p>Size :</p>
 
-            <div className="flex gap-2 items-center">
+            <div className="flex items-center gap-2">
               {sizes?.map((size) => (
                 <button
                   key={size}
                   onClick={() => handelSelectSize(size)}
                   className={`${
                     size === selectedSize && "bg-primary text-base-100"
-                  } text-[15px] py-1.5 px-2.5 rounded border scale-[.96] hover:scale-[1] hover:border-primary duration-300`}
+                  } scale-[.96] rounded border px-2.5 py-1.5 text-[15px] duration-300 hover:scale-[1] hover:border-primary`}
                 >
                   {size}
                 </button>
@@ -331,24 +330,24 @@ export default function ProductInfo({ product }) {
         )}
 
         {/* Quantity */}
-        <div className="py-3 flex gap-4 items-center border-y">
+        <div className="flex items-center gap-4 border-y py-3">
           <h3>Quantity: </h3>
 
           <div className="flex gap-2">
             <button
               onClick={handelDecrease}
-              className="text-2xl hover:text-neutral duration-200"
+              className="text-2xl duration-200 hover:text-neutral"
             >
               <FiMinusCircle />
             </button>
             <div>
-              <p className="w-10 font-semibold text-center">
+              <p className="w-10 text-center font-semibold">
                 {selectedQuantity}
               </p>
             </div>
             <button
               onClick={handelIncrease}
-              className="text-2xl hover:text-neutral duration-200"
+              className="text-2xl duration-200 hover:text-neutral"
             >
               <FiPlusCircle />
             </button>
@@ -356,10 +355,10 @@ export default function ProductInfo({ product }) {
         </div>
 
         {/* Buttons */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 items-center mt-6">
+        <div className="mt-6 grid grid-cols-2 items-center gap-2 sm:grid-cols-3">
           <button
             onClick={handleBuyNow}
-            className="bg-primary text-base-100 px-2 py-1.5 rounded scale-[.97] hover:scale-[1] duration-300 flex items-center justify-center gap-1"
+            className="flex scale-[.97] items-center justify-center gap-1 rounded bg-primary px-2 py-1.5 text-base-100 duration-300 hover:scale-[1]"
           >
             <IoBagCheckOutline />
             Buy Now
@@ -367,7 +366,7 @@ export default function ProductInfo({ product }) {
 
           <button
             onClick={handelAddToCart}
-            className="bg-accent text-base-100 px-2 py-1.5 rounded flex items-center gap-1 justify-center scale-[.97] hover:scale-[1] duration-300"
+            className="flex scale-[.97] items-center justify-center gap-1 rounded bg-accent px-2 py-1.5 text-base-100 duration-300 hover:scale-[1]"
           >
             <FaOpencart />
             Add To Cart
@@ -375,7 +374,7 @@ export default function ProductInfo({ product }) {
 
           <Link
             to=""
-            className="bg-secondary text-base-100 px-2 py-1.5 rounded flex items-center gap-1 justify-center scale-[.97] hover:scale-[1] duration-300"
+            className="flex scale-[.97] items-center justify-center gap-1 rounded bg-secondary px-2 py-1.5 text-base-100 duration-300 hover:scale-[1]"
           >
             <MdAddCall />
             Call Now

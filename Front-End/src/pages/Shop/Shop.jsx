@@ -16,11 +16,11 @@ export default function Shop() {
   let subSubCategory = params?.subSubCategory ? params?.subSubCategory : "";
   let brand = params?.brand ? params?.brand : "";
 
-  const [selectedOption, setSelectedOption] = useState("");
-
-  const handleChange = (e) => {
-    setSelectedOption(e.target.value);
-  };
+  const [sort, setSort] = useState(0);
+  const STEP = 100;
+  const MIN = 0;
+  const MAX = 10000;
+  const [values, setValues] = useState([MIN, MAX]);
 
   const query = {};
   const [currentPage, setCurrentPage] = useState(1);
@@ -30,12 +30,15 @@ export default function Shop() {
   query["subCategory"] = subCategory;
   query["subSubCategory"] = subSubCategory;
   query["brand"] = brand;
-  const { data, isLoading, isError, error } = useGetAllProductsQuery({
-    ...query,
-  });
+  query["range"] = JSON.stringify(values);
+  query["sort"] = sort;
+  const { data, isLoading, isFetching, isError, error } =
+    useGetAllProductsQuery({
+      ...query,
+    });
 
   let content = null;
-  if (isLoading) {
+  if (isLoading || isFetching) {
     content = <ProductCards />;
   }
   if (!isLoading && isError) {
@@ -49,8 +52,6 @@ export default function Shop() {
   if (!isLoading && !isError && data?.data?.length == 0) {
     content = <div className="p-4 text-red-500">No Product available</div>;
   }
-
-  console.log(data?.meta?.total);
 
   return (
     <section className="min-h-[70vh] bg-gray-50 py-5">
@@ -130,7 +131,13 @@ export default function Shop() {
 
         <div className="mt-4 gap-4 md:flex">
           <div className="shop_categories hidden h-full md:block">
-            <PriceRangeSlider />
+            <PriceRangeSlider
+              values={values}
+              setValues={setValues}
+              MIN={MIN}
+              MAX={MAX}
+              STEP={STEP}
+            />
             {/* <h3 className="border-b pb-1 font-medium text-neutral">
               Categories
             </h3> */}
@@ -151,23 +158,24 @@ export default function Shop() {
                   </>
                 )}
                 <p className="text-sm font-normal text-neutral">
-                  {data?.meta?.total} items found in {category}
+                  {isFetching
+                    ? "Loading..."
+                    : `${data?.meta?.total} items found in ${category.charAt(0).toUpperCase() +
+                      category.slice(1).toLowerCase()}`}
                 </p>
               </div>
               <div className="w-48 text-neutral/50">
                 <select
                   id="sort-by"
-                  value={selectedOption}
-                  onChange={handleChange}
+                  value={sort}
+                  onChange={(e) => setSort(e.target.value)}
                   className="block w-full rounded-lg border border-gray-300 bg-white p-1 focus:border-blue-500 focus:outline-none"
                 >
-                  <option value="" disabled>
-                    Sort by
-                  </option>
-                  <option className="text-black" value="low-to-high">
+                  <option value={0}>Sort by</option>
+                  <option className="text-black" value={1}>
                     Price Low to High
                   </option>
-                  <option className="text-black" value="high-to-low">
+                  <option className="text-black" value={-1}>
                     Price High to Low
                   </option>
                 </select>

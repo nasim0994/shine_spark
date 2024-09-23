@@ -1,6 +1,5 @@
 import { CiDeliveryTruck } from "react-icons/ci";
 import { GiTakeMyMoney } from "react-icons/gi";
-import { GrShieldSecurity } from "react-icons/gr";
 import { useGetShippingConfigQuery } from "../../Redux/shippingConfigApi";
 
 const RightSideInfo = () => {

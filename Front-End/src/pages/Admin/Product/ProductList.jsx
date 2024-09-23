@@ -11,16 +11,18 @@ import Spinner from "../../../components/Spinner/Spinner";
 import Pagination from "../../../components/Pagination/Pagination";
 
 export default function ProductList() {
-  const query = {};
   const [currentPage, setCurrentPage] = useState(1);
   const limit = 10;
 
+  let query = {};
   query["page"] = currentPage;
   query["limit"] = limit;
 
   const { data, isLoading, isError, error } = useGetAllProductsQuery({
     ...query,
   });
+
+  console.log("Data", data);
 
   const [
     deleteProduct,
@@ -44,7 +46,7 @@ export default function ProductList() {
         deleteError?.message
           ? deleteError?.message
           : "something went worng, please try again",
-        "error"
+        "error",
       );
     }
   }, [isSuccess, deleteIsError, deleteError]);
@@ -66,7 +68,7 @@ export default function ProductList() {
                 product?.images[0]
               }`}
               alt=""
-              className="w-9 h-9 rounded-lg"
+              className="h-9 w-9 rounded-lg"
             />
             {product?.title?.length > 30
               ? product?.title.slice(0, 30) + "..."
@@ -76,26 +78,26 @@ export default function ProductList() {
         <td>{product?.category?.name}</td>
         <td>
           {product?.featured ? (
-            <label className="relative inline-flex items-center cursor-pointer">
+            <label className="relative inline-flex cursor-pointer items-center">
               <input
                 checked={product?.featured && product?.featured}
                 type="checkbox"
                 value={product?.featured}
-                className="sr-only peer"
+                className="peer sr-only"
                 disabled
               />
-              <div className="w-11 h-[23px] bg-gray-200 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[1.5px] after:start-[1px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+              <div className="peer h-[23px] w-11 rounded-full bg-gray-200 after:absolute after:start-[1px] after:top-[1.5px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white rtl:peer-checked:after:-translate-x-full"></div>
             </label>
           ) : (
-            <label className="relative inline-flex items-center cursor-pointer">
+            <label className="relative inline-flex cursor-pointer items-center">
               <input
                 checked={product?.featured && product?.featured}
                 type="checkbox"
                 value={product?.featured}
-                className="sr-only peer"
+                className="peer sr-only"
                 disabled
               />
-              <div className="w-11 h-[23px] bg-gray-200 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[1.5px] after:start-[1px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+              <div className="peer h-[23px] w-11 rounded-full bg-gray-200 after:absolute after:start-[1px] after:top-[1.5px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white rtl:peer-checked:after:-translate-x-full"></div>
             </label>
           )}
         </td>
@@ -110,7 +112,7 @@ export default function ProductList() {
             ? product?.variants?.reduce(
                 (quantity, item) =>
                   parseInt(quantity) + parseInt(item.quantity),
-                0
+                0,
               )
             : product?.quantity}
         </td>
@@ -118,7 +120,7 @@ export default function ProductList() {
           <div className="flex items-center gap-2">
             <Link
               to={`/admin/product/edit-product/${product?._id}`}
-              className="hover:text-green-700 duration-300"
+              className="duration-300 hover:text-green-700"
             >
               <BiSolidPencil />
             </Link>
@@ -136,16 +138,16 @@ export default function ProductList() {
 
   return (
     <div>
-      <div className="flex justify-end mb-3">
+      <div className="mb-3 flex justify-end">
         <Link
           to="/admin/product/add-product"
-          className="text-sm bg-primary text-base-100 px-6 py-2 rounded"
+          className="rounded bg-primary px-6 py-2 text-sm text-base-100"
         >
           Add New Product
         </Link>
       </div>
 
-      <div className="bg-base-100 shadow-lg min-h-[80vh] flex flex-col justify-between">
+      <div className="flex min-h-[80vh] flex-col justify-between bg-base-100 shadow-lg">
         <div className="relative overflow-x-auto">
           <table className="dashboard_table">
             <thead>
@@ -163,7 +165,7 @@ export default function ProductList() {
                 content
               ) : (
                 <tr>
-                  <td colSpan={6} className="text-center text-red-500 text-sm">
+                  <td colSpan={6} className="text-center text-sm text-red-500">
                     no product found!
                   </td>
                 </tr>

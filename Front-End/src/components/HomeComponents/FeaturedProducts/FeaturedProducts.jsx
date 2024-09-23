@@ -55,6 +55,7 @@ export default function FeaturedProducts() {
           <div className="mt-2 grid h-full w-full grid-cols-2 gap-2 sm:order-2 sm:col-span-4 md:grid-cols-3 lg:grid-cols-4">
             {content}
           </div>
+          
         </div>
       </div>
     </div>

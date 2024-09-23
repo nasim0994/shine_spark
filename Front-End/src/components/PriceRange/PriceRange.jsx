@@ -1,15 +1,6 @@
-import { useState } from "react";
 import { Range, getTrackBackground } from "react-range";
 
-const PriceRangeSlider = () => {
-  const STEP = 1000;
-  const MIN = 0;
-  const MAX = 1000000;
-
-  const [values, setValues] = useState([MIN, MAX]);
-
-  console.log("value",values)
-
+const PriceRangeSlider = ({ values, setValues, MIN, MAX, STEP }) => {
   return (
     <div className="w-72 rounded-lg border bg-white p-4 shadow-md">
       <h2 className="text-lg font-semibold">Price</h2>
@@ -37,7 +28,7 @@ const PriceRangeSlider = () => {
               {children}
             </div>
           )}
-          renderThumb={({ index, props }) => (
+          renderThumb={({ props }) => (
             <div
               {...props}
               className="h-6 w-6 cursor-pointer rounded-full border-2 border-white bg-gray-400 shadow-md"

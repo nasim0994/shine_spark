@@ -48,7 +48,10 @@ export default function Menu() {
               <ul className="categories flex items-center font-medium">
                 {menuCategories?.map((category) => (
                   <li key={category?._id}>
-                    <Link to="/" className="flex items-center gap-2 p-2">
+                    <Link
+                      to={`shops/${category.slug}`}
+                      className="flex items-center gap-2 p-2"
+                    >
                       {category?.name}
 
                       {category?.subCategories?.length > 0 && (

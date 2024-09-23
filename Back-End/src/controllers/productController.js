@@ -55,7 +55,14 @@ exports.addProduct = async (req, res) => {
 
 exports.getAllProducts = async (req, res) => {
   const paginationOptions = pick(req.query, ["page", "limit"]);
-  const { category, subCategory, subSubCategory, brand } = req.query;
+  const {
+    category,
+    subCategory,
+    subSubCategory,
+    brand,
+    range,
+    sort: priceSort,
+  } = req.query;
   const { page, limit, skip } = calculatePagination(paginationOptions);
 
   try {
@@ -82,11 +89,22 @@ exports.getAllProducts = async (req, res) => {
     if (subCategory) query.subCategory = subCategoryId;
     if (subSubCategory) query.subSubCategory = subSubategoryId;
     if (brand) query.brand = brandName;
+    const prices = JSON.parse(range);
+
+    let sortOption = {};
+
+    if (parseInt(priceSort) !== 0) {
+      sortOption.sellingPrice = parseInt(priceSort);
+    } else {
+      sortOption.createdAt = -1;
+    }
+
+    if (range) query.sellingPrice = { $gte: prices[0], $lte: prices[1] };
 
     const products = await Product.find(query)
       .skip(skip)
       .limit(limit)
-      .sort({ createdAt: -1 })
+      .sort(sortOption)
       .populate("category subCategory subSubCategory", "name slug icon");
 
     const total = await Product.countDocuments(query);

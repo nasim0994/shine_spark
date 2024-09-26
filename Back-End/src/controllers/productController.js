@@ -55,6 +55,7 @@ exports.addProduct = async (req, res) => {
 
 exports.getAllProducts = async (req, res) => {
   const paginationOptions = pick(req.query, ["page", "limit"]);
+  const { page, limit, skip } = calculatePagination(paginationOptions);
   const {
     category,
     subCategory,
@@ -63,7 +64,6 @@ exports.getAllProducts = async (req, res) => {
     range,
     sort: priceSort,
   } = req.query;
-  const { page, limit, skip } = calculatePagination(paginationOptions);
 
   try {
     const targetedCategory = await Categories.findOne({
@@ -89,11 +89,11 @@ exports.getAllProducts = async (req, res) => {
     if (subCategory) query.subCategory = subCategoryId;
     if (subSubCategory) query.subSubCategory = subSubategoryId;
     if (brand) query.brand = brandName;
-    const prices = JSON.parse(range);
 
+    const prices = range && JSON.parse(range);
     let sortOption = {};
 
-    if (parseInt(priceSort) !== 0) {
+    if (priceSort && parseInt(priceSort) !== 0) {
       sortOption.sellingPrice = parseInt(priceSort);
     } else {
       sortOption.createdAt = -1;

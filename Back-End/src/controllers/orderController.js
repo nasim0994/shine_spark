@@ -1,14 +1,31 @@
 const Order = require("../models/orderModel");
 const Product = require("../models/productModel");
+const User = require("../models/userModel");
 const { calculatePagination } = require("../utils/calculatePagination");
 const { pick } = require("../utils/pick");
 
 exports.addOrder = async (req, res) => {
-  const data = req?.body;
-
   let invoiceNumber = "00001";
 
   try {
+    let data = req?.body;
+    const { userId, shippingInfo } = data;
+
+    if (!userId) {
+      const userExists = await User.findOne({ phone: shippingInfo?.phone });
+
+      if (!userExists) {
+        const user = await User.create({
+          ...shippingInfo,
+          password: "12345678",
+        });
+
+        data.userId = user?._id;
+      } else {
+        data.userId = userExists?._id;
+      }
+    }
+
     const orders = await Order.find({});
 
     if (orders?.length > 0) {
@@ -42,14 +59,12 @@ exports.addOrder = async (req, res) => {
       const selectedProduct = await Product.findOne({
         _id: productId,
       });
-      // console.log(selectedProduct);
 
       if (color && size) {
         const selectedVariant = selectedProduct?.variants?.find(
           (variant) => variant.color === color && variant.size === size
         );
 
-        // console.log(selectedVariant, "color & size");
         const updatedQuantity = selectedVariant?.quantity - quantity;
 
         await Product.findByIdAndUpdate(
@@ -76,7 +91,6 @@ exports.addOrder = async (req, res) => {
           (variant) => variant.color === color
         );
 
-        // console.log(selectedVariant, "color");
         const updatedQuantity = selectedVariant?.quantity - quantity;
 
         await Product.findByIdAndUpdate(
@@ -100,7 +114,6 @@ exports.addOrder = async (req, res) => {
         );
       } else {
         const updatedQuantity = selectedProduct?.quantity - quantity;
-        // console.log(selectedProduct?.quantity, "quantity");
 
         await Product.findByIdAndUpdate(
           productId,
@@ -117,7 +130,7 @@ exports.addOrder = async (req, res) => {
     res.status(201).json({
       success: true,
       message: "Order added successfully",
-      //   data: result,
+      data: result,
     });
   } catch (error) {
     res.status(400).json({
@@ -181,6 +194,7 @@ exports.getAllOrders = async (req, res) => {
       .lean();
 
     const total = await Order.countDocuments({});
+    const pages = Math.ceil(total / limit);
 
     res.status(200).json({
       success: true,
@@ -188,6 +202,7 @@ exports.getAllOrders = async (req, res) => {
       data: orders,
       meta: {
         total,
+        pages,
         page,
         limit,
       },

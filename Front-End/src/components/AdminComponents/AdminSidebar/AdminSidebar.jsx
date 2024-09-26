@@ -68,13 +68,8 @@ const adminSidebarItems = [
 
   {
     icon: <BiSolidShoppingBags />,
-    title: "Order",
-    subMenu: [
-      {
-        title: "All Orders",
-        path: "/admin/order/all-orders",
-      },
-    ],
+    title: "Orders",
+    path: "/admin/order/all-orders",
   },
   {
     icon: <MdFlashOn />,
@@ -88,23 +83,13 @@ const adminSidebarItems = [
   },
   {
     icon: <FaUsers />,
-    title: "Customer",
-    subMenu: [
-      {
-        title: "All Customers",
-        path: "/admin/customer/all-customers",
-      },
-    ],
+    title: "Customers",
+    path: "/admin/customer/all-customers",
   },
   {
     icon: <RiAdminFill />,
     title: "Administrator",
-    subMenu: [
-      {
-        title: "All Administrator",
-        path: "/admin/administrator/all-administrator",
-      },
-    ],
+    path: "/admin/administrator/all-administrator",
   },
   {
     icon: <MdOutlineSettings />,
@@ -182,7 +167,7 @@ export default function AdminSidebar() {
   const { data } = useGetMainLogoQuery();
 
   return (
-    <div className="h-full flex flex-col justify-between">
+    <div className="flex h-full flex-col justify-between">
       <div>
         <Link to="/admin/dashboard" className="block border-b py-4">
           <img
@@ -194,7 +179,7 @@ export default function AdminSidebar() {
                   }`
             }
             alt=""
-            className="w-28 mx-auto h-16"
+            className="mx-auto h-16 w-28"
           />
         </Link>
 

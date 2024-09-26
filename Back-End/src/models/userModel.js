@@ -17,8 +17,6 @@ const UserSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      required: true,
-      unique: true,
     },
     phone: {
       type: String,
@@ -32,7 +30,7 @@ const UserSchema = new mongoose.Schema(
     city: {
       type: String,
     },
-    district: {
+    area: {
       type: String,
     },
     street: {

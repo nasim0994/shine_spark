@@ -22,14 +22,7 @@ exports.addSEO = async (req, res) => {
 
 exports.getSEO = async (req, res) => {
   try {
-    const result = await SEO.find({});
-
-    if (!result) {
-      return res.status(404).json({
-        success: false,
-        error: "SEO Setting not found",
-      });
-    }
+    const result = await SEO.findOne();
 
     res.status(200).json({
       success: true,

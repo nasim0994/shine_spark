@@ -16,14 +16,18 @@ export default function FlashSection({ deal, isLoading }) {
   if (!isLoading && deal?.flashProducts?.length > 0) {
     content = deal?.flashProducts?.map((product) => (
       <SwiperSlide key={product._id}>
-        <ProductCard key={product?._id} product={product?.product} />
+        <ProductCard
+          key={product?._id}
+          product={product?.product}
+          discount={product?.discount}
+        />
       </SwiperSlide>
     ));
   }
 
   return (
-    <div className="container rounded-lg bg-base-100 shadow-lg">
-      <div className="flex justify-between border-b border-primary p-2 sm:items-center">
+    <div className="container rounded-lg">
+      <div className="flex justify-between sm:items-center">
         <h1 className="font-medium text-neutral md:text-xl md:font-semibold">
           {deal?.title}
         </h1>

@@ -4,55 +4,100 @@ import useAuthCheck from "./hooks/useAuthCheck";
 import Spinner from "./components/Spinner/Spinner";
 import { Helmet } from "react-helmet";
 import { useGetFaviconQuery } from "./Redux/favicon/faviconApi";
-import { useGetBusinessInfoQuery } from "./Redux/businessInfoApi/businessInfoApi";
 import { useGetSEOQuery } from "./Redux/seoApi";
+import { useEffect } from "react";
 
 export default function App() {
   const authChecked = useAuthCheck();
 
-  const { data: favicon, isLoading } = useGetFaviconQuery();
+  const { data: favicon } = useGetFaviconQuery();
   const icon = favicon?.data[0]?.icon;
 
-  const { data: business, isLoading: businessIsLoading } =
-    useGetBusinessInfoQuery();
-  const businessInfo = business?.data[0];
+  const { data } = useGetSEOQuery();
+  const seo = data?.data;
 
-  const { data, isLoading: seoIsLoading } = useGetSEOQuery();
-  const seo = data?.data[0];
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.innerHTML = `
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", "${seo?.custom?.google_tag_manager}");
+    `;
 
-  if (!authChecked || isLoading || businessIsLoading || seoIsLoading) {
+    // Append the script to the head
+    if (seo?.custom?.google_tag_manager) document.head.appendChild(script);
+  }, [seo]);
+
+  if (!authChecked) {
     return <Spinner />;
   }
 
   return (
     <>
       <Helmet>
-        <meta charSet="utf-8" />
-        <title>
-          {businessInfo?.companyName && businessInfo?.tagline
-            ? businessInfo?.companyName + "-" + businessInfo?.tagline
-            : "your title here"}
-        </title>
         <link
           rel="icon"
           type="image/svg+xml"
           href={`${import.meta.env.VITE_BACKEND_URL}/favicon/${icon}`}
         />
-        <link rel="canonical" href={import.meta.env.VITE_FRONTEND_URL} />
 
-        {/* For Seo */}
-        <meta name="description" content={seo?.description} />
-        <meta name="keywords" content={seo?.keywords} />
-        <meta name="author" content={seo?.author} />
-        <meta name="sitemap_link" content={seo?.sitemapLink} />
+        <title>{seo?.basic?.title || "Your Page Title"}</title>
+        <meta
+          name="description"
+          content={seo?.basic?.description || "Your Page Description"}
+        />
+        <meta
+          name="keywords"
+          content={seo?.basic?.keywords || "Your Page Keywords"}
+        />
+        <meta
+          name="author"
+          content={seo?.basic?.author || "Your Page Author"}
+        />
+        <meta
+          name="designer"
+          content={seo?.basic?.designer || "Your Page Designer"}
+        />
+        <meta
+          name="subject"
+          content={seo?.basic?.subject || "Your Page Subject"}
+        />
 
-        {/* -- Open Graph data -- */}
-        <meta property="og:title" content={businessInfo?.tagline} />
-        <meta property="og:type" content={businessInfo?.companyType} />
-        <meta property="og:url" content={import.meta.env.VITE_FRONTEND_URL} />
-        <meta property="og:description" content={businessInfo?.bio} />
-        <meta property="og:site_name" content={businessInfo?.companyName} />
+        {seo?.basic?.copyright && (
+          <meta name="copyright" content={seo?.basic?.copyright} />
+        )}
+        {seo?.basic?.url && <meta name="url" content={seo?.basic?.url} />}
+
+        {seo?.custom?.facebook_domain_verification && (
+          <meta
+            name="facebook-domain-verification"
+            content={seo?.custom?.facebook_domain_verification}
+          />
+        )}
+
+        {seo?.custom?.google_site_verification && (
+          <meta
+            name="google-site-verification"
+            content={seo?.custom?.google_site_verificatio}
+          />
+        )}
       </Helmet>
+
+      <noscript>
+        <iframe
+          src={`https://www.googletagmanager.com/ns.html?id=${seo?.custom?.google_tag_manager}`}
+          height="0"
+          width="0"
+          style={{ display: "none", visibility: "hidden" }}
+        ></iframe>
+      </noscript>
       <RouterProvider router={routes}></RouterProvider>
     </>
   );

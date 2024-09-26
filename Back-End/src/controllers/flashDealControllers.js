@@ -136,8 +136,6 @@ exports.updateFlashDeal = async (req, res) => {
     const { id } = req?.params;
     const flashDealInfo = req?.body;
 
-    console.log(flashDealInfo);
-
     const flashDeal = await FlashDeal.findById(id);
 
     if (!flashDeal) {

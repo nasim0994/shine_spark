@@ -16,6 +16,9 @@ const productSchema = {
   color: {
     type: String,
   },
+  discount: {
+    type: Number,
+  },
 };
 
 const OrderSchema = new mongoose.Schema(
@@ -26,18 +29,32 @@ const OrderSchema = new mongoose.Schema(
       required: true,
     },
     shippingInfo: {
+      name: {
+        type: String,
+        required: true,
+      },
+      phone: {
+        type: String,
+        required: true,
+      },
+      email: {
+        type: String,
+      },
       city: {
         type: String,
         required: true,
       },
-      district: {
+      area: {
         type: String,
-        required: true,
       },
       street: {
         type: String,
         required: true,
       },
+    },
+    shippingCharge: {
+      type: Number,
+      required: true,
     },
     paymentMethod: {
       type: String,

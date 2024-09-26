@@ -22,8 +22,6 @@ export default function ProductList() {
     ...query,
   });
 
-  console.log("Data", data);
-
   const [
     deleteProduct,
     { isSuccess, isError: deleteIsError, error: deleteError },

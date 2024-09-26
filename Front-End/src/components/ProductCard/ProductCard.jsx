@@ -9,7 +9,7 @@ import { addToCart } from "../../Redux/cart/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { ImCross } from "react-icons/im";
 
-export default function ProductCard({ product }) {
+export default function ProductCard({ product, discount: flashDiscount = 0 }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [modal, setModal] = useState(false);
@@ -27,7 +27,9 @@ export default function ProductCard({ product }) {
     subSubCategory,
     quantity,
   } = product;
-  console.log("Product", product);
+
+  const newDiscount = parseInt(flashDiscount) + discount;
+
   const carts = useSelector((state) => state.cart.carts);
 
   const [selectedColor, setSelectedColor] = useState("");
@@ -125,7 +127,7 @@ export default function ProductCard({ product }) {
       title: title,
       slug: product.slug,
       image: images[0],
-      discount: discount,
+      discount: newDiscount,
       price: selectedPrice,
       quantity: selectedQuantity,
       size: selectedSize,
@@ -151,7 +153,7 @@ export default function ProductCard({ product }) {
       title: title,
       slug: product.slug,
       image: images[0],
-      discount: discount,
+      discount: newDiscount,
       price: selectedPrice,
       quantity: selectedQuantity,
       size: selectedSize,
@@ -310,7 +312,7 @@ export default function ProductCard({ product }) {
       ) : (
         <div className="product_card">
           <div className="flex h-full flex-col justify-between rounded shadow">
-            <Link to={`/product/${slug}`}>
+            <Link to={`/product/${slug}?discount=${newDiscount}`}>
               <div className="relative h-56 overflow-hidden">
                 <img
                   src={`${import.meta.env.VITE_BACKEND_URL}/products/${images[0]}`}
@@ -318,9 +320,9 @@ export default function ProductCard({ product }) {
                   className="product_img h-full w-full"
                 />
 
-                {discount > 0 && (
+                {newDiscount > 0 && (
                   <div className="absolute right-0 top-1 w-max rounded-l-full bg-red-600 px-2 py-px text-base-100">
-                    <p>{discount}%</p>
+                    <p>{newDiscount}%</p>
                   </div>
                 )}
               </div>

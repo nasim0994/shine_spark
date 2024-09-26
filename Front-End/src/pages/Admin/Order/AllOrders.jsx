@@ -10,14 +10,13 @@ import {
   useStatusUpdateMutation,
 } from "../../../Redux/order/orderApi";
 import Spinner from "../../../components/Spinner/Spinner";
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import Pagination from "../../../components/Pagination/Pagination";
 
 export default function AllOrders() {
   const query = {};
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
-  query["page"] = page;
-  query["limit"] = limit;
+  const [currentPage, setCurrentPage] = useState(1);
+  query["page"] = currentPage;
+  query["limit"] = 10;
 
   const { data, isLoading, isError, error } = useGetAllOrdersQuery({
     ...query,
@@ -65,13 +64,6 @@ export default function AllOrders() {
     }
   };
 
-  const handlePageChange = (pageNumber) => {
-    if (pageNumber < 1) return;
-    if (data?.meta?.total && pageNumber > data?.meta.total / limit) return;
-
-    setPage(pageNumber);
-  };
-
   let content = null;
   if (isLoading) {
     return (content = <Spinner />);
@@ -80,60 +72,88 @@ export default function AllOrders() {
     content = <p>{error.error}</p>;
   }
   if (!isLoading && !isError && data?.data?.length > 0) {
-    content = data?.data?.map((order) => (
+    content = data?.data?.map((order, i) => (
       <tr key={order?._id}>
-        <td>{order?._id}</td>
+        <td>{i + 1}</td>
+        <td>
+          <p>#{order?._id}</p>
+          <p>INV-{order?.invoiceNumber}</p>
+        </td>
+        <td>
+          <p>Name: {order?.shippingInfo?.name}</p>
+          <div className="text-neutral-content text-sm">
+            <p>Phone: {order?.shippingInfo?.phone}</p>
+            <p>city: {order?.shippingInfo?.address}</p>
+          </div>
+        </td>
         <td>{order?.products?.length}</td>
+        <td>{order?.totalPrice}TK</td>
         <td>
           {statusLoading ? (
-            <p>Loading...</p>
+            "Loading..."
           ) : (
-            <button
-              onClick={() => statusHandler(order?._id, order?.status)}
-              disabled={order?.status === "delivered"}
-              className={`border text-xs ${
-                order?.status === "pending"
-                  ? "border-yellow-500"
-                  : order?.status === "shipped"
-                  ? "border-green-500"
-                  : "border-red-500"
-              } rounded px-2 py-1`}
+            <select
+              value={order?.status}
+              onChange={async (e) => {
+                const res = await statusUpdate({
+                  id: order?._id,
+                  status: e.target.value,
+                });
+                if (res?.data?.success) {
+                  toast.success("Status updated");
+                } else {
+                  toast.error("Something went wrong");
+                }
+              }}
+              className={`cursor-pointer rounded border bg-transparent p-1 text-xs ${
+                order?.status == "pending" &&
+                "border-yellow-500 text-yellow-500"
+              } ${
+                order?.status == "shipped" && "border-blue-400 text-blue-400"
+              } ${
+                order?.status == "delivered" &&
+                "border-green-400 text-green-400"
+              } ${
+                order?.status == "cancelled" && "border-red-400 text-red-400"
+              }`}
             >
-              {order?.status === "pending" ? (
-                <span className="text-yellow-500">{order?.status}</span>
-              ) : order?.status === "shipped" ? (
-                <span className="text-green-500">{order?.status}</span>
-              ) : (
-                <span className="text-red-500">{order?.status}</span>
-              )}
-            </button>
+              <option value="pending">Pending</option>
+              <option value="shipped">Shipped</option>
+              <option value="delivered">Delivered</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
           )}
         </td>
-        <td className="flex gap-3">
-          <Link
-            to={`/admin/order/${order?._id}`}
-            className=" hover:text-blue-700"
-          >
-            <GrView />
-          </Link>
-          <button
-            onClick={() => deleteOrderHandler(order?._id)}
-            className="hover:text-red-700"
-          >
-            <AiOutlineDelete />
-          </button>
+        <td>
+          <div className="flex gap-3">
+            <Link
+              to={`/admin/order/${order?._id}`}
+              className="hover:text-blue-700"
+            >
+              <GrView />
+            </Link>
+            <button
+              onClick={() => deleteOrderHandler(order?._id)}
+              className="hover:text-red-700"
+            >
+              <AiOutlineDelete />
+            </button>
+          </div>
         </td>
       </tr>
     ));
   }
 
   return (
-    <div className="relative overflow-x-auto shadow-lg">
+    <div className="relative flex flex-col justify-between overflow-x-auto pb-4 shadow-lg">
       <table className="dashboard_table">
         <thead>
           <tr>
-            <th>Order Id</th>
+            <th>SL</th>
+            <th>Order</th>
+            <th>Customer</th>
             <th>Total Products</th>
+            <th>Total Price</th>
             <th>Status</th>
             <th>Action</th>
           </tr>
@@ -141,28 +161,12 @@ export default function AllOrders() {
         <tbody>{content}</tbody>
       </table>
 
-      {data?.data?.length > 0 && (
-        <div className="flex items-center justify-center mt-16 mb-5">
-          <div className="flex items-center space-x-1 border border-gray-300 rounded overflow-hidden text-sm">
-            <button
-              className="px-4 py-2 text-gray-600 hover:text-gray-800 focus:outline-none"
-              onClick={() => handlePageChange(page - 1)}
-              disabled={page === 1}
-            >
-              <FaArrowLeft />
-            </button>
-            <button className="px-4 py-2 bg-gray-700 text-gray-100 font-medium focus:outline-none">
-              Page {page}
-            </button>
-            <button
-              className="px-4 py-2 text-gray-600 hover:text-gray-800 focus:outline-none"
-              onClick={() => handlePageChange(page + 1)}
-              disabled={data?.meta?.total && page === data?.meta.total / limit}
-            >
-              <FaArrowRight />
-            </button>
-          </div>
-        </div>
+      {data?.meta?.pages > 1 && (
+        <Pagination
+          pages={data?.meta?.pages}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+        />
       )}
     </div>
   );

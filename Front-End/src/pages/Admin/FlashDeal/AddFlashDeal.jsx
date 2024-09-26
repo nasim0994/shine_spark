@@ -3,12 +3,15 @@ import { useGetAllProductsQuery } from "../../../Redux/product/productApi";
 import { useState } from "react";
 import { useAddFlashDealMutation } from "../../../Redux/flashDeal/flashDeal";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 export default function AddFlashDeal() {
+  const navigate = useNavigate();
   const [selectedProducts, setSelectedProducts] = useState([]);
-  const { data: productData } = useGetAllProductsQuery();
-  const products = productData?.data;
   const [flashProducts, setFlashProducts] = useState([]);
+
+  const { data: productData } = useGetAllProductsQuery({});
+  const products = productData?.data;
 
   const [addFlashDeal, { isLoading }] = useAddFlashDealMutation();
 
@@ -53,35 +56,36 @@ export default function AddFlashDeal() {
       setSelectedProducts([]);
       form.reset();
       setFlashProducts([]);
+      navigate("/admin/flash-deal");
     } else {
       Swal.fire("", "Something went wrong", "error");
     }
   };
 
   return (
-    <section className="bg-base-100 rounded p-3 text-neutral">
+    <section className="rounded bg-base-100 p-3 text-neutral">
       <p>Flash Deal Information</p>
 
       <form
         onSubmit={handleAddFlashDeal}
-        className="mt-6 sm:w-2/3 mx-auto flex flex-col gap-4 text-sm"
+        className="mx-auto mt-6 flex flex-col gap-4 text-sm sm:w-2/3"
       >
         <div className="flex flex-col gap-1">
           <p>Title</p>
           <input
             type="text"
-            className="border rounded outline-none px-4 py-1"
+            className="rounded border px-4 py-1 outline-none"
             name="title"
             required
           />
         </div>
 
-        <div className="grid sm:grid-cols-2 gap-4">
+        <div className="grid gap-4 sm:grid-cols-2">
           <div className="flex flex-col gap-1">
             <p>Start Date</p>
             <input
               type="date"
-              className="border rounded outline-none px-4 py-1"
+              className="rounded border px-4 py-1 outline-none"
               name="startDate"
               required
             />
@@ -91,7 +95,7 @@ export default function AddFlashDeal() {
             <p>End Date</p>
             <input
               type="date"
-              className="border rounded outline-none px-4 py-1"
+              className="rounded border px-4 py-1 outline-none"
               name="endDate"
               required
             />
@@ -117,12 +121,12 @@ export default function AddFlashDeal() {
               <table className="dashboard_table">
                 <thead>
                   <tr>
-                    <th className="border-r border-b bg-gray-100">Product</th>
-                    <th className="border-r border-b bg-gray-100">
+                    <th className="border-b border-r bg-gray-100">Product</th>
+                    <th className="border-b border-r bg-gray-100">
                       Base Price
                     </th>
-                    <th className="bg-gray-100 border-r border-b">Discount</th>
-                    <th className="bg-gray-100 border-b">Discount Type</th>
+                    <th className="border-b border-r bg-gray-100">Discount</th>
+                    <th className="border-b bg-gray-100">Discount Type</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -135,7 +139,7 @@ export default function AddFlashDeal() {
                               import.meta.env.VITE_BACKEND_URL
                             }/products/${product?.images[0]}`}
                             alt=""
-                            className="w-8 h-8 rounded"
+                            className="h-8 w-8 rounded"
                           />
                           <p>{product?.title}</p>
                         </div>
@@ -151,12 +155,12 @@ export default function AddFlashDeal() {
                         <input
                           type="number"
                           name=""
-                          className="w-28 border rounded outline-none px-4 py-1"
+                          className="w-28 rounded border px-4 py-1 outline-none"
                           onChange={(e) =>
                             handleInputChange(
                               productIndex,
                               "discount",
-                              e.target.value
+                              e.target.value,
                             )
                           }
                           required
@@ -164,12 +168,12 @@ export default function AddFlashDeal() {
                       </td>
                       <td>
                         <select
-                          className="border rounded outline-none px-4 py-1"
+                          className="rounded border px-4 py-1 outline-none"
                           onChange={(e) =>
                             handleInputChange(
                               productIndex,
                               "discountType",
-                              e.target.value
+                              e.target.value,
                             )
                           }
                           required

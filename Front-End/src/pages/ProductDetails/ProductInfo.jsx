@@ -19,11 +19,13 @@ export default function ProductInfo({ product }) {
   const carts = useSelector((state) => state.cart.carts);
   const wishlists = useSelector((state) => state.wishlist.wishlists);
 
+  const queryParams = new URLSearchParams(location.search);
+  const discount = queryParams.get("discount");
+
   const {
     slug,
     title,
     images,
-    discount,
     brand,
     category,
     subCategory,

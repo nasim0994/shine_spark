@@ -102,6 +102,7 @@ import EditFlashDeal from "../pages/Admin/FlashDeal/EditFlashDeal";
 
 //--------------SEO
 import SEOSetting from "../pages/Admin/SEOSetting/SEOSetting";
+import OrderSuccess from "../pages/OrderSuccess/OrderSuccess";
 
 export const routes = createBrowserRouter([
   {
@@ -150,12 +151,9 @@ export const routes = createBrowserRouter([
       },
       {
         path: "/checkout",
-        element: (
-          <PrivateRoute>
-            <Checkout />
-          </PrivateRoute>
-        ),
+        element: <Checkout />,
       },
+
       {
         path: "/payment-result/:transactionId",
         element: (
@@ -165,6 +163,10 @@ export const routes = createBrowserRouter([
         ),
       },
     ],
+  },
+  {
+    path: "/order/success",
+    element: <OrderSuccess />,
   },
   {
     path: "/account",

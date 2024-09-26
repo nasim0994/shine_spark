@@ -3,158 +3,48 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
-import { locations } from "../../Data/location";
 import { clearCart } from "../../Redux/cart/cartSlice";
-import {
-  useAddOrderMutation,
-  useInitSslPaymentMutation,
-} from "../../Redux/order/orderApi";
+import { useAddOrderMutation } from "../../Redux/order/orderApi";
 import ButtonSpinner from "../../components/ButtonSpinner/ButtonSpinner";
 import { useApplyCouponMutation } from "../../Redux/coupon/couponApi";
+import { useGetShippingConfigQuery } from "../../Redux/shippingConfigApi";
 
 export default function Checkout() {
-  window.scroll(0, 0);
+  useEffect(() => {
+    window.scroll(0, 0);
+  }, []);
+
   const navigate = useNavigate();
   const carts = useSelector((state) => state.cart.carts);
   const dispatch = useDispatch();
 
+  const { data } = useGetShippingConfigQuery();
+  const shippingConfig = data?.data[0];
+
   const [addOrder, { isLoading }] = useAddOrderMutation();
-  const [initSslPayment, { isLoading: sslPaymentLoading }] =
-    useInitSslPaymentMutation();
 
   const [applyCoupon, { isLoading: couponLoading }] = useApplyCouponMutation();
 
   const { loggedUser } = useSelector((state) => state.user);
-  const [cityDropdown, setCityDropdown] = useState(false);
-  const [city, setCity] = useState("");
-  const [areas, setAreas] = useState([]);
-  const [searchCity, setSearchCity] = useState("");
 
-  const [areaDropdown, setAreaDropdown] = useState(false);
-  const [area, setArea] = useState("");
-  const [searchArea, setSearchArea] = useState("");
-
+  const [shipping, setShipping] = useState(0);
   const [couponCode, setCouponCode] = useState("");
   const [discount, setDiscount] = useState(0);
   const [couponError, setCouponError] = useState("");
 
   const [paymentMethod, setPaymentMethod] = useState("cod");
 
-  const handelSetCity = (selectedCity) => {
-    setCity(selectedCity.name);
-    setAreas(selectedCity.cities);
-    setCityDropdown(false);
-    setSearchCity("");
-    setArea("");
-  };
-
-  const handelSetArea = (selectedArea) => {
-    setArea(selectedArea.name);
-    setAreaDropdown(false);
-    setSearchArea("");
-  };
-
-  // Remove City Dropdown click other side
-  useEffect(() => {
-    window.addEventListener("click", (e) => {
-      if (!e.target.closest(".city")) {
-        setCityDropdown(false);
-      }
-    });
-  }, []);
-
-  // Remove area Dropdown click other side
-  useEffect(() => {
-    window.addEventListener("click", (e) => {
-      if (!e.target.closest(".area")) {
-        setAreaDropdown(false);
-      }
-    });
-  }, []);
-
   // Subtotal - discount amount
   const subTotal = carts?.reduce(
     (price, item) =>
       price +
       item.quantity * parseInt(item.price - (item.price * item.discount) / 100),
-    0
+    0,
   );
-
-  let shipping = 0;
-
-  if (city !== "" && city === "Dhaka City") {
-    shipping = 70;
-  } else if (city == "Dhaka Out City") {
-    shipping = 100;
-  } else if (city !== "Dhaka City" && city !== "Dhaka Out City") {
-    shipping = 150;
-  }
 
   const tax = 0;
   const discountTk = ((subTotal + tax + parseInt(shipping)) * discount) / 100;
   const grandTotal = subTotal + tax + parseInt(shipping) - discountTk;
-
-  const handelPlaceOrder = async (e) => {
-    e.preventDefault();
-
-    const form = e.target;
-
-    const street = form.street.value;
-    if (!city) {
-      return alert("Please Provide Your City name");
-    }
-    if (!area) {
-      return alert("Please Provide Your area name");
-    }
-
-    const products = [];
-    carts.map((product) =>
-      products.push({
-        productId: product._id,
-        quantity: product.quantity,
-        size: product.size,
-        color: product.color,
-        variant: product?.variant,
-      })
-    );
-
-    const order = {
-      userId: loggedUser?.data?._id,
-      shippingInfo: {
-        city,
-        area,
-        street,
-      },
-      paymentMethod,
-      products,
-      totalPrice: grandTotal,
-    };
-
-    if (paymentMethod === "cod") {
-      const res = await addOrder(order);
-      if (res?.data?.success) {
-        Swal.fire("", "order success", "success");
-        dispatch(clearCart());
-        form.reset();
-        setCity("");
-        setArea("");
-        navigate("/shops");
-      } else {
-        toast.error("Something Wrong");
-        console.log(res);
-      }
-    } else if (paymentMethod === "ssl") {
-      const res = await initSslPayment(order);
-      if (res?.data?.success) {
-        dispatch(clearCart());
-        form.reset();
-        setCity("");
-        setArea("");
-        window.location.href = res?.data?.data;
-        // window.location.replace(res?.data?.data);
-      }
-    }
-  };
 
   const handelDiscount = async () => {
     const couponInfo = {
@@ -175,163 +65,160 @@ export default function Checkout() {
     }
   };
 
+  const handelPlaceOrder = async (e) => {
+    e.preventDefault();
+
+    const form = e.target;
+
+    const name = form.name.value;
+    const number = form.number.value;
+    const email = form.email.value;
+
+    const city = form.city.value;
+    const area = form.area.value;
+    const street = form.street.value;
+
+    if (shipping === 0) {
+      return Swal.fire("", "Please select shipping area", "warning");
+    }
+
+    const products = [];
+    carts.map((product) =>
+      products.push({
+        productId: product._id,
+        quantity: product.quantity,
+        size: product.size,
+        color: product.color,
+        variant: product?.variant,
+        discount: product?.discount,
+      }),
+    );
+
+    const order = {
+      userId: loggedUser?.data?._id,
+      shippingInfo: {
+        name,
+        phone: number,
+        email,
+        city,
+        area,
+        street,
+      },
+      shippingCharge: shipping,
+      paymentMethod,
+      products,
+      totalPrice: grandTotal,
+    };
+
+    if (paymentMethod === "cod") {
+      const res = await addOrder(order);
+      if (res?.data?.success) {
+        Swal.fire("", "order success", "success");
+        dispatch(clearCart());
+        form.reset();
+        navigate(
+          `/order/success?orderId=${res?.data?.data?._id}&user=${number}`,
+        );
+      } else {
+        toast.error("Something Wrong");
+        console.log(res);
+      }
+    }
+  };
+
   return (
     <div className="py-8">
       <div className="container">
         <form
           onSubmit={handelPlaceOrder}
-          className="grid lg:grid-cols-3 gap-10 mt-6"
+          className="mt-6 grid gap-10 lg:grid-cols-3"
         >
           {/* Shipping Details */}
           <div className="lg:col-span-2">
             <div>
-              <h3 className="text-lg font-semibold mb-4 uppercase">
+              <h3 className="mb-4 text-lg font-semibold uppercase">
                 Shipping Details
               </h3>
 
-              <div className="grid md:grid-cols-2 gap-4 text-sm">
+              <div className="grid gap-4 text-sm md:grid-cols-2">
                 <div>
-                  <h3>Full name</h3>
+                  <h3>Full Name *</h3>
                   <input
                     type="text"
                     name="name"
-                    className="border-2 w-full p-2 mt-2 outline-none rounded"
+                    className="mt-2 w-full rounded border-2 p-2 outline-none"
                     required
                     defaultValue={loggedUser?.data?.name}
                   />
                 </div>
                 <div>
-                  <h3>Phone</h3>
+                  <h3>Phone *</h3>
                   <input
                     type="number"
                     name="number"
-                    className="border-2 w-full p-2 mt-2 outline-none rounded"
+                    className="mt-2 w-full rounded border-2 p-2 outline-none"
                     required
                     defaultValue={loggedUser?.data?.phone}
                   />
                 </div>
               </div>
 
-              <div className="text-sm mt-2">
+              <div className="mt-2 text-sm">
                 <div>
-                  <h3>Email address</h3>
+                  <h3>Email Address</h3>
                   <input
                     type="email"
                     name="email"
-                    className="border-2 w-full p-2 mt-2 outline-none rounded"
+                    className="mt-2 w-full rounded border-2 p-2 outline-none"
                     defaultValue={loggedUser?.data?.email}
-                    disabled
-                    required
                   />
                 </div>
               </div>
 
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div className="relative city">
-                  <div className="text-sm mt-2">
-                    <h3>City</h3>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="city relative">
+                  <div className="mt-2 text-sm">
+                    <h3>City *</h3>
 
-                    <div
-                      onClick={() => setCityDropdown(!cityDropdown)}
-                      className="p-2 h-9 border rounded mt-2 cursor-pointer"
-                    >
-                      {city}
-                    </div>
+                    <input
+                      type="text"
+                      className="mt-2 w-full rounded border-2 p-2 outline-none"
+                      name="city"
+                      required
+                    />
                   </div>
-
-                  {cityDropdown && (
-                    <div className="absolute bg-base-100 border rounded top-full left-0 p-2 w-full max-h-60 overflow-y-auto">
-                      <div>
-                        <input
-                          onChange={(e) => setSearchCity(e.target.value)}
-                          type="text"
-                          className="px-2 py-1 rounded w-full border outline-none placeholder:font-light"
-                          placeholder="search city"
-                        />
-                      </div>
-                      <ul>
-                        {locations
-                          .filter((city) =>
-                            city.name
-                              .toLowerCase()
-                              .includes(searchCity.toLowerCase())
-                          )
-                          .map((city, i) => (
-                            <li
-                              key={i}
-                              onClick={() => handelSetCity(city)}
-                              className="p-1 hover:bg-gray-200 duration-200 cursor-pointer"
-                            >
-                              {city.name}
-                            </li>
-                          ))}
-                      </ul>
-                    </div>
-                  )}
                 </div>
 
-                <div className="relative area">
-                  <div className="text-sm mt-2">
+                <div className="area relative">
+                  <div className="mt-2 text-sm">
                     <h3>Area</h3>
-                    <div
-                      onClick={() => setAreaDropdown(!areaDropdown)}
-                      className="p-2 h-9 border rounded mt-2 cursor-pointer"
-                    >
-                      {area}
-                    </div>
+                    <input
+                      type="text"
+                      className="mt-2 w-full rounded border-2 p-2 outline-none"
+                      name="area"
+                    />
                   </div>
-
-                  {areaDropdown && (
-                    <div className="absolute bg-base-100 border rounded top-full left-0 p-2 w-full max-h-60 overflow-y-auto">
-                      <div>
-                        <input
-                          onChange={(e) => setSearchArea(e.target.value)}
-                          type="text"
-                          className="px-2 py-1 rounded w-full border outline-none placeholder:font-light"
-                          placeholder="search area"
-                        />
-                      </div>
-                      <ul>
-                        {areas
-                          .filter((area) =>
-                            area.name
-                              .toLowerCase()
-                              .includes(searchArea.toLowerCase())
-                          )
-                          .map((area, i) => (
-                            <li
-                              key={i}
-                              onClick={() => handelSetArea(area)}
-                              className="p-1 hover:bg-gray-200 duration-200 cursor-pointer"
-                            >
-                              {area.name}
-                            </li>
-                          ))}
-                      </ul>
-                    </div>
-                  )}
                 </div>
               </div>
 
-              <div className="text-sm mt-2">
-                <h3>Street address</h3>
+              <div className="mt-2 text-sm">
+                <h3>Street address *</h3>
                 <textarea
                   name="street"
                   rows="3"
                   placeholder="House number and street name"
-                  className="border-2 w-full p-2 mt-2 outline-none rounded"
+                  className="mt-2 w-full rounded border-2 p-2 outline-none"
                   required
                 ></textarea>
               </div>
 
-              <div className="text-sm mt-2">
+              <div className="mt-2 text-sm">
                 <h3>Order Note</h3>
                 <textarea
                   name="note"
                   rows="4"
                   placeholder="House number and street name"
-                  className="border-2 w-full p-2 mt-2 outline-none rounded"
-                  required
+                  className="mt-2 w-full rounded border-2 p-2 outline-none"
                 ></textarea>
               </div>
             </div>
@@ -339,8 +226,8 @@ export default function Checkout() {
 
           {/* Order details */}
           <div>
-            <div className="checkout-output bg-gray-50 relative p-6">
-              <div className="border-b mb-4 pb-4">
+            <div className="checkout-output relative bg-gray-50 p-6">
+              <div className="mb-4 border-b pb-4">
                 <h3 className="text-[17px] font-medium text-neutral">
                   Discounts
                 </h3>
@@ -352,7 +239,7 @@ export default function Checkout() {
                     <input
                       onChange={(e) => setCouponCode(e.target.value)}
                       type="text"
-                      className="text-sm border rounded outline-none w-full px-3 py-[7px]"
+                      className="w-full rounded border px-3 py-[7px] text-sm outline-none"
                       placeholder="Enter Code"
                       value={couponCode}
                     />
@@ -365,21 +252,21 @@ export default function Checkout() {
                       {couponLoading ? "Loading..." : "Apply"}
                     </div>
                   </div>
-                  <p className="text-red-500 text-xs">{couponError}</p>
+                  <p className="text-xs text-red-500">{couponError}</p>
                 </div>
               </div>
 
-              <div className="border-b mb-4 pb-4">
+              <div className="mb-4 border-b pb-4">
                 <h3 className="font-medium text-neutral">Payment Method</h3>
 
-                <ul className="text-sm text-neutral-content flex flex-col gap-1 pl-2 mt-2">
+                <ul className="text-neutral-content mt-2 flex flex-col gap-1 pl-2 text-sm">
                   <li className="flex items-center justify-between">
                     <div className="flex items-center">
                       <input
                         id="cod"
                         type="radio"
                         name="payment_method"
-                        className="w-3 h-3 cursor-pointer"
+                        className="h-3 w-3 cursor-pointer"
                         checked={paymentMethod === "cod" && true}
                         onClick={() => setPaymentMethod("cod")}
                       />
@@ -389,86 +276,12 @@ export default function Checkout() {
                     </div>
 
                     <div>
-                      <img src="" alt="" className="w-4 h-4" />
-                    </div>
-                  </li>
-
-                  <li className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <input
-                        id="ssl"
-                        type="radio"
-                        name="payment_method"
-                        className="w-3 h-3 cursor-pointer"
-                        checked={paymentMethod === "ssl" && true}
-                        onClick={() => setPaymentMethod("ssl")}
-                      />
-                      <label htmlFor="ssl" className="ms-2 cursor-pointer">
-                        SSL
-                      </label>
-                    </div>
-
-                    <div>
-                      <img src="" alt="" className="w-4 h-4" />
-                    </div>
-                  </li>
-
-                  <li className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <input
-                        id="amar_pay"
-                        type="radio"
-                        name="payment_method"
-                        className="w-3 h-3 cursor-pointer"
-                        checked={paymentMethod === "amar_pay" && true}
-                        onClick={() => setPaymentMethod("amar_pay")}
-                      />
-                      <label htmlFor="amar_pay" className="ms-2 cursor-pointer">
-                        Amar pay
-                      </label>
-                    </div>
-
-                    <div>
-                      <img src="" alt="" className="w-4 h-4" />
+                      <img src="" alt="" className="h-4 w-4" />
                     </div>
                   </li>
                 </ul>
               </div>
               <div>
-                {/* <div className="flex justify-between border-b-2 pb-3 text-title font-semibold">
-                  <h3>PRODUCT</h3>
-                  <p>PRICE</p>
-                </div> */}
-
-                {/* Product lists */}
-                {/* <ul>
-                  {carts?.map((product, i) => (
-                    <li
-                      key={i}
-                      className="flex justify-between border-b py-1.5 text-sm text-paragraph"
-                    >
-                      <div>
-                        <h3>{product?.title}</h3>
-                        <small className="text-neutral-content">
-                          {product?.size && product?.size}{" "}
-                          {product?.color && product?.color} ×{" "}
-                          {product?.quantity}
-                        </small>
-                      </div>
-                      <p>
-                        {parseInt(
-                          product?.discount >= 1
-                            ? parseInt(
-                                product?.price -
-                                  (product?.price * product?.discount) / 100
-                              )
-                            : product?.price
-                        ) * parseInt(product?.quantity)}
-                      </p>
-                    </li>
-                  ))}
-                </ul> */}
-
                 <h3 className="tetx-xl font-medium text-neutral">
                   Order Summary
                 </h3>
@@ -480,31 +293,44 @@ export default function Checkout() {
                   </p>
                 </div>
 
-                <div className="flex justify-between items-center border-b py-1.5 text-sm">
-                  <h3>
-                    Shipping{" "}
-                    <small>
-                      {city !== "" &&
-                        (city === "Dhaka City"
-                          ? "(inside Dhaka)"
-                          : city === "Dhaka Out City"
-                          ? "(Dhaka Out City)"
-                          : "(outside Dhaka)")}
-                    </small>
-                  </h3>
+                <div className="flex items-center justify-between border-b py-1.5 text-sm">
+                  <h3>Shipping Area</h3>
+                  <div className="text-end">
+                    <select
+                      className="rounded border p-1 outline-none"
+                      required
+                      onChange={(e) => setShipping(parseInt(e.target.value))}
+                    >
+                      <option value="0">Select Shipping Area</option>
+                      <option value={shippingConfig?.dhakaCity?.charge}>
+                        Inside Dhaka - {shippingConfig?.dhakaCity?.charge}tk
+                      </option>
+                      <option value={shippingConfig?.dhakaOutCity?.charge}>
+                        Outside Dhaka City -{" "}
+                        {shippingConfig?.dhakaOutCity?.charge}tk
+                      </option>
+                      <option value={shippingConfig?.outsideDhaka?.charge}>
+                        Outside Dhaka - {shippingConfig?.outsideDhaka?.charge}tk
+                      </option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between border-b py-1.5 text-sm">
+                  <h3>Shipping Charge</h3>
                   <div className="text-end">
                     ৳<span>{shipping}.00</span>
                   </div>
                 </div>
 
-                <div className="flex justify-between items-center border-b py-1.5 text-sm">
+                <div className="flex items-center justify-between border-b py-1.5 text-sm">
                   <h3>Tax</h3>
                   <div className="text-end">
                     ৳<span>{tax}.00</span>
                   </div>
                 </div>
 
-                <div className="flex justify-between items-center border-b py-1.5 text-sm text-red-500">
+                <div className="flex items-center justify-between border-b py-1.5 text-sm text-red-500">
                   <h3>Discount</h3>
                   <div className="text-end">
                     - ৳<span>{discountTk}.00</span>
@@ -512,7 +338,7 @@ export default function Checkout() {
                 </div>
 
                 {/* <!-- Total --> */}
-                <div className="flex justify-between border-b py-2 font-medium text-lg">
+                <div className="flex justify-between border-b py-2 text-lg font-medium">
                   <h3 className="text-title">Total</h3>
                   <p className="text-primary">
                     ৳ <span>{grandTotal}.00 </span>
@@ -522,9 +348,9 @@ export default function Checkout() {
 
               <button
                 type="submit"
-                className="w-full bg-primary text-base-100 py-2 rounded shadow flex justify-center"
+                className="flex w-full justify-center rounded bg-primary py-2 text-base-100 shadow"
               >
-                {isLoading || sslPaymentLoading ? (
+                {isLoading ? (
                   <ButtonSpinner />
                 ) : paymentMethod === "cod" ? (
                   "PLACE ORDER"

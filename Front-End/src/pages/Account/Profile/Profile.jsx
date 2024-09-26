@@ -18,7 +18,7 @@ export default function Profile() {
   if (!user) {
     return <Spinner />;
   }
-  const { name, phone, email, city, district, street } = user;
+  const { name, phone, email, city, area, street } = user;
 
   const handleUploadImage = async () => {
     if (images?.length <= 0) {
@@ -215,7 +215,7 @@ export default function Profile() {
             <div>
               <input
                 className="w-full border outline-none rounded px-3 py-1.5 mb-4"
-                defaultValue={district}
+                defaultValue={area}
                 disabled
               />
             </div>

@@ -1,11 +1,8 @@
 import { useEffect, useState } from "react";
-import {
-  useAddBusinessInfoMutation,
-  useGetBusinessInfoQuery,
-  useUpdateBusinessInfoMutation,
-} from "../../../Redux/businessInfoApi/businessInfoApi";
-import Swal from "sweetalert2";
-import { BsX } from "react-icons/bs";
+import { toast } from "react-toastify";
+import TagsInput from "react-tagsinput";
+import "react-tagsinput/react-tagsinput.css";
+
 import {
   useAddSEOMutation,
   useGetSEOQuery,
@@ -13,161 +10,241 @@ import {
 } from "../../../Redux/seoApi";
 
 export default function SEOSetting() {
-  const { data, isLoading } = useGetSEOQuery();
-  const seo = data?.data[0];
+  const [keywords, setKeywords] = useState([]);
+  const { data } = useGetSEOQuery();
+  const seo = data?.data;
   const id = seo?._id;
 
-  const [addSEO, { isLoading: addIsLoading }] = useAddSEOMutation();
-  const [updateSEO, { isLoading: upIsLoading }] = useUpdateSEOMutation();
-
-  const [keywords, setKeywords] = useState(seo?.keywords || []);
-  const [keyword, setKeyword] = useState("");
-
   useEffect(() => {
-    if (!isLoading) {
-      setKeywords(seo?.keywords);
+    if (seo) {
+      setKeywords(seo?.basic?.keywords);
     }
-  }, [seo?.keywords, isLoading]);
+  }, [seo]);
 
-  const handleAddKeyword = () => {
-    setKeywords([...keywords, keyword]);
-    setKeyword("");
-  };
+  const [addSEO, { isLoading }] = useAddSEOMutation();
+  const [updateSEO, { isLoading: updateLoading }] = useUpdateSEOMutation();
 
-  const handleRemoveKeyword = (index) => {
-    const newKeywords = [...keywords];
-    newKeywords.splice(index, 1);
-    setKeywords(newKeywords);
-  };
-
-  const handleSEOSetting = async (e) => {
+  const handleSeo = async (e) => {
     e.preventDefault();
-    const form = e.target;
-    const author = form.author.value;
-    const sitemapLink = form.sitemapLink.value;
-    const metaContent = form.metaContent.value;
-    const description = form.description.value;
 
+    if (keywords?.length < 1) {
+      toast.warning("Keywords is required");
+      return;
+    }
+
+    const formData = new FormData(e.target);
     const data = {
-      keywords,
-      author,
-      sitemapLink,
-      metaContent,
-      description,
+      basic: {
+        title: formData.get("title"),
+        keywords: keywords,
+        description: formData.get("description"),
+        author: formData.get("author"),
+        owner: formData.get("owner"),
+        designer: formData.get("designer"),
+        subject: formData.get("subject"),
+        copyright: formData.get("copyright"),
+        url: formData.get("url"),
+      },
+      og: {
+        ogtitle: formData.get("ogtitle"),
+        ogtype: formData.get("ogtype"),
+        ogurl: formData.get("ogurl"),
+        ogsitename: formData.get("ogsitename"),
+        ogdescription: formData.get("ogdescription"),
+        ogimage: formData.get("ogimage"),
+      },
+      custom: {
+        facebook_domain_verification: formData.get(
+          "facebook_domain_verification",
+        ),
+        google_site_verificatio: formData.get("google_site_verificatio"),
+        google_tag_manager: formData.get("google_tag_manager"),
+      },
     };
 
     if (id) {
-      const res = await updateSEO({ id, data });
+      const res = await updateSEO({ data, id });
       if (res?.data?.success) {
-        Swal.fire("", "SEO Setting Update Success", "success");
-        setImages([]);
+        toast.success("SEO updated successfully");
       } else {
-        Swal.fire("", "Somethin wrong, please try again letter", "error");
+        toast.error("SEO update failed");
+        console.log(res);
       }
     } else {
       const res = await addSEO(data);
       if (res?.data?.success) {
-        Swal.fire("", "SEO Setting Add Success", "success");
-        setImages([]);
+        toast.success("SEO added successfully");
       } else {
-        Swal.fire("", "Somethin wrong, please try again letter", "error");
+        toast.error("SEO add failed");
+        console.log(res);
       }
     }
   };
 
   return (
-    <section className="bg-base-100 rounded shadow md:w-3/4 mx-auto">
-      <div className="p-4 border-b">
-        <h3 className="font-medium text-neutral">SEO Setting</h3>
+    <section className="rounded bg-base-100 p-4 shadow">
+      <div className="container">
+        <h3 className="text-center">General SEO</h3>
       </div>
 
-      <form
-        onSubmit={handleSEOSetting}
-        className="p-4 text-neutral-content form_group"
-      >
-        {/*  */}
-        <div className="flex flex-col gap-3 text-sm">
-          <div>
-            <p className="mb-1">Keywords</p>
-            <div className="flex items-center">
+      <form onSubmit={handleSeo} className="form_group mt-4 text-sm">
+        <div>
+          <p className="mb-2">Basic Meta Tags</p>
+          <div className="grid gap-3 rounded border p-3 sm:grid-cols-2">
+            <div>
+              <p className="mb-1">Meta Title *</p>
               <input
                 type="text"
-                name="size"
-                placeholder="Press Enter and add Keyword"
-                value={keyword}
-                onChange={(e) => setKeyword(e.target.value)}
+                name="title"
+                required
+                defaultValue={seo?.basic?.title}
               />
-              <div
-                onClick={handleAddKeyword}
-                className="w-10 h-[34px] rounded bg-primary text-base-100 flex justify-center items-center cursor-pointer mt-px"
-              >
-                +
-              </div>
             </div>
-            <div className="mt-2">
-              {keywords?.map((keyword, index) => (
-                <span
-                  key={index}
-                  className="mr-2 relative bg-gray-100 py-1 px-3 rounded whitespace-nowrap mb-2"
-                >
-                  {keyword}
-                  <span
-                    onClick={() => handleRemoveKeyword(index)}
-                    className="absolute -top-1 -right-1 text-red-500 text-lg cursor-pointer"
-                  >
-                    <BsX />
-                  </span>
-                </span>
-              ))}
+            <div>
+              <p className="mb-1">keywords *</p>
+              <TagsInput
+                value={keywords}
+                onChange={(tag) => setKeywords(tag)}
+              />
             </div>
-          </div>
-
-          <div>
-            <p className="mb-1">Author</p>
-            <input type="text" name="author" defaultValue={seo?.author} />
-          </div>
-
-          <div>
-            <p className="mb-1">Sitemap Link</p>
-            <input
-              type="text"
-              name="sitemapLink"
-              defaultValue={seo?.sitemapLink}
-            />
-          </div>
-
-          <div>
-            <p className="mb-1">Meta Content</p>
-            <input
-              type="text"
-              name="metaContent"
-              defaultValue={seo?.metaContent}
-            />
-          </div>
-
-          <div className="col-span-2">
-            <p className="mb-1">Description</p>
-            <textarea
-              name="description"
-              rows="2"
-              defaultValue={seo?.description}
-            ></textarea>
+            <div className="sm:col-span-2">
+              <p className="mb-1">Description *</p>
+              <textarea
+                name="description"
+                required
+                defaultValue={seo?.basic?.description}
+              ></textarea>
+            </div>
+            <div>
+              <p className="mb-1">Author</p>
+              <input
+                type="text"
+                name="author"
+                defaultValue={seo?.basic?.author}
+              />
+            </div>
+            <div>
+              <p className="mb-1">Owner</p>
+              <input
+                type="text"
+                name="owner"
+                defaultValue={seo?.basic?.owner}
+              />
+            </div>
+            <div>
+              <p className="mb-1">Designer</p>
+              <input
+                type="text"
+                name="designer"
+                defaultValue={seo?.basic?.designer}
+              />
+            </div>
+            <div>
+              <p className="mb-1">Subject</p>
+              <input
+                type="text"
+                name="subject"
+                defaultValue={seo?.basic?.subject}
+              />
+            </div>
+            <div>
+              <p className="mb-1">Copyright</p>
+              <input
+                type="text"
+                name="copyright"
+                defaultValue={seo?.basic?.copyright}
+              />
+            </div>
+            <div>
+              <p className="mb-1">URL</p>
+              <input type="text" name="url" defaultValue={seo?.basic?.url} />
+            </div>
           </div>
         </div>
 
-        <div className="mt-5">
-          <div className="flex gap-2">
-            <button
-              disabled={(addIsLoading || upIsLoading) && "disabled"}
-              className="primary_btn"
-            >
-              {addIsLoading || upIsLoading
-                ? "Loading..."
-                : id
-                ? "Update SEO Setting"
-                : "Add SEO Setting"}
-            </button>
+        <div className="mt-4">
+          <p className="mb-2">OpenGraph Meta Tags</p>
+          <div className="grid gap-3 rounded border p-3 sm:grid-cols-2">
+            <div>
+              <p className="mb-1">og title</p>
+              <input
+                type="text"
+                name="ogtitle"
+                defaultValue={seo?.og?.ogtitle}
+              />
+            </div>
+            <div>
+              <p className="mb-1">og:type</p>
+              <input type="text" name="ogtype" defaultValue={seo?.og?.ogtype} />
+            </div>
+            <div className="sm:col-span-2">
+              <p className="mb-1">og url</p>
+              <textarea name="ogurl" defaultValue={seo?.og?.ogurl}></textarea>
+            </div>
+            <div>
+              <p className="mb-1">og sitename</p>
+              <input
+                type="text"
+                name="ogsitename"
+                defaultValue={seo?.og?.ogsitename}
+              />
+            </div>
+            <div>
+              <p className="mb-1">og description</p>
+              <input
+                type="text"
+                name="ogdescription"
+                defaultValue={seo?.og?.ogdescription}
+              />
+            </div>
+            <div>
+              <p className="mb-1">og image url</p>
+              <input
+                type="text"
+                name="ogimage"
+                defaultValue={seo?.og?.ogimage}
+              />
+            </div>
           </div>
+        </div>
+
+        <div className="mt-4">
+          <p className="mb-2">Custom Tags</p>
+          <div className="grid gap-3 rounded border p-3 sm:grid-cols-2">
+            <div>
+              <p className="mb-1">facebook-domain-verification Id</p>
+              <input
+                type="text"
+                name="facebook_domain_verification"
+                defaultValue={seo?.custom?.facebook_domain_verification}
+              />
+            </div>
+            <div>
+              <p className="mb-1">google-site-verificatio Id</p>
+              <input
+                type="text"
+                name="google_site_verificatio"
+                defaultValue={seo?.custom?.google_site_verificatio}
+              />
+            </div>
+            <div>
+              <p className="mb-1">google tag manager Id</p>
+              <input
+                type="text"
+                name="google_tag_manager"
+                defaultValue={seo?.custom?.google_tag_manager}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-4">
+          <button
+            disabled={(isLoading || updateLoading) && "disabled"}
+            className="primary_btn"
+          >
+            {isLoading || updateLoading ? "laoding..." : "Submit"}
+          </button>
         </div>
       </form>
     </section>

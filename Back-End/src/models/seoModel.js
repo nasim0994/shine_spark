@@ -2,20 +2,15 @@ const mongoose = require("mongoose");
 
 const seoSchema = new mongoose.Schema(
   {
-    keywords: {
-      type: Array,
+    basic: {
+      type: Object,
+      require: true,
     },
-    author: {
-      type: String,
+    og: {
+      type: Object,
     },
-    sitemapLink: {
-      type: String,
-    },
-    metaContent: {
-      type: String,
-    },
-    description: {
-      type: String,
+    custom: {
+      type: Object,
     },
   },
   { timestamps: false }

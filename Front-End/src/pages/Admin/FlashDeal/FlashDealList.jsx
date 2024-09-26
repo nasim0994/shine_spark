@@ -1,40 +1,10 @@
-import { BiSolidPencil } from "react-icons/bi";
-import { MdDeleteOutline } from "react-icons/md";
 import { Link } from "react-router-dom";
 import Spinner from "../../../components/Spinner/Spinner";
-import Swal from "sweetalert2";
-import { useDeleteBrandMutation } from "../../../Redux/brand/brandApi";
-import {
-  useDeleteFlashDealMutation,
-  useGetFlashDealQuery,
-  useToggleFlashDealStatusMutation,
-} from "../../../Redux/flashDeal/flashDeal";
+import { useGetFlashDealQuery } from "../../../Redux/flashDeal/flashDeal";
+import FlashDealTable from "./FlashDealTable";
 
 export default function FlashDealList() {
   const { data, isLoading, isError, error } = useGetFlashDealQuery();
-  const [toggleFlashDealStatus] = useToggleFlashDealStatusMutation();
-  const [deleteFlasgDeal] = useDeleteFlashDealMutation();
-
-  const handleUpdateStatus = async (id) => {
-    const isConfirm = window.confirm("Are you sure update status?");
-    if (isConfirm) {
-      const res = await toggleFlashDealStatus(id);
-      console.log(res);
-    }
-  };
-
-  // Delete FlasgDeal
-  const handleDeleteFlashDeal = async (id) => {
-    const isConfirm = window.confirm("Are you sure delete this FlasgDeal");
-    if (isConfirm) {
-      const result = await deleteFlasgDeal(id);
-      if (result?.data?.success) {
-        Swal.fire("", "FlasgDeal Delete Success", "success");
-      } else {
-        Swal.fire("", "Somethin went worng", "error");
-      }
-    }
-  };
 
   let content = null;
   if (isLoading) {
@@ -46,49 +16,14 @@ export default function FlashDealList() {
   }
   if (!isLoading && !isError && data?.data?.length > 0) {
     content = data?.data?.map((flashDeal, i) => (
-      <tr key={flashDeal?._id}>
-        <td>{i + 1}</td>
-        <td>{flashDeal?.title}</td>
-        <td>{flashDeal?.flashProducts?.length}</td>
-        <td>{flashDeal?.startDate}</td>
-        <td>{flashDeal?.endDate}</td>
-        <td>
-          <label className="relative inline-flex items-center cursor-pointer">
-            <input
-              defaultChecked={flashDeal?.status}
-              type="checkbox"
-              value={flashDeal?.status}
-              className="sr-only peer"
-              onClick={() => handleUpdateStatus(flashDeal?._id)}
-            />
-            <div className="w-11 h-[23px] bg-gray-200 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[1.5px] after:start-[1px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-          </label>
-        </td>
-
-        <td>
-          <div className="flex items-center gap-2">
-            <Link
-              to={`/admin/flash-deal/edit/${flashDeal?._id}`}
-              className="hover:text-green-700 duration-200"
-            >
-              <BiSolidPencil />
-            </Link>
-            <button
-              onClick={() => handleDeleteFlashDeal(flashDeal?._id)}
-              className="hover:text-red-600 duration-200 text-lg"
-            >
-              <MdDeleteOutline />
-            </button>
-          </div>
-        </td>
-      </tr>
+      <FlashDealTable key={flashDeal?._id} flashDeal={flashDeal} i={i} />
     ));
   }
 
   return (
     <div>
-      <div className="flex justify-between items-end mb-3">
-        <h1 className="text-lg text-neutral-content">Flash Deal</h1>
+      <div className="mb-3 flex items-end justify-between">
+        <h1 className="text-neutral-content text-lg">Flash Deal</h1>
         <Link to="/admin/flash-deal/add" className="primary_btn text-sm">
           Add New Flash Deal
         </Link>

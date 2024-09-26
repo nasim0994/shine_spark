@@ -4,9 +4,8 @@ import React, { Suspense } from "react";
 import MainLayout from "../Layout/MainLayout";
 import Home from "../pages/Home/Home";
 
-import SkeletonLoader from "../components/SkeletonLoader/SkeletonLoader";
-
 import OrderSuccess from "../pages/OrderSuccess/OrderSuccess";
+import Spinner from "../components/Spinner/Spinner";
 
 // Main pages
 const Cart = React.lazy(() => import("../pages/Cart/Cart"));
@@ -203,7 +202,7 @@ export const routes = createBrowserRouter([
   {
     path: "/",
     element: (
-      <Suspense fallback={<SkeletonLoader />}>
+      <Suspense fallback={<Spinner />}>
         <MainLayout />
       </Suspense>
     ),
@@ -270,7 +269,7 @@ export const routes = createBrowserRouter([
   {
     path: "/account",
     element: (
-      <Suspense fallback={<SkeletonLoader />}>
+      <Suspense fallback={<Spinner />}>
         <PrivateRoute>
           <AccountLayout />
         </PrivateRoute>
@@ -310,7 +309,7 @@ export const routes = createBrowserRouter([
   {
     path: "/admin",
     element: (
-      <Suspense fallback={<SkeletonLoader />}>
+      <Suspense fallback={<Spinner />}>
         <AdminRoute>
           <AdminLayout />
         </AdminRoute>

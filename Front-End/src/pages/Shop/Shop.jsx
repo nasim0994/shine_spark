@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { Link, useParams } from "react-router-dom";
 import { useGetAllProductsQuery } from "../../Redux/product/productApi";
@@ -9,7 +9,13 @@ import Pagination from "../../components/Pagination/Pagination";
 import PriceRangeSlider from "../../components/PriceRange/PriceRange";
 
 export default function Shop() {
-  window.scroll(0, 0);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const queryParams = new URLSearchParams(location.search);
+  let search = queryParams.get("search");
+
   const params = useParams();
   let category = params?.category ? params?.category : "";
   let subCategory = params?.subCategory ? params?.subCategory : "";
@@ -32,6 +38,7 @@ export default function Shop() {
   query["brand"] = brand;
   query["range"] = JSON.stringify(values);
   query["sort"] = sort;
+  if (search) query["search"] = search;
   const { data, isLoading, isFetching, isError, error } =
     useGetAllProductsQuery({
       ...query,
@@ -54,7 +61,7 @@ export default function Shop() {
   return (
     <section className="min-h-[70vh] bg-gray-50 py-5">
       <div className="container">
-        <ul className="text-neutral-content flex items-center gap-2 text-sm">
+        <ul className="flex items-center gap-2 text-sm text-neutral-content">
           <li>
             <Link to="/" className="text-primary">
               Home

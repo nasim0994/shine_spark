@@ -71,7 +71,7 @@ export default function Header() {
 
               {search && (
                 <div className="searchBox absolute right-0 top-10 z-40 w-full rounded bg-base-100">
-                  <SearchBox />
+                  <SearchBox setSearch={setSearch} />
                 </div>
               )}
             </div>
@@ -153,7 +153,7 @@ export default function Header() {
                             <h1 className="text-[17px]">
                               {loggedUser?.data?.name}
                             </h1>
-                            <p className="text-neutral-content text-sm">
+                            <p className="text-sm text-neutral-content">
                               {loggedUser?.data?.email}
                             </p>
                           </div>

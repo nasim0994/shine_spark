@@ -1,21 +1,35 @@
 import { useState } from "react";
 import { BsSearch } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 
-export default function SearchBox() {
+export default function SearchBox({ setSearch }) {
+  const navigate = useNavigate();
   const [searchText, setSearchText] = useState("");
-  console.log(searchText);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchText) {
+      navigate(`/shops?search=${searchText}`);
+
+      if (setSearch) {
+        setSearch(false);
+      }
+    } else {
+      navigate(`/shops`);
+    }
+  };
 
   return (
-    <div className="relative flex">
+    <form onSubmit={handleSearch} className="relative flex">
       <input
         type="text"
         onChange={(e) => setSearchText(e.target.value)}
         placeholder="search Product..."
-        className="searchInput border w-full px-3 py-1.5 outline-none placeholder:text-sm rounded-l bg-primary/5 text-[15px]"
+        className="searchInput w-full rounded-l border bg-primary/5 px-3 py-1.5 text-[15px] outline-none placeholder:text-sm"
       />
-      <div className="searchIcon px-3 md:text-lg text-base-100 bg-primary flex justify-center items-center rounded-r">
+      <button className="searchIcon flex items-center justify-center rounded-r bg-primary px-3 text-base-100 md:text-lg">
         <BsSearch />
-      </div>
-    </div>
+      </button>
+    </form>
   );
 }

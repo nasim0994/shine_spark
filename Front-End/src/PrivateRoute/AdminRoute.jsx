@@ -1,6 +1,6 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
-import SkeletonLoader from "../components/SkeletonLoader/SkeletonLoader";
+import Spinner from "../components/Spinner/Spinner";
 
 const AdminRoute = ({ children }) => {
   const { loggedUser } = useSelector((state) => state.user);
@@ -10,8 +10,12 @@ const AdminRoute = ({ children }) => {
     loggedUser?.data?.role === "admin" ||
     loggedUser?.data?.role === "superAdmin";
 
-  if (!loggedUser?.success || !token) {
-    return <SkeletonLoader />;
+  if (!loggedUser?.success && token) {
+    setTimeout(() => {
+      return <Navigate to="/login" state={{ from: location }} replace />;
+    }, 3000);
+
+    return <Spinner />;
   }
 
   if (!loggedUser?.success && !token) {
@@ -26,7 +30,7 @@ const AdminRoute = ({ children }) => {
     return children;
   }
 
-  return <SkeletonLoader />;
+  return <Spinner />;
 };
 
 export default AdminRoute;

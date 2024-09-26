@@ -63,6 +63,7 @@ exports.getAllProducts = async (req, res) => {
     brand,
     range,
     sort: priceSort,
+    search,
   } = req.query;
 
   try {
@@ -100,6 +101,10 @@ exports.getAllProducts = async (req, res) => {
     }
 
     if (range) query.sellingPrice = { $gte: prices[0], $lte: prices[1] };
+
+    if (search) {
+      query.title = { $regex: search, $options: "i" };
+    }
 
     const products = await Product.find(query)
       .skip(skip)

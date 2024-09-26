@@ -32,7 +32,6 @@ export default function ProductCard({ product }) {
 
   const [selectedColor, setSelectedColor] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
-  const [selectedVariant, setSelectedVariant] = useState({});
 
   const [colors, setColors] = useState([]);
   const sizes = [
@@ -74,7 +73,6 @@ export default function ProductCard({ product }) {
       (variant) =>
         variant.color === selectedColor && variant.size === selectedSize,
     );
-    setSelectedVariant(findVariant);
 
     if (findVariant) {
       setAvailableStock(findVariant?.quantity);
@@ -172,7 +170,7 @@ export default function ProductCard({ product }) {
       return Swal.fire("", "Product already added to cart", "warning");
     } else {
       dispatch(addToCart([...carts, cartProduct]));
-      setModal(false)
+      setModal(false);
       Swal.fire("", "Item added to cart successfully", "success");
     }
   };
@@ -180,7 +178,7 @@ export default function ProductCard({ product }) {
   return (
     <>
       {modal ? (
-        <div className="w-full shadow p-1">
+        <div className="w-full p-1 shadow">
           {/* title  */}
           <div className="">
             <h1 className="text-lg font-medium text-neutral">{title}</h1>
@@ -287,7 +285,10 @@ export default function ProductCard({ product }) {
 
           {/* Buttons */}
           <div className="mt-5 grid grid-cols-4 items-center gap-1">
-            <button onClick={()=>setModal(false)} className="flex scale-[.97] items-center justify-center rounded bg-red-500 px-1.5 py-2 text-lg text-base-100 duration-300 hover:scale-[1]">
+            <button
+              onClick={() => setModal(false)}
+              className="flex scale-[.97] items-center justify-center rounded bg-red-500 px-1.5 py-2 text-lg text-base-100 duration-300 hover:scale-[1]"
+            >
               <ImCross />
             </button>
             <button
@@ -370,14 +371,31 @@ export default function ProductCard({ product }) {
                     Buy Now
                   </button>
                 ) : (
-                  <button className="rounded bg-primary/20 py-1.5 text-sm text-primary duration-300 hover:bg-primary hover:text-base-100">
+                  <button
+                    onClick={handleBuyNow}
+                    className="rounded bg-primary/20 py-1.5 text-sm text-primary duration-300 hover:bg-primary hover:text-base-100"
+                  >
                     Buy Now
                   </button>
                 )}
-                <button className="flex items-center justify-center gap-2 rounded bg-gray-200 py-1.5 text-sm duration-300 hover:bg-gray-500 hover:text-base-100">
-                  <span className="hidden sm:block">Add to Cart</span>
-                  <FaCartPlus className="sm:hidden" />
-                </button>
+
+                {variants?.length ? (
+                  <button
+                    onClick={() => setModal(true)}
+                    className="flex items-center justify-center gap-2 rounded bg-gray-200 py-1.5 text-sm duration-300 hover:bg-gray-500 hover:text-base-100"
+                  >
+                    <span className="hidden sm:block">Add to Cart</span>
+                    <FaCartPlus className="sm:hidden" />
+                  </button>
+                ) : (
+                  <button
+                    onClick={handelAddToCart}
+                    className="flex items-center justify-center gap-2 rounded bg-gray-200 py-1.5 text-sm duration-300 hover:bg-gray-500 hover:text-base-100"
+                  >
+                    <span className="hidden sm:block">Add to Cart</span>
+                    <FaCartPlus className="sm:hidden" />
+                  </button>
+                )}
               </div>
             </div>
           </div>

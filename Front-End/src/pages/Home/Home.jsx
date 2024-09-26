@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import TopCampaignBanner from "../../components/HomeComponents/Campaign/TopCampaignBanner/TopCampaignBanner";
 import CategoryWaysProducts from "../../components/HomeComponents/CategoryWaysProducts/CategoryWaysProducts";
 import ChooseByBrand from "../../components/HomeComponents/ChooseByBrand/ChooseByBrand";
@@ -8,7 +9,10 @@ import Hero from "../../components/HomeComponents/Hero/Hero";
 import MobileCategories from "../../components/HomeComponents/MobileCategories/MobileCategories";
 
 export default function Home() {
-  window.scroll(0, 0);
+  useEffect(() => {
+    window.scroll(0, 0);
+  }, []);
+
   return (
     <>
       <Hero />

@@ -1,34 +1,34 @@
 export default function ProductCards() {
   return (
     <>
-      <div className="shadow rounded p-4 flex flex-col justify-center items-center text-center">
+      <div className="flex flex-col items-center justify-center rounded p-4 text-center shadow">
         <div className="animate-pulse">
-          <div className="rounded-md bg-slate-200 w-full h-48 sm:h-56"></div>
-          <div className="mt-2 h-2.5 bg-slate-200 rounded"></div>
+          <div className="h-48 w-full rounded-md bg-slate-200 sm:h-56"></div>
+          <div className="mt-2 h-2.5 rounded bg-slate-200"></div>
         </div>
       </div>
-      <div className="shadow rounded p-4 flex flex-col justify-center items-center text-center">
+      <div className="flex flex-col items-center justify-center rounded p-4 text-center shadow">
         <div className="animate-pulse">
-          <div className="rounded-md bg-slate-200 w-full h-48 sm:h-56"></div>
-          <div className="mt-2 h-2.5 bg-slate-200 rounded"></div>
+          <div className="h-48 w-full rounded-md bg-slate-200 sm:h-56"></div>
+          <div className="mt-2 h-2.5 rounded bg-slate-200"></div>
         </div>
       </div>
-      <div className="shadow rounded p-4 flex flex-col justify-center items-center text-center">
+      <div className="flex flex-col items-center justify-center rounded p-4 text-center shadow">
         <div className="animate-pulse">
-          <div className="rounded-md bg-slate-200 w-full h-48 sm:h-56"></div>
-          <div className="mt-2 h-2.5 bg-slate-200 rounded"></div>
+          <div className="h-48 w-full rounded-md bg-slate-200 sm:h-56"></div>
+          <div className="mt-2 h-2.5 rounded bg-slate-200"></div>
         </div>
       </div>
-      <div className="shadow rounded p-4 flex flex-col justify-center items-center text-center">
+      <div className="flex flex-col items-center justify-center rounded p-4 text-center shadow">
         <div className="animate-pulse">
-          <div className="rounded-md bg-slate-200 w-full h-48 sm:h-56"></div>
-          <div className="mt-2 h-2.5 bg-slate-200 rounded"></div>
+          <div className="h-48 w-full rounded-md bg-slate-200 sm:h-56"></div>
+          <div className="mt-2 h-2.5 rounded bg-slate-200"></div>
         </div>
       </div>
-      <div className="shadow rounded p-4 flex flex-col justify-center items-center text-center">
+      <div className="flex flex-col items-center justify-center rounded p-4 text-center shadow">
         <div className="animate-pulse">
-          <div className="rounded-md bg-slate-200 w-full h-48 sm:h-56"></div>
-          <div className="mt-2 h-2.5 bg-slate-200 rounded"></div>
+          <div className="h-48 w-full rounded-md bg-slate-200 sm:h-56"></div>
+          <div className="mt-2 h-2.5 rounded bg-slate-200"></div>
         </div>
       </div>
     </>

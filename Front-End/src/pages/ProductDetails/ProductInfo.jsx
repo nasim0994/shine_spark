@@ -48,7 +48,6 @@ export default function ProductInfo({ product }) {
   const [availableStock, setAvailableStock] = useState(totakStock);
   const [selectedPrice, setSelectedPrice] = useState(price);
   const [selectedQuantity, setSelectedQuantity] = useState(1);
-  const [selectedVariant, setSelectedVariant] = useState({});
 
   const [colors, setColors] = useState([]);
   const sizes = [
@@ -77,7 +76,6 @@ export default function ProductInfo({ product }) {
       (variant) =>
         variant.color === selectedColor && variant.size === selectedSize,
     );
-    setSelectedVariant(findVariant);
 
     if (findVariant) {
       setAvailableStock(findVariant?.quantity);

@@ -38,9 +38,7 @@ export default function Shop() {
     });
 
   let content = null;
-  if (isLoading || isFetching) {
-    content = <ProductCards />;
-  }
+
   if (!isLoading && isError) {
     content = <p>{error.error}</p>;
   }
@@ -160,8 +158,10 @@ export default function Shop() {
                 <p className="text-sm font-normal text-neutral">
                   {isFetching
                     ? "Loading..."
-                    : `${data?.meta?.total} items found in ${category.charAt(0).toUpperCase() +
-                      category.slice(1).toLowerCase()}`}
+                    : `${data?.meta?.total} items found in ${
+                        category.charAt(0).toUpperCase() +
+                        category.slice(1).toLowerCase()
+                      }`}
                 </p>
               </div>
               <div className="w-48 text-neutral/50">
@@ -182,14 +182,16 @@ export default function Shop() {
               </div>
             </div>
             <div className="grid grid-cols-2 gap-2 lg:grid-cols-3 xl:grid-cols-4">
-              {content}
+              {isLoading || isFetching ? <ProductCards /> : content}
             </div>
 
-            <Pagination
-              pages={data?.meta?.pages}
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-            />
+            {data?.meta?.pages > 1 && (
+              <Pagination
+                pages={data?.meta?.pages}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+              />
+            )}
           </div>
         </div>
       </div>

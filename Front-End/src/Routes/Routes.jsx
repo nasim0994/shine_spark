@@ -1,113 +1,212 @@
 import { createBrowserRouter } from "react-router-dom";
+import React, { Suspense } from "react";
+
 import MainLayout from "../Layout/MainLayout";
 import Home from "../pages/Home/Home";
 
-import Cart from "../pages/Cart/Cart";
-import Login from "../pages/Login/Login";
-import ProductDetails from "../pages/ProductDetails/ProductDetails";
-import Shop from "../pages/Shop/Shop";
-import Signup from "../pages/Signup/Signup";
+import SkeletonLoader from "../components/SkeletonLoader/SkeletonLoader";
 
-import AccountLayout from "../Layout/AccountLayout";
-import PrivateRoute from "../PrivateRoute/PrivateRoute";
-import EditePeofile from "../pages/Account/EditePeofile/EditePeofile";
-import Orders from "../pages/Account/Orders/Orders";
-import Profile from "../pages/Account/Profile/Profile";
-import Setting from "../pages/Account/Setting/Setting";
-import Wishlist from "../pages/Account/Wishlist/Wishlist";
-import Checkout from "../pages/Checkout/Checkout";
-import PaymentResult from "../pages/Checkout/PaymentResult";
-
-import OrderDetailsPage from "../pages/Account/OrderDetails/OrderDetails";
-import MyReviews from "../pages/Account/Reviews/MyReviews";
-
-//------------------------Admin Layout
-import AdminLayout from "../Layout/AdminLayout/AdminLayout";
-import AdminRoute from "../PrivateRoute/AdminRoute";
-
-//---------------Dashboard
-import Dashboard from "../pages/Admin/Dashboard/Dashboard";
-
-//---------------Category
-import AddCategory from "../pages/Admin/Category/Categories/AddCategory";
-import AllCategories from "../pages/Admin/Category/Categories/AllCategories";
-import EditCategory from "../pages/Admin/Category/Categories/Editcategory";
-
-import AddSubCategory from "../pages/Admin/Category/SubCategories/AddSubCategory";
-import AllSubCategories from "../pages/Admin/Category/SubCategories/AllSubCategories";
-import EditSubCategory from "../pages/Admin/Category/SubCategories/EditSubCategory";
-
-import AddSubSubCategory from "../pages/Admin/Category/SubSubCategory/AddSubSubCategory";
-import AllSubSubCategory from "../pages/Admin/Category/SubSubCategory/AllSubSubCategory";
-import EditSubSubCategory from "../pages/Admin/Category/SubSubCategory/EditSubSubCategory";
-
-//---------------Brand
-import AllBrands from "../pages/Admin/Brand/AllBrands";
-import AddBrand from "../pages/Admin/Brand/AddBrand";
-import EditBrand from "../pages/Admin/Brand/EditBrand";
-
-// ---------------Color
-import AllColor from "../pages/Admin/Color/AllColor";
-import AddColor from "../pages/Admin/Color/AddColor";
-import EditColor from "../pages/Admin/Color/EditColor";
-
-//---------------Product
-import AddProduct from "../pages/Admin/Product/AddProduct";
-import ProductList from "../pages/Admin/Product/ProductList";
-import EditProduct from "../pages/Admin/Product/EditProduct";
-
-//---------------Order
-import AllOrders from "../pages/Admin/Order/AllOrders";
-import OrderDetails from "../pages/Admin/Order/OrderDetails";
-
-//---------------Review
-import AllReview from "../pages/Admin/AllReview/AllReview";
-
-//---------------User
-import AllUsers from "../pages/Admin/User/AllUsers";
-
-//---------------Administrator
-import AddAdministrator from "../pages/Admin/Administrator/AddAdministrator";
-import Administrator from "../pages/Admin/Administrator/Administrator";
-
-//--------------ecommerce-setting
-import CouponLists from "../pages/Admin/EcommerceSetting/Coupon/CouponLists";
-import AddCoupon from "../pages/Admin/EcommerceSetting/Coupon/AddCoupon";
-import EditCoupon from "../pages/Admin/EcommerceSetting/Coupon/EditCoupon";
-
-import ShippingConfiguration from "../pages/Admin/EcommerceSetting/ShippingConfiguration/ShippingConfiguration";
-
-//-----------General Setting
-import AdminProfile from "../pages/Admin/GeneralSetting/AdminProfile/AdminProfile";
-import BusinessInfo from "../pages/Admin/GeneralSetting/BusinessInfo/BusinessInfo";
-
-//------------Banners
-import Banner from "../pages/Admin/EcommerceSetting/Banner/Banner";
-import AddBanner from "../pages/Admin/EcommerceSetting/Banner/AddBanner";
-import EditBanner from "../pages/Admin/EcommerceSetting/Banner/EditBanner";
-
-import TopCampaignBanner from "../pages/Admin/EcommerceSetting/TopCampaignBanner/TopCampaignBanner";
-
-//--------------Front-End
-import About from "../pages/Admin/FrontEnd/About/About";
-import Contact from "../pages/Admin/FrontEnd/Contact/Contact";
-import Logo from "../pages/Admin/FrontEnd/Logo/Logo";
-import Favicon from "../pages/Admin/FrontEnd/Favicon/Favicon";
-import EditAdministrator from "../pages/Admin/Administrator/EditAdmin";
-
-//--------------Flash Deal
-import FlashDealList from "../pages/Admin/FlashDeal/FlashDealList";
-import AddFlashDeal from "../pages/Admin/FlashDeal/AddFlashDeal";
-import EditFlashDeal from "../pages/Admin/FlashDeal/EditFlashDeal";
-
-//--------------SEO
-import SEOSetting from "../pages/Admin/SEOSetting/SEOSetting";
 import OrderSuccess from "../pages/OrderSuccess/OrderSuccess";
+
+// Main pages
+const Cart = React.lazy(() => import("../pages/Cart/Cart"));
+const Login = React.lazy(() => import("../pages/Login/Login"));
+const ProductDetails = React.lazy(
+  () => import("../pages/ProductDetails/ProductDetails"),
+);
+const Shop = React.lazy(() => import("../pages/Shop/Shop"));
+const Signup = React.lazy(() => import("../pages/Signup/Signup"));
+
+// Account Layout and Private Routes
+const AccountLayout = React.lazy(() => import("../Layout/AccountLayout"));
+const PrivateRoute = React.lazy(() => import("../PrivateRoute/PrivateRoute"));
+const EditeProfile = React.lazy(
+  () => import("../pages/Account/EditeProfile/EditeProfile"),
+);
+const Orders = React.lazy(() => import("../pages/Account/Orders/Orders"));
+const Profile = React.lazy(() => import("../pages/Account/Profile/Profile"));
+const Setting = React.lazy(() => import("../pages/Account/Setting/Setting"));
+const Wishlist = React.lazy(() => import("../pages/Account/Wishlist/Wishlist"));
+const Checkout = React.lazy(() => import("../pages/Checkout/Checkout"));
+// Order Success Page
+
+const PaymentResult = React.lazy(
+  () => import("../pages/Checkout/PaymentResult"),
+);
+const OrderDetailsPage = React.lazy(
+  () => import("../pages/Account/OrderDetails/OrderDetails"),
+);
+const MyReviews = React.lazy(
+  () => import("../pages/Account/Reviews/MyReviews"),
+);
+
+// Admin Layout and Routes
+const AdminLayout = React.lazy(
+  () => import("../Layout/AdminLayout/AdminLayout"),
+);
+const AdminRoute = React.lazy(() => import("../PrivateRoute/AdminRoute"));
+
+// Dashboard
+const Dashboard = React.lazy(
+  () => import("../pages/Admin/Dashboard/Dashboard"),
+);
+
+// Categories
+const AddCategory = React.lazy(
+  () => import("../pages/Admin/Category/Categories/AddCategory"),
+);
+const AllCategories = React.lazy(
+  () => import("../pages/Admin/Category/Categories/AllCategories"),
+);
+const EditCategory = React.lazy(
+  () => import("../pages/Admin/Category/Categories/Editcategory"),
+);
+
+// Sub-Categories
+const AddSubCategory = React.lazy(
+  () => import("../pages/Admin/Category/SubCategories/AddSubCategory"),
+);
+const AllSubCategories = React.lazy(
+  () => import("../pages/Admin/Category/SubCategories/AllSubCategories"),
+);
+const EditSubCategory = React.lazy(
+  () => import("../pages/Admin/Category/SubCategories/EditSubCategory"),
+);
+
+// Sub-Sub Categories
+const AddSubSubCategory = React.lazy(
+  () => import("../pages/Admin/Category/SubSubCategory/AddSubSubCategory"),
+);
+const AllSubSubCategory = React.lazy(
+  () => import("../pages/Admin/Category/SubSubCategory/AllSubSubCategory"),
+);
+const EditSubSubCategory = React.lazy(
+  () => import("../pages/Admin/Category/SubSubCategory/EditSubSubCategory"),
+);
+
+// Brands
+const AllBrands = React.lazy(() => import("../pages/Admin/Brand/AllBrands"));
+const AddBrand = React.lazy(() => import("../pages/Admin/Brand/AddBrand"));
+const EditBrand = React.lazy(() => import("../pages/Admin/Brand/EditBrand"));
+
+// Colors
+const AllColor = React.lazy(() => import("../pages/Admin/Color/AllColor"));
+const AddColor = React.lazy(() => import("../pages/Admin/Color/AddColor"));
+const EditColor = React.lazy(() => import("../pages/Admin/Color/EditColor"));
+
+// Products
+const AddProduct = React.lazy(
+  () => import("../pages/Admin/Product/AddProduct"),
+);
+const ProductList = React.lazy(
+  () => import("../pages/Admin/Product/ProductList"),
+);
+const EditProduct = React.lazy(
+  () => import("../pages/Admin/Product/EditProduct"),
+);
+
+// Orders
+const AllOrders = React.lazy(() => import("../pages/Admin/Order/AllOrders"));
+const OrderDetails = React.lazy(
+  () => import("../pages/Admin/Order/OrderDetails"),
+);
+
+// Reviews
+const AllReview = React.lazy(
+  () => import("../pages/Admin/AllReview/AllReview"),
+);
+
+// Users
+const AllUsers = React.lazy(() => import("../pages/Admin/User/AllUsers"));
+
+// Administrators
+const AddAdministrator = React.lazy(
+  () => import("../pages/Admin/Administrator/AddAdministrator"),
+);
+const Administrator = React.lazy(
+  () => import("../pages/Admin/Administrator/Administrator"),
+);
+const EditAdministrator = React.lazy(
+  () => import("../pages/Admin/Administrator/EditAdmin"),
+);
+
+// Ecommerce Settings
+const CouponLists = React.lazy(
+  () => import("../pages/Admin/EcommerceSetting/Coupon/CouponLists"),
+);
+const AddCoupon = React.lazy(
+  () => import("../pages/Admin/EcommerceSetting/Coupon/AddCoupon"),
+);
+const EditCoupon = React.lazy(
+  () => import("../pages/Admin/EcommerceSetting/Coupon/EditCoupon"),
+);
+
+const ShippingConfiguration = React.lazy(
+  () =>
+    import(
+      "../pages/Admin/EcommerceSetting/ShippingConfiguration/ShippingConfiguration"
+    ),
+);
+
+// General Settings
+const AdminProfile = React.lazy(
+  () => import("../pages/Admin/GeneralSetting/AdminProfile/AdminProfile"),
+);
+const BusinessInfo = React.lazy(
+  () => import("../pages/Admin/GeneralSetting/BusinessInfo/BusinessInfo"),
+);
+
+// Banners
+const Banner = React.lazy(
+  () => import("../pages/Admin/EcommerceSetting/Banner/Banner"),
+);
+const AddBanner = React.lazy(
+  () => import("../pages/Admin/EcommerceSetting/Banner/AddBanner"),
+);
+const EditBanner = React.lazy(
+  () => import("../pages/Admin/EcommerceSetting/Banner/EditBanner"),
+);
+const TopCampaignBanner = React.lazy(
+  () =>
+    import(
+      "../pages/Admin/EcommerceSetting/TopCampaignBanner/TopCampaignBanner"
+    ),
+);
+
+// Front-End Pages
+const About = React.lazy(() => import("../pages/Admin/FrontEnd/About/About"));
+const Contact = React.lazy(
+  () => import("../pages/Admin/FrontEnd/Contact/Contact"),
+);
+const Logo = React.lazy(() => import("../pages/Admin/FrontEnd/Logo/Logo"));
+const Favicon = React.lazy(
+  () => import("../pages/Admin/FrontEnd/Favicon/Favicon"),
+);
+
+// Flash Deals
+const FlashDealList = React.lazy(
+  () => import("../pages/Admin/FlashDeal/FlashDealList"),
+);
+const AddFlashDeal = React.lazy(
+  () => import("../pages/Admin/FlashDeal/AddFlashDeal"),
+);
+const EditFlashDeal = React.lazy(
+  () => import("../pages/Admin/FlashDeal/EditFlashDeal"),
+);
+
+// SEO Settings
+const SEOSetting = React.lazy(
+  () => import("../pages/Admin/SEOSetting/SEOSetting"),
+);
 
 export const routes = createBrowserRouter([
   {
     path: "/",
-    element: <MainLayout />,
+    element: (
+      <Suspense fallback={<SkeletonLoader />}>
+        <MainLayout />
+      </Suspense>
+    ),
     children: [
       {
         path: "/",
@@ -171,9 +270,11 @@ export const routes = createBrowserRouter([
   {
     path: "/account",
     element: (
-      <PrivateRoute>
-        <AccountLayout />
-      </PrivateRoute>
+      <Suspense fallback={<SkeletonLoader />}>
+        <PrivateRoute>
+          <AccountLayout />
+        </PrivateRoute>
+      </Suspense>
     ),
     children: [
       {
@@ -182,7 +283,7 @@ export const routes = createBrowserRouter([
       },
       {
         path: "/account/profile/edite",
-        element: <EditePeofile />,
+        element: <EditeProfile />,
       },
       {
         path: "/account/wishlist",
@@ -209,9 +310,11 @@ export const routes = createBrowserRouter([
   {
     path: "/admin",
     element: (
-      <AdminRoute>
-        <AdminLayout />
-      </AdminRoute>
+      <Suspense fallback={<SkeletonLoader />}>
+        <AdminRoute>
+          <AdminLayout />
+        </AdminRoute>
+      </Suspense>
     ),
     children: [
       {

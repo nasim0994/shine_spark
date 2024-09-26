@@ -4,11 +4,12 @@ import { useEditUserInfoMutation } from "../../../Redux/user/userApi";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function EditePeofile() {
+export default function EditeProfile() {
   window.scroll(0, 0);
   const { loggedUser } = useSelector((state) => state.user);
+  const user = loggedUser?.data;
 
-  const { _id, name, phone, email, city, district, street } = loggedUser?.data;
+  const { _id, name, phone, email, city, district, street } = user;
   const [editUserInfo, { isLoading, isSuccess, isError }] =
     useEditUserInfoMutation();
   const navigate = useNavigate();
@@ -45,19 +46,19 @@ export default function EditePeofile() {
     if (isError) {
       Swal.fire("", "update fail", "error");
     }
-  }, [isSuccess, isError]);
+  }, [isSuccess, isError, navigate]);
 
   return (
     <div>
       <form
         onSubmit={handleEditProfile}
-        className="border rounded-md p-4 col-span-2"
+        className="col-span-2 rounded-md border p-4"
       >
         <div>
           <p>Full Name</p>
           <input
             type="text"
-            className="w-full border outline-none rounded px-3 py-1.5 mb-4 "
+            className="mb-4 w-full rounded border px-3 py-1.5 outline-none"
             defaultValue={name}
             name="name"
             required
@@ -68,7 +69,7 @@ export default function EditePeofile() {
           <p>Number</p>
           <input
             type="text"
-            className="w-full border outline-none rounded px-3 py-1.5 mb-4"
+            className="mb-4 w-full rounded border px-3 py-1.5 outline-none"
             defaultValue={phone}
             required
             disabled
@@ -80,7 +81,7 @@ export default function EditePeofile() {
           <input
             type="pail"
             name="email"
-            className="w-full border outline-none rounded px-3 py-1.5 mb-4"
+            className="mb-4 w-full rounded border px-3 py-1.5 outline-none"
             defaultValue={email}
           />
         </div>
@@ -89,7 +90,7 @@ export default function EditePeofile() {
           <div>
             <p>City</p>
             <input
-              className="w-full border outline-none rounded px-3 py-1.5 mb-4"
+              className="mb-4 w-full rounded border px-3 py-1.5 outline-none"
               defaultValue={city}
               name="city"
             />
@@ -98,7 +99,7 @@ export default function EditePeofile() {
           <div>
             <p>District</p>
             <input
-              className="w-full border outline-none rounded px-3 py-1.5 mb-4"
+              className="mb-4 w-full rounded border px-3 py-1.5 outline-none"
               defaultValue={district}
               name="district"
             />
@@ -108,7 +109,7 @@ export default function EditePeofile() {
         <div>
           <p>Full Address</p>
           <textarea
-            className="w-full border outline-none rounded px-3 py-1.5 mb-4"
+            className="mb-4 w-full rounded border px-3 py-1.5 outline-none"
             defaultValue={street}
             name="street"
           />
@@ -117,7 +118,7 @@ export default function EditePeofile() {
         <div>
           <button
             type="submite"
-            className="w-full text-center bg-primary text-base-100 py-2 rounded scale-[1] hover:scale-[.99] duration-300"
+            className="w-full scale-[1] rounded bg-primary py-2 text-center text-base-100 duration-300 hover:scale-[.99]"
             disabled={isLoading && "disabled"}
           >
             {isLoading ? "Loading..." : "Update Profile"}

@@ -1,7 +1,6 @@
 import { Navigate, useLocation } from "react-router-dom";
-import Spinner from "../components/Spinner/Spinner";
 import { useSelector } from "react-redux";
-import Swal from "sweetalert2";
+import SkeletonLoader from "../components/SkeletonLoader/SkeletonLoader";
 
 const AdminRoute = ({ children }) => {
   const { loggedUser } = useSelector((state) => state.user);
@@ -11,12 +10,15 @@ const AdminRoute = ({ children }) => {
     loggedUser?.data?.role === "admin" ||
     loggedUser?.data?.role === "superAdmin";
 
+  if (!loggedUser?.success || !token) {
+    return <SkeletonLoader />;
+  }
+
   if (!loggedUser?.success && !token) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   if (!admin) {
-    Swal.fire("", "You can't access this page", "error");
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
@@ -24,11 +26,7 @@ const AdminRoute = ({ children }) => {
     return children;
   }
 
-  if (!loggedUser?.success || !token) {
-    return <Spinner />;
-  }
-
-  return <Spinner></Spinner>;
+  return <SkeletonLoader />;
 };
 
 export default AdminRoute;

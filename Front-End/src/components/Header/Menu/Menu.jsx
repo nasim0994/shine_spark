@@ -5,11 +5,15 @@ import { FaPhoneAlt } from "react-icons/fa";
 import { IoMdArrowDropdown, IoMdArrowDropright } from "react-icons/io";
 import CategoriesSidebar from "./CategoriesSidebar/CategoriesSidebar";
 import { useEffect, useState } from "react";
+import { useGetContactQuery } from "../../../Redux/contact/contactApi";
 
 export default function Menu() {
   const [categorySidebar, setCategorySidebar] = useState(false);
   const { data } = useGetCategoriesQuery();
   const categories = data?.data;
+
+  const { data: contact } = useGetContactQuery();
+  const contactInfo = contact?.data[0];
 
   const menuCategories =
     categories?.length > 6 ? categories?.slice(0, 5) : categories;
@@ -93,7 +97,7 @@ export default function Menu() {
 
           <div className="flex items-center gap-2">
             <FaPhoneAlt className="-mt-px text-xs" />
-            <p>00000000000</p>
+            <p>{contactInfo?.phone}</p>
           </div>
         </div>
       </div>

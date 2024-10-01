@@ -25,7 +25,7 @@ export default function Footer() {
   }
 
   return (
-    <footer className="bg-base-100 pb-4 pt-8">
+    <footer className="border-t bg-base-100 pb-4 pt-8">
       <div className="container">
         <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5">
           <div className="md:col-span-2">
@@ -44,11 +44,11 @@ export default function Footer() {
                 />
               </Link>
             </div>
-            <p className="text-neutral-content mt-1 font-medium">
+            <p className="mt-1 font-medium text-neutral-content">
               {businessInfo?.tagline}
             </p>
 
-            <div className="text-neutral-content mt-2 text-sm">
+            <div className="mt-2 text-sm text-neutral-content">
               <p>{businessInfo?.bio}</p>
             </div>
           </div>
@@ -57,7 +57,7 @@ export default function Footer() {
             <h2 className="mb-3 text-base font-bold uppercase text-neutral/90">
               Categories
             </h2>
-            <ul className="text-neutral-content text-[15px]">
+            <ul className="text-[15px] text-neutral-content">
               {fiveCategories?.map((category, i) => (
                 <li key={i} className="mb-2">
                   <Link
@@ -75,26 +75,10 @@ export default function Footer() {
             <h2 className="mb-3 text-base font-bold uppercase text-neutral/90">
               Information
             </h2>
-            <ul className="text-neutral-content text-[15px]">
+            <ul className="text-[15px] text-neutral-content">
               <li className="mb-2">
                 <Link to="/shops" className="hover:underline">
                   Shop
-                </Link>
-              </li>
-              <li className="mb-2">
-                <Link to="/about-us" className="hover:underline">
-                  About Us
-                </Link>
-              </li>
-
-              <li className="mb-2">
-                <Link to="/" className="hover:underline">
-                  Privacy Policy
-                </Link>
-              </li>
-              <li className="mb-2">
-                <Link to="/" className="hover:underline">
-                  Terms & Conditions
                 </Link>
               </li>
             </ul>
@@ -104,7 +88,7 @@ export default function Footer() {
             <h2 className="mb-3 text-base font-bold uppercase text-neutral/90">
               Get in Touch
             </h2>
-            <ul className="text-neutral-content text-[15px]">
+            <ul className="text-[15px] text-neutral-content">
               <li>
                 <p>{contact?.data[0]?.phone}</p>
               </li>
@@ -118,7 +102,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <hr className="my-4 border-gray-200 dark:border-gray-700 sm:mx-auto" />
+        {/* <hr className="my-4 border-gray-200 dark:border-gray-700 sm:mx-auto" />
 
         <div>
           <img
@@ -126,13 +110,13 @@ export default function Footer() {
             alt=""
             className="md:h-[130px] md:w-full"
           />
-        </div>
+        </div> */}
 
         <hr className="my-4 border-gray-200 dark:border-gray-700 sm:mx-auto" />
 
         {/* bottom */}
         <div className="sm:flex sm:items-center sm:justify-between">
-          <span className="text-neutral-content text-[15px]">
+          <span className="text-[15px] text-neutral-content">
             Copyright© {yearNow != startYear && startYear + " -"} {yearNow}{" "}
             {businessInfo?.companyName}. All Rights Reserved. develop by{" "}
             <Link
@@ -143,7 +127,7 @@ export default function Footer() {
               eManager
             </Link>
           </span>
-          <ul className="text-neutral-content mt-3 flex items-center gap-2 sm:mt-0">
+          <ul className="mt-3 flex items-center gap-2 text-neutral-content sm:mt-0">
             <li>
               <Link to={contact?.data[0]?.facebookLink} target="_blank">
                 <BsFacebook className="text-lg duration-300 hover:-mt-2" />

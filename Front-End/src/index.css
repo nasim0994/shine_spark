@@ -1,8 +1,8 @@
-@import url("https://fonts.googleapis.com/css2?family=Itim&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
 :root {
-  --primary: #147819;
-  --secondary: #edf0ad;
+  --primary: #144043;
+  --secondary: #ff6633;
   --accent: #031a2f;
   --neutral: #3d3d3f;
   --neutralContent: #636363;
@@ -18,7 +18,7 @@ body {
 }
 
 h2 {
-  font-family: "Itim", cursive;
+  font-family: "IBM Plex Serif", cursive;
 }
 
 .container {
@@ -33,7 +33,15 @@ h2 {
 }
 
 .active {
-  color: var(--primary);
+  color: var(--secondary);
+}
+
+.header_menu a {
+  transition: all 0.3s ease;
+}
+
+.header_menu a:hover {
+  color: var(--secondary);
 }
 
 .shadow {
@@ -95,6 +103,18 @@ h2 {
   margin-top: 3px;
 }
 
+header nav ul li a:hover {
+  color: var(--secondary) !important;
+}
+
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  font-size: 20px !important;
+  color: var(--primary) !important;
+}
+
+/* --------------------------- */
+
 @media only screen and (min-width: 1024px) {
   .hero_slider {
     width: calc(100% - 270px);
@@ -114,6 +134,8 @@ h2 {
     width: 90% !important;
   }
 }
+
+/* --------------------------------- */
 
 .overlay {
   position: fixed;
@@ -175,7 +197,7 @@ h2 {
 }
 
 .product_card:hover .title {
-  color: var(--primary);
+  color: var(--secondary);
 }
 
 /* ---------------Shop page -------------------*/

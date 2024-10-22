@@ -1,22 +1,13 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { FiMenu } from "react-icons/fi";
 import { useGetCategoriesQuery } from "../../../Redux/category/categoryApi";
-import { FaPhoneAlt } from "react-icons/fa";
-import { IoMdArrowDropdown, IoMdArrowDropright } from "react-icons/io";
 import CategoriesSidebar from "./CategoriesSidebar/CategoriesSidebar";
 import { useEffect, useState } from "react";
-import { useGetContactQuery } from "../../../Redux/contact/contactApi";
 
 export default function Menu() {
   const [categorySidebar, setCategorySidebar] = useState(false);
   const { data } = useGetCategoriesQuery();
   const categories = data?.data;
-
-  const { data: contact } = useGetContactQuery();
-  const contactInfo = contact?.data[0];
-
-  const menuCategories =
-    categories?.length > 6 ? categories?.slice(0, 5) : categories;
 
   useEffect(() => {
     document.addEventListener("click", (e) => {
@@ -32,15 +23,16 @@ export default function Menu() {
   }, [categorySidebar]);
 
   return (
-    <div className="bg-primary py-2 text-sm text-base-100 sm:py-0">
+    <div className="border-b py-2 text-sm">
       <div className="container">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             <button
               onClick={() => setCategorySidebar(!categorySidebar)}
-              className="category_btn md:border-r md:pr-4"
+              className="category_btn flex items-center justify-center gap-2 rounded bg-primary px-2 py-2 text-base-100"
             >
               <FiMenu className="text-xl" />
+              <h6 className="hidden sm:block">BROWSE CATEGORIES</h6>
             </button>
 
             <CategoriesSidebar
@@ -48,56 +40,22 @@ export default function Menu() {
               categorySidebar={categorySidebar}
             />
 
-            <nav className="hidden md:block">
-              <ul className="categories flex items-center font-medium">
-                {menuCategories?.map((category) => (
-                  <li key={category?._id}>
-                    <Link
-                      to={`shops/${category.slug}`}
-                      className="flex items-center gap-2 p-2"
-                    >
-                      {category?.name}
-
-                      {category?.subCategories?.length > 0 && (
-                        <IoMdArrowDropdown className="text-xs" />
-                      )}
-                    </Link>
-
-                    {category?.subCategories?.length > 0 && (
-                      <ol className="category_dropdown">
-                        {category?.subCategories?.map((subCategory) => (
-                          <li key={subCategory?._id}>
-                            <Link className="flex items-center justify-between">
-                              <p>{subCategory?.name}</p>
-                              {subCategory?.subSubCategories?.length > 0 && (
-                                <IoMdArrowDropright className="text-xs" />
-                              )}
-                            </Link>
-
-                            {subCategory?.subSubCategories?.length > 0 && (
-                              <ol className="category_sub_dropdown">
-                                {subCategory?.subSubCategories?.map(
-                                  (subSubCategory) => (
-                                    <li key={subSubCategory?._id}>
-                                      <Link>{subSubCategory?.name}</Link>
-                                    </li>
-                                  ),
-                                )}
-                              </ol>
-                            )}
-                          </li>
-                        ))}
-                      </ol>
-                    )}
-                  </li>
-                ))}
+            <nav className="header_menu">
+              <ul className="flex items-center gap-5 font-medium">
+                <li>
+                  <NavLink to="/"> Home </NavLink>
+                </li>
+                <li>
+                  <NavLink to="/shops"> Shops </NavLink>
+                </li>
+                <li>
+                  <NavLink to="/about-us"> About US </NavLink>
+                </li>
+                <li>
+                  <NavLink to="/contact-us"> Contact US </NavLink>
+                </li>
               </ul>
             </nav>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <FaPhoneAlt className="-mt-px text-xs" />
-            <p>{contactInfo?.phone}</p>
           </div>
         </div>
       </div>

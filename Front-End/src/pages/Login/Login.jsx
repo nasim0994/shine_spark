@@ -45,9 +45,9 @@ export default function Login() {
   }, [isSuccess]);
 
   return (
-    <div className="py-6 min-h-[70vh] flex justify-center items-center">
+    <div className="flex min-h-[70vh] items-center justify-center py-6">
       <div className="container">
-        <div className="sm:w-[400px] mx-auto bg-base-100 shadow-lg rounded-lg p-6">
+        <div className="mx-auto rounded-lg bg-base-100 p-6 shadow-lg sm:w-[400px]">
           <img
             src={
               logo?.data[0]?.logo === ""
@@ -57,15 +57,15 @@ export default function Login() {
                   }`
             }
             alt=""
-            className="w-32 mx-auto"
+            className="mx-auto w-32"
           />
-          <h6 className="text-xl font-medium mt-2 text-center text-neutral/80">
+          <h6 className="mt-2 text-center text-xl font-medium text-neutral/80">
             Log In
           </h6>
 
           <form onSubmit={handleLogin}>
             <div className="mt-10 text-neutral">
-              <div className="mb-6 relative">
+              <div className="relative mb-6">
                 <span className="absolute bottom-2 text-neutral/80">
                   <MdOutlinePhoneAndroid />
                 </span>
@@ -73,7 +73,7 @@ export default function Login() {
                   name="phone"
                   type="text"
                   placeholder="Phone Number"
-                  className="w-full border-b focus:border-b-primary outline-none pl-6 pb-1 placeholder:font-light"
+                  className="w-full border-b pb-1 pl-6 outline-none placeholder:font-light focus:border-b-primary"
                   required
                 />
               </div>
@@ -88,12 +88,12 @@ export default function Login() {
                     type={`${showPassword ? "text" : "password"}`}
                     name="password"
                     placeholder="Password"
-                    className="w-full border-b focus:border-b-primary outline-none pl-6 pb-1 placeholder:font-light"
+                    className="w-full border-b pb-1 pl-6 outline-none placeholder:font-light focus:border-b-primary"
                     required
                   />
 
                   <div
-                    className="absolute right-2 bottom-2 cursor-pointer"
+                    className="absolute bottom-2 right-2 cursor-pointer"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     <span className={`${showPassword ? "block" : "hidden"}`}>
@@ -110,19 +110,10 @@ export default function Login() {
                 <p className="text-sm text-red-500">{error?.data?.error}</p>
               )}
 
-              <div className="mt-2 flex justify-end">
-                <Link
-                  to=""
-                  className="text-[13px] text-neutral/70 underline hover:text-primary duration-300"
-                >
-                  Forgot Password?
-                </Link>
-              </div>
-
-              <div className="mt-3 flex flex-col w-full border-opacity-50">
+              <div className="mt-3 flex w-full flex-col border-opacity-50">
                 <button
                   type="submit"
-                  className="w-full py-2 font-semibold text-base-100 bg-primary rounded hover:bg-opacity-90 duration-300 flex justify-center"
+                  className="flex w-full justify-center rounded bg-primary py-2 font-semibold text-base-100 duration-300 hover:bg-opacity-90"
                 >
                   {isLoading ? <ButtonSpinner /> : "Log In"}
                 </button>
@@ -130,13 +121,10 @@ export default function Login() {
             </div>
           </form>
 
-          <div className="border-t border-neutral/20 mt-6 pt-4 text-center">
+          <div className="mt-6 border-t border-neutral/20 pt-4 text-center">
             <p className="text-sm text-neutral/70">
               Don&apos;t have an account?
-              <Link
-                to="/signup"
-                className="text-blue-500  pl-2 hover:underline"
-              >
+              <Link to="/signup" className="pl-2 text-blue-500 hover:underline">
                 Signup
               </Link>
             </p>

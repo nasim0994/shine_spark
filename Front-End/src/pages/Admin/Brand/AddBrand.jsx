@@ -3,6 +3,7 @@ import { AiFillDelete } from "react-icons/ai";
 import ImageUploading from "react-images-uploading";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 import { useAddBrandMutation } from "../../../Redux/brand/brandApi";
 
 export default function AddBrand() {
@@ -17,10 +18,11 @@ export default function AddBrand() {
     let icon = icons[0]?.file;
 
     if (!icon) {
-      return Swal.fire("", "Icon is required", "error");
+      return toast.error("Icon is required");
     }
+
     if (name === "") {
-      return Swal.fire("", "Brand name is required", "error");
+      return toast.error("Name is required");
     }
 
     const formData = new FormData();
@@ -29,17 +31,18 @@ export default function AddBrand() {
 
     const res = await addBrand(formData);
     if (res?.data?.success) {
-      Swal.fire("", "Brand add success", "success");
+      toast.success("Brand added successfully");
       seticons([]);
       setName("");
       navigate("/admin/brands");
     } else {
-      Swal.fire("", "something went wrong", "error");
+      Swal.fire("", res?.data?.message || "something went wrong", "error");
+      console.log(res);
     }
   };
 
   return (
-    <div className="p-4 bg-base-100 shadhow rounded sm:w-1/2">
+    <div className="shadhow rounded bg-base-100 p-4 sm:w-1/2">
       <div>
         <p className="text-neutral-content">Icon</p>
         <ImageUploading
@@ -49,13 +52,13 @@ export default function AddBrand() {
         >
           {({ onImageUpload, onImageRemove, dragProps }) => (
             <div
-              className="border rounded border-dashed p-4 w-max"
+              className="w-max rounded border border-dashed p-4"
               {...dragProps}
             >
               <div className="flex items-center gap-2">
                 <span
                   onClick={onImageUpload}
-                  className="px-4 py-1.5 rounded-2xl text-base-100 bg-primary cursor-pointer text-sm"
+                  className="cursor-pointer rounded-2xl bg-primary px-4 py-1.5 text-sm text-base-100"
                 >
                   Choose Image
                 </span>
@@ -69,7 +72,7 @@ export default function AddBrand() {
                     <img src={img["data_url"]} alt="" className="w-40" />
                     <div
                       onClick={() => onImageRemove(index)}
-                      className="w-7 h-7 bg-primary rounded-full flex justify-center items-center text-base-100 absolute top-0 right-0 cursor-pointer"
+                      className="absolute right-0 top-0 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-primary text-base-100"
                     >
                       <AiFillDelete />
                     </div>

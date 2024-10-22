@@ -5,7 +5,7 @@ exports.insert = async (req, res) => {
     const { name, code } = req.body;
 
     if (!name || !code) {
-      return res.status(400).json({
+      return res.json({
         success: false,
         message: "Name and code are required.",
       });
@@ -13,7 +13,7 @@ exports.insert = async (req, res) => {
 
     const existingColor = await Color.findOne({ name });
     if (existingColor) {
-      return res.status(400).json({
+      return res.json({
         success: false,
         message: "Color name must be unique.",
       });
@@ -32,10 +32,10 @@ exports.insert = async (req, res) => {
       data: newColor,
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
       message: "Error creating color",
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -49,10 +49,10 @@ exports.get = async (req, res) => {
       data: colors,
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
       message: "Error retrieving colors",
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -62,7 +62,7 @@ exports.getById = async (req, res) => {
     const color = await Color.findById(req.params.id);
 
     if (!color) {
-      return res.status(404).json({
+      return res.json({
         success: false,
         message: "Color not found",
       });
@@ -73,10 +73,10 @@ exports.getById = async (req, res) => {
       data: color,
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
       message: "Error retrieving color",
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -87,7 +87,7 @@ exports.update = async (req, res) => {
     const color = await Color.findById(req.params.id);
 
     if (!color) {
-      return res.status(404).json({
+      return res.json({
         success: false,
         message: "Color not found",
       });
@@ -101,10 +101,10 @@ exports.update = async (req, res) => {
       data: color,
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
       message: "Error updating color",
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -114,7 +114,7 @@ exports.destroy = async (req, res) => {
     const color = await Color.findByIdAndDelete(req.params.id);
 
     if (!color) {
-      return res.status(404).json({
+      return res.json({
         success: false,
         message: "Color not found",
       });
@@ -125,10 +125,10 @@ exports.destroy = async (req, res) => {
       message: "Color deleted successfully",
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
       message: "Error deleting color",
-      error: error.message,
+      message: error.message,
     });
   }
 };

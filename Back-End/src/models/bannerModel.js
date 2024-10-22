@@ -8,7 +8,6 @@ const BannerSchema = new mongoose.Schema(
     },
     link: {
       type: String,
-      required: true,
     },
     order: {
       type: Number,

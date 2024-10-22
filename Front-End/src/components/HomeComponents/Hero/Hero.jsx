@@ -1,45 +1,41 @@
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import { Autoplay, Navigation } from "swiper/modules";
-import { useGetBannersQuery } from "../../../Redux/banner/bannerApi";
-import Banner from "../../Skeleton/Banner/Banner";
 import { Link } from "react-router-dom";
 
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/navigation";
+import { Autoplay, Navigation } from "swiper/modules";
+
+import { useGetBannersQuery } from "../../../Redux/banner/bannerApi";
+import Banner from "../../Skeleton/Banner/Banner";
+
 export default function Hero() {
-  const { data, isLoading, isError } = useGetBannersQuery();
+  const { data, isLoading } = useGetBannersQuery();
 
-  let content = null;
-
-  if (isLoading) {
-    content = <Banner />;
-  }
-  if (!isLoading && !isError) {
-    content = data?.data?.map((banner) => (
-      <SwiperSlide key={banner._id}>
-        <Link to={banner?.link}>
-          <img
-            src={`${import.meta.env.VITE_BACKEND_URL}/banner/${banner?.image}`}
-            alt=""
-            className="h-40 w-full sm:h-80"
-          />
-        </Link>
-      </SwiperSlide>
-    ));
-  }
+  if (isLoading) return <Banner />;
 
   return (
     <section>
       <Swiper
-        navigation={true}
-        modules={[Navigation, Autoplay]}
-        loop={true}
         autoplay={{
-          delay: 5000,
+          delay: 3000,
           disableOnInteraction: false,
         }}
-        className="mySwiper h-full w-full"
+        navigation={true}
+        modules={[Autoplay, Navigation]}
+        loop={true}
       >
-        {content}
+        {data?.data?.map((banner) => (
+          <SwiperSlide key={banner._id}>
+            <Link to={banner?.link}>
+              <img
+                src={`${import.meta.env.VITE_BACKEND_URL}/banner/${banner?.image}`}
+                alt="banner"
+                className="h-60 w-full sm:h-[400px] md:h-[500px]"
+                loading="lazy"
+              />
+            </Link>
+          </SwiperSlide>
+        ))}
       </Swiper>
     </section>
   );

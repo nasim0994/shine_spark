@@ -20,7 +20,7 @@ exports.addSubSubCategory = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
       message: error.message,
     });
@@ -47,7 +47,7 @@ exports.getSubSubCategories = async (req, res) => {
       data: subSubCategories,
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
       message: error.message,
     });
@@ -69,7 +69,7 @@ exports.getSubSubCategory = async (req, res) => {
       data: subSubCategory,
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
       message: error.message,
     });
@@ -84,7 +84,7 @@ exports.updateSubSubCategory = async (req, res) => {
     const category = await SubSubCategory.findById(id);
 
     if (!category) {
-      res.status(404).json({
+      res.json({
         success: false,
         message: "Sub Sub Category not found",
       });
@@ -107,7 +107,7 @@ exports.updateSubSubCategory = async (req, res) => {
       message: "Sub Sub Category updated success",
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
       message: error.message,
     });
@@ -121,7 +121,7 @@ exports.deleteSubSubCategory = async (req, res) => {
     const subSubCategory = await SubSubCategory.findById(id);
 
     if (!subSubCategory) {
-      return res.status(400).json({
+      return res.json({
         success: false,
         message: "Sub SubCategory not found!",
       });
@@ -134,7 +134,7 @@ exports.deleteSubSubCategory = async (req, res) => {
       message: "Sub SubCategory delete success",
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
       message: error.message,
     });

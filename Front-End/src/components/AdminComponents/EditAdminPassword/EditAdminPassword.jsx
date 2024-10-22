@@ -1,59 +1,66 @@
-import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 import { useUpdateAdminPasswordMutation } from "../../../Redux/admin/adminApi";
+import { useDispatch } from "react-redux";
+import { userLogout } from "../../../Redux/user/userSlice";
 
-export default function EditAdminPassword({ id, admin }) {
-  const [updateAdminPassword, { isLoading: passIsLoading }] =
-    useUpdateAdminPasswordMutation();
+export default function EditAdminPassword({ id }) {
+  const [updateAdminPassword, { isLoading }] = useUpdateAdminPasswordMutation();
+  const dispatch = useDispatch();
 
   const handleUpdatePassword = async (e) => {
     e.preventDefault();
     const password = e.target.password.value;
+    const repassword = e.target.repassword.value;
+    const currentPassword = e.target.currentPassword.value;
+
+    if (password !== repassword) {
+      toast.error("Password does not match");
+      return;
+    }
+
     const info = {
       password,
+      currentPassword,
     };
 
     const res = await updateAdminPassword({ id, info });
 
     if (res?.data?.success) {
-      Swal.fire("", "Administrator password update success", "success");
-      navigate("/admin/administrator/all-administrator");
+      toast.success("Password updated successfully");
+      dispatch(userLogout());
     } else {
-      Swal.fire(
-        "",
-        res?.error?.data?.error
-          ? res?.error?.data?.error
-          : "Something went wrong",
-        "error"
-      );
+      toast.error(res?.data?.message || "Something  went wrong");
+      console.log(res);
     }
   };
 
   return (
-    <section className="bg-base-100 shadow rounded pb-4">
-      <div className="p-4 border-b text-neutral font-medium flex justify-between items-center">
+    <section>
+      <div className="flex items-center justify-between border-b p-4 font-medium text-neutral">
         <h3>Update Password</h3>
       </div>
 
-      <div className="p-4 border md:w-1/2 mx-auto m-4 rounded">
+      <div className="p-4">
         <form
           onSubmit={handleUpdatePassword}
           className="form_group flex flex-col gap-4"
         >
           <div>
-            <p className="text-neutral-content text-sm">Current Password</p>
-            <input type="password" disabled defaultValue={admin?.password} />
+            <p className="text-sm text-neutral-content">Current Password</p>
+            <input type="password" name="currentPassword" required />
           </div>
           <div>
-            <p className="text-neutral-content text-sm">New Password</p>
+            <p className="text-sm text-neutral-content">New Password</p>
             <input type="password" name="password" required />
+          </div>
+          <div>
+            <p className="text-sm text-neutral-content">Confirm Password</p>
+            <input type="password" name="repassword" required />
           </div>
 
           <div>
-            <button
-              disabled={passIsLoading && "disabled"}
-              className="primary_btn"
-            >
-              {passIsLoading ? "Loading..." : "Update Password"}
+            <button disabled={isLoading} className="primary_btn">
+              {isLoading ? "Loading..." : "Update Password"}
             </button>
           </div>
         </form>

@@ -9,9 +9,9 @@ exports.addReview = async (req, res) => {
   const { product: productId, rating, user: userId } = req?.body;
 
   if (!productId || !rating || !userId) {
-    return res.status(400).json({
+    return res.json({
       success: false,
-      error: "Invalid input. Please provide productId, rating, and studentId.",
+      message: "Invalid input. Please provide productId, rating, and studentId.",
     });
   }
 
@@ -19,18 +19,18 @@ exports.addReview = async (req, res) => {
     // -----------------check user-----------------------
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(400).json({
+      return res.json({
         success: false,
-        error: "User not found",
+        message: "User not found",
       });
     }
 
     // -----------------check product---------------------
     const product = await Product.findById(productId);
     if (!product) {
-      return res.status(400).json({
+      return res.json({
         success: false,
-        error: "Product not found",
+        message: "Product not found",
       });
     }
 
@@ -73,9 +73,9 @@ exports.addReview = async (req, res) => {
       await session.abortTransaction();
       await session.endSession();
 
-      return res.status(500).json({
+      return res.json({
         success: false,
-        error: "Internal server error. Please try again later.",
+        message: "Internal server error. Please try again later.",
       });
     }
 
@@ -85,9 +85,9 @@ exports.addReview = async (req, res) => {
       data: review,
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error,
+      message: error,
     });
   }
 };
@@ -97,9 +97,9 @@ exports.updateReview = async (req, res) => {
   const { rating, product: productId, user: userId } = req.body;
 
   if (!id || !rating || !productId || !userId) {
-    return res.status(400).json({
+    return res.json({
       success: false,
-      error: "Invalid input. Please provide id, rating, productId, and userId.",
+      message: "Invalid input. Please provide id, rating, productId, and userId.",
     });
   }
 
@@ -108,25 +108,25 @@ exports.updateReview = async (req, res) => {
     const review = await Review.findById(id);
 
     if (!review) {
-      return res.status(400).json({
+      return res.json({
         success: false,
-        error: "Review not found",
+        message: "Review not found",
       });
     }
 
     if (review.user.toString() !== userId) {
-      return res.status(400).json({
+      return res.json({
         success: false,
-        error: "You are not authorized to update this review",
+        message: "You are not authorized to update this review",
       });
     }
 
     // -----------------check product---------------------
     const product = await Product.findById(productId);
     if (!product) {
-      return res.status(400).json({
+      return res.json({
         success: false,
-        error: "Product not found",
+        message: "Product not found",
       });
     }
 
@@ -170,9 +170,9 @@ exports.updateReview = async (req, res) => {
       await session.abortTransaction();
       await session.endSession();
 
-      return res.status(500).json({
+      return res.json({
         success: false,
-        error: "Internal server error. Please try again later.",
+        message: "Internal server error. Please try again later.",
       });
     }
 
@@ -182,9 +182,9 @@ exports.updateReview = async (req, res) => {
       data: updatedReview,
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error,
+      message: error,
     });
   }
 };
@@ -214,9 +214,9 @@ exports.getReviewsByProductId = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error,
+      message: error,
     });
   }
 };
@@ -233,9 +233,9 @@ exports.getReviewById = async (req, res) => {
       data: review,
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error,
+      message: error,
     });
   }
 };
@@ -265,9 +265,9 @@ exports.getReviewsByUserId = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error,
+      message: error,
     });
   }
 };
@@ -311,9 +311,9 @@ exports.getAllReviews = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error,
+      message: error,
     });
   }
 };
@@ -327,16 +327,16 @@ exports.deleteReview = async (req, res) => {
     const review = await Review.findById(id);
 
     if (!review) {
-      return res.status(400).json({
+      return res.json({
         success: false,
-        error: "Review not found",
+        message: "Review not found",
       });
     }
 
     if (review.user.toString() !== userId && user?.role !== "admin") {
-      return res.status(400).json({
+      return res.json({
         success: false,
-        error: "You are not authorized to delete this review",
+        message: "You are not authorized to delete this review",
       });
     }
 
@@ -375,9 +375,9 @@ exports.deleteReview = async (req, res) => {
       await session.abortTransaction();
       await session.endSession();
 
-      return res.status(500).json({
+      return res.json({
         success: false,
-        error: "Internal server error. Please try again later.",
+        message: "Internal server error. Please try again later.",
       });
     }
 
@@ -386,9 +386,9 @@ exports.deleteReview = async (req, res) => {
       message: "Review deleted successfully",
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error,
+      message: error,
     });
   }
 };

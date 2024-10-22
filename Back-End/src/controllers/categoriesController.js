@@ -29,7 +29,7 @@ exports.addCategory = async (req, res) => {
       }
     });
 
-    res.status(400).json({
+    res.json({
       success: false,
       message: error.message,
     });
@@ -46,7 +46,7 @@ exports.getCategories = async (req, res) => {
       data: categories,
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
       message: error.message,
     });
@@ -65,7 +65,7 @@ exports.getCategory = async (req, res) => {
       data: category,
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
       message: error.message,
     });
@@ -80,7 +80,7 @@ exports.updateCategory = async (req, res) => {
     const category = await Categories.findById(id);
 
     if (!category) {
-      res.status(404).json({
+      res.json({
         success: false,
         message: "Category not found",
       });
@@ -103,7 +103,7 @@ exports.updateCategory = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
       message: error.message,
     });
@@ -117,14 +117,14 @@ exports.deleteCategory = async (req, res) => {
     const category = await Categories.findById(id);
 
     if (!category) {
-      res.status(404).json({
+      res.json({
         success: false,
         message: "Category not found",
       });
     }
 
     if (category?.subCategories.length > 0) {
-      return res.status(400).json({
+      return res.json({
         success: false,
         message:
           "Category has sub categories, please delete sub categories first",
@@ -146,7 +146,7 @@ exports.deleteCategory = async (req, res) => {
       message: "Category delete success",
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
       message: error.message,
     });

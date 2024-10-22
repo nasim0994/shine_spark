@@ -10,9 +10,9 @@ exports.addBusinessInfo = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error?.message,
+      message: error?.message,
     });
   }
 };
@@ -27,9 +27,9 @@ exports.getBusinessInfo = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error?.message,
+      message: error?.message,
     });
   }
 };
@@ -49,9 +49,9 @@ exports.updateBusinessInfo = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error?.message,
+      message: error?.message,
     });
   }
 };

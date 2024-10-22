@@ -11,7 +11,7 @@ import {
   addToWishlist,
   removeFromWishlist,
 } from "../../Redux/wishlist/wishlistSlice";
-import ReactShare from "./ReactShare/ReactShare";
+// import ReactShare from "./ReactShare/ReactShare";
 
 export default function ProductInfo({ product }) {
   const navigate = useNavigate();
@@ -23,7 +23,6 @@ export default function ProductInfo({ product }) {
   const discount = queryParams.get("discount");
 
   const {
-    slug,
     title,
     images,
     brand,
@@ -50,6 +49,10 @@ export default function ProductInfo({ product }) {
   const [availableStock, setAvailableStock] = useState(totakStock);
   const [selectedPrice, setSelectedPrice] = useState(price);
   const [selectedQuantity, setSelectedQuantity] = useState(1);
+
+  useEffect(() => {
+    setShowImage(images[0]);
+  }, [images]);
 
   const [colors, setColors] = useState([]);
   const sizes = [
@@ -207,8 +210,9 @@ export default function ProductInfo({ product }) {
         <div className="relative">
           <img
             src={`${import.meta.env.VITE_BACKEND_URL}/products/${showImage}`}
-            alt=""
+            alt={title}
             className="h-[350px] w-full rounded"
+            loading="lazy"
           />
 
           {/* Discount */}
@@ -224,8 +228,9 @@ export default function ProductInfo({ product }) {
             <div key={index} onClick={() => setShowImage(img)}>
               <img
                 src={`${import.meta.env.VITE_BACKEND_URL}/products/${img}`}
-                alt=""
+                alt={title}
                 className="h-12 w-full rounded"
+                loading="lazy"
               />
             </div>
           ))}
@@ -279,9 +284,7 @@ export default function ProductInfo({ product }) {
                 ৳ {parseInt(selectedPrice - (selectedPrice * discount) / 100)}
               </p>
               {discount > 0 && (
-                <del className="text-neutral/70">
-                  ৳{(selectedPrice * discount) / 100}
-                </del>
+                <del className="text-red-400">৳{selectedPrice}</del>
               )}
             </div>
           </div>
@@ -382,10 +385,10 @@ export default function ProductInfo({ product }) {
         </div>
 
         {/* Share */}
-        <div className="mt-4 flex items-center gap-3">
+        {/* <div className="mt-4 flex items-center gap-3">
           <p className="text-gray-500">Share: </p>
           <ReactShare slug={slug} />
-        </div>
+        </div> */}
       </div>
     </div>
   );

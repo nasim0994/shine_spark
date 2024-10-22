@@ -25,7 +25,7 @@ export default function Footer() {
   }
 
   return (
-    <footer className="border-t bg-base-100 pb-4 pt-8">
+    <footer className="mt-6 border-t bg-base-100 pb-4 pt-8">
       <div className="container">
         <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5">
           <div className="md:col-span-2">
@@ -39,7 +39,7 @@ export default function Footer() {
                           logo?.data[0]?.logo
                         }`
                   }
-                  className="w-36"
+                  className="w-32 sm:w-44 md:w-60"
                   alt="Logo"
                 />
               </Link>
@@ -81,6 +81,16 @@ export default function Footer() {
                   Shop
                 </Link>
               </li>
+              <li className="mb-2">
+                <Link to="/about-us" className="hover:underline">
+                  About Us
+                </Link>
+              </li>
+              <li className="mb-2">
+                <Link to="/contact-us" className="hover:underline">
+                  Contact Us
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -117,8 +127,9 @@ export default function Footer() {
         {/* bottom */}
         <div className="sm:flex sm:items-center sm:justify-between">
           <span className="text-[15px] text-neutral-content">
-            Copyright© {yearNow != startYear && startYear + " -"} {yearNow}{" "}
-            {businessInfo?.companyName}. All Rights Reserved. develop by{" "}
+            Copyright © {startYear && yearNow != startYear && startYear + " -"}{" "}
+            {yearNow} {businessInfo?.companyName}. All Rights Reserved. develop
+            by{" "}
             <Link
               to="https://emanagerit.com"
               target="_blank"

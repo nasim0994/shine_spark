@@ -1,8 +1,7 @@
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { AiOutlineDelete } from "react-icons/ai";
 import { FaEdit } from "react-icons/fa";
-import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 import Spinner from "../../../components/Spinner/Spinner";
 import {
   useDeleteAdminMutation,
@@ -15,27 +14,23 @@ export default function Administrator() {
   const { loggedUser } = useSelector((state) => state.user);
   const role = loggedUser?.data?.role;
 
-  const [
-    deleteAdmin,
-    { isSuccess, isError: deleteIsError, error: deleteError },
-  ] = useDeleteAdminMutation();
+  const [deleteAdmin] = useDeleteAdminMutation();
 
   const handleDlete = async (id) => {
+    if (loggedUser?.data?._id === id) {
+      return toast.error("You can't delete yourself");
+    }
     const isConfirm = window.confirm("Are you sure delete Administrator");
     if (isConfirm) {
       const res = await deleteAdmin(id);
-      console.log(res);
+      if (res?.data?.success) {
+        toast.success("Administrator deleted successfully");
+      } else {
+        toast.error(res?.data?.message || "Something went wrong");
+        console.log(res);
+      }
     }
   };
-
-  useEffect(() => {
-    if (isSuccess) {
-      Swal.fire("", "Delete Success", "success");
-    }
-    if (deleteIsError) {
-      Swal.fire("", deleteError?.data?.message, "error");
-    }
-  }, [isSuccess, deleteIsError]);
 
   let content = null;
   if (isLoading) {
@@ -51,10 +46,11 @@ export default function Administrator() {
           <div className="flex items-center gap-2">
             <img
               src={`${import.meta.env.VITE_BACKEND_URL}/user/${user?.image}`}
-              alt=""
-              className="w-10 h-10 rounded-full"
+              alt={user?.name}
+              className="h-10 w-10 rounded-full"
+              loading="lazy"
             />
-            {user?.firstName} {user?.lastName}
+            {user?.name}
           </div>
         </td>
         <td>{user?.email}</td>
@@ -64,7 +60,7 @@ export default function Administrator() {
           <div className="flex items-center gap-2">
             {role === "superAdmin" && (
               <Link to={`/admin/administrator/edit-administrator/${user?._id}`}>
-                <FaEdit className="text-[17px] text-gray-700 hover:text-green-500 duration-200" />
+                <FaEdit className="text-[17px] text-gray-700 duration-200 hover:text-green-500" />
               </Link>
             )}
             <button onClick={() => handleDlete(user?._id)}>
@@ -78,7 +74,7 @@ export default function Administrator() {
 
   return (
     <section>
-      <div className="flex justify-end mb-2">
+      <div className="mb-2 flex justify-end">
         <Link
           to="/admin/administrator/add-administrator"
           className="primary_btn"

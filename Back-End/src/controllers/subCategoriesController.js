@@ -19,9 +19,9 @@ exports.addSubCategory = async (req, res) => {
       message: result,
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -34,9 +34,9 @@ exports.updateSubCategory = async (req, res) => {
     const category = await SubCategory.findById(id);
 
     if (!category) {
-      res.status(404).json({
+      res.json({
         success: false,
-        error: "Sub Category not found",
+        message: "Sub Category not found",
       });
     }
 
@@ -56,9 +56,9 @@ exports.updateSubCategory = async (req, res) => {
       message: "Sub Category updated successfully",
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -69,9 +69,9 @@ exports.deleteSubCategory = async (req, res) => {
 
     const subCategory = await SubCategory.findById(id);
     if (!subCategory) {
-      res.status(404).json({
+      res.json({
         success: false,
-        error: "Sub Category not found!",
+        message: "Sub Category not found!",
       });
     }
 
@@ -82,9 +82,9 @@ exports.deleteSubCategory = async (req, res) => {
       message: "Sub Category deleted successfully",
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -107,9 +107,9 @@ exports.getSubCategories = async (req, res) => {
       message: subCategories,
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -128,9 +128,9 @@ exports.getSubCategory = async (req, res) => {
       message: subCategory,
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };

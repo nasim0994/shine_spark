@@ -6,6 +6,9 @@ const productSchema = {
     ref: "Product",
     required: true,
   },
+  discount: {
+    type: Number,
+  },
   quantity: {
     type: Number,
     required: true,
@@ -15,9 +18,6 @@ const productSchema = {
   },
   color: {
     type: String,
-  },
-  discount: {
-    type: Number,
   },
 };
 
@@ -29,32 +29,13 @@ const OrderSchema = new mongoose.Schema(
       required: true,
     },
     shippingInfo: {
-      name: {
+      address: {
         type: String,
         required: true,
       },
-      phone: {
-        type: String,
-        required: true,
-      },
-      email: {
+      note: {
         type: String,
       },
-      city: {
-        type: String,
-        required: true,
-      },
-      area: {
-        type: String,
-      },
-      street: {
-        type: String,
-        required: true,
-      },
-    },
-    shippingCharge: {
-      type: Number,
-      required: true,
     },
     paymentMethod: {
       type: String,
@@ -66,6 +47,10 @@ const OrderSchema = new mongoose.Schema(
       unique: true,
     },
     totalPrice: {
+      type: Number,
+      required: true,
+    },
+    shippingCharge: {
       type: Number,
       required: true,
     },

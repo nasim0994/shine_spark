@@ -4,6 +4,7 @@ import CategoryCard from "../../Skeleton/CategoryCard/CategoryCard";
 
 export default function ChooseByCategory() {
   const { data, isLoading, isError, error } = useGetCategoriesQuery();
+  const categories = data?.data;
 
   let content = null;
   if (isLoading) {
@@ -13,7 +14,7 @@ export default function ChooseByCategory() {
     content = <p>{error.error}</p>;
   }
   if (!isLoading && !isError) {
-    content = data?.data?.map((category) => (
+    content = categories?.map((category) => (
       <Link
         key={category?._id}
         to={`shops/${category.slug}`}
@@ -22,8 +23,9 @@ export default function ChooseByCategory() {
         <div>
           <img
             src={`${import.meta.env.VITE_BACKEND_URL}/${category?.icon}`}
-            alt=""
-            className="mx-auto h-20 w-20 rounded-full border-8 border-base-100 shadow"
+            alt={category?.name}
+            className="mx-auto h-28 w-28 rounded-full border-8 border-base-100 shadow"
+            loading="lazy"
           />
           <h6 className="mt-2 text-sm font-medium md:text-base">
             {category?.name}
@@ -33,13 +35,16 @@ export default function ChooseByCategory() {
     ));
   }
 
-  return (
-    <div className="hidden py-10 md:block">
-      <div className="container">
-        <div className="mt-4 grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7">
-          {content}
+  if (categories?.length > 0) {
+    return (
+      <div className="hidden py-5 md:block">
+        <div className="container">
+          <h2 className="mb-4 text-center text-3xl font-semibold text-secondary">
+            Featured Categories
+          </h2>
+          <div className="flex flex-wrap justify-center gap-14">{content}</div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
 }

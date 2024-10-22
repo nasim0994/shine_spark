@@ -5,7 +5,7 @@ import Spinner from "../components/Spinner/Spinner";
 const AdminRoute = ({ children }) => {
   const { loggedUser } = useSelector((state) => state.user);
   const location = useLocation();
-  const token = localStorage.getItem("eshop_jwt");
+  const token = localStorage.getItem("token");
   let admin =
     loggedUser?.data?.role === "admin" ||
     loggedUser?.data?.role === "superAdmin";

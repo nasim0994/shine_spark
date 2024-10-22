@@ -5,9 +5,9 @@ exports.addTopCampaignBanner = async (req, res) => {
   try {
     const image = req?.file?.filename;
     if (!image) {
-      return res.status(404).json({
+      return res.json({
         success: false,
-        error: "Image is requred",
+        message: "Image is requred",
       });
     }
 
@@ -23,9 +23,9 @@ exports.addTopCampaignBanner = async (req, res) => {
         });
       }
 
-      return res.status(404).json({
+      return res.json({
         success: false,
-        error: "Top Campaign Banner not added",
+        message: "Top Campaign Banner not added",
       });
     }
 
@@ -44,9 +44,9 @@ exports.addTopCampaignBanner = async (req, res) => {
       });
     }
 
-    res.status(500).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -56,9 +56,9 @@ exports.getTopCampaignBanner = async (req, res) => {
     const banner = await TopCampaignBanner.find({});
 
     if (!banner) {
-      return res.status(404).json({
+      return res.json({
         success: false,
-        error: "banner not found",
+        message: "banner not found",
       });
     }
 
@@ -68,9 +68,9 @@ exports.getTopCampaignBanner = async (req, res) => {
       data: banner,
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -79,9 +79,9 @@ exports.updateBanner = async (req, res) => {
   try {
     const banner = req?.file?.filename;
     if (!banner) {
-      return res.status(400).json({
+      return res.json({
         success: false,
-        error: "banner is required",
+        message: "banner is required",
       });
     }
 
@@ -117,9 +117,9 @@ exports.updateBanner = async (req, res) => {
       });
     }
 
-    res.status(500).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };

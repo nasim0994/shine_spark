@@ -23,7 +23,7 @@ export default function MobileCategoriesList({ category }) {
           >
             <img
               src={`${import.meta.env.VITE_BACKEND_URL}/${category?.icon}`}
-              alt=""
+              alt={category?.name}
               className="h-6 w-6"
             />
             {category?.name}

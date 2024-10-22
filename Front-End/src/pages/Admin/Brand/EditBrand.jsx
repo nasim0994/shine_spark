@@ -2,7 +2,7 @@ import { useState } from "react";
 import { AiFillDelete } from "react-icons/ai";
 import ImageUploading from "react-images-uploading";
 import { useNavigate, useParams } from "react-router-dom";
-import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 import {
   useBrandByIdQuery,
   useEditBrandMutation,
@@ -26,27 +26,22 @@ export default function EditBrand() {
 
     const res = await editBrand({ formData, id });
     if (res?.data?.success) {
-      Swal.fire("", "Brand update success", "success");
+      toast.success("Brand Edited Successfully");
       navigate("/admin/brands");
-    } else if (res?.error) {
-      Swal.fire("", `${res?.error?.data?.message}`, "error");
-      console.log(res);
     } else {
-      Swal.fire(
-        "",
-        `${res?.data?.message ? res?.data?.message : "something went wrong"}`
-      );
+      toast.error(res?.data?.message || "An error occurred");
+      console.log(res);
     }
   };
 
   return (
     <form
       onSubmit={handleAEditBrand}
-      className="p-4 bg-base-100 shadhow rounded sm:w-1/2"
+      className="shadhow rounded bg-base-100 p-4 sm:w-1/2"
     >
       <div>
         <p className="text-neutral-content">Icon</p>
-        <div className="flex justify-between items-start">
+        <div className="flex items-start justify-between">
           <ImageUploading
             value={icons}
             onChange={(icn) => seticons(icn)}
@@ -54,13 +49,13 @@ export default function EditBrand() {
           >
             {({ onImageUpload, onImageRemove, dragProps }) => (
               <div
-                className="border rounded border-dashed p-4 w-max"
+                className="w-max rounded border border-dashed p-4"
                 {...dragProps}
               >
                 <div className="flex items-center gap-2">
                   <span
                     onClick={onImageUpload}
-                    className="px-4 py-1.5 rounded-2xl text-base-100 bg-primary cursor-pointer text-sm"
+                    className="cursor-pointer rounded-2xl bg-primary px-4 py-1.5 text-sm text-base-100"
                   >
                     Choose Image
                   </span>
@@ -74,7 +69,7 @@ export default function EditBrand() {
                       <img src={img["data_url"]} alt="" className="w-20" />
                       <div
                         onClick={() => onImageRemove(index)}
-                        className="w-7 h-7 bg-primary rounded-full flex justify-center items-center text-base-100 absolute top-0 right-0 cursor-pointer"
+                        className="absolute right-0 top-0 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-primary text-base-100"
                       >
                         <AiFillDelete />
                       </div>
@@ -89,7 +84,7 @@ export default function EditBrand() {
             <img
               src={`${import.meta.env.VITE_BACKEND_URL}/${data?.data?.icon}`}
               alt=""
-              className="w-20 rounded mt-4"
+              className="mt-4 w-20 rounded"
             />
           )}
         </div>

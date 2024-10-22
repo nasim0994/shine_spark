@@ -25,7 +25,7 @@ export default function SearchBox({ setSearch }) {
         type="text"
         onChange={(e) => setSearchText(e.target.value)}
         placeholder="search Product..."
-        className="searchInput w-full rounded-l border bg-primary/5 px-3 py-1.5 text-[15px] outline-none placeholder:text-sm"
+        className="searchInput w-full rounded-l border border-primary px-3 py-2 text-[15px] outline-none placeholder:text-sm"
       />
       <button className="searchIcon flex items-center justify-center rounded-r bg-primary px-3 text-base-100 md:text-lg">
         <BsSearch />

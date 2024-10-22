@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
 import { MdDelete, MdEdit } from "react-icons/md";
 import Spinner from "../../../../components/Spinner/Spinner";
-import { useEffect } from "react";
-import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 import {
   useDeleteBannerMutation,
   useGetBannersQuery,
@@ -10,35 +9,33 @@ import {
 
 export default function Banner() {
   const { data, isLoading, isError } = useGetBannersQuery();
-  const [deleteBanner, { isSuccess, isError: deleteError }] =
-    useDeleteBannerMutation();
+  const [deleteBanner] = useDeleteBannerMutation();
 
-  const handleDeleteBanner = (id) => {
+  const handleDeleteBanner = async (id) => {
     const isConfirm = window.confirm("are you sure delete this banner?");
     if (isConfirm) {
-      deleteBanner(id);
+      const res = await deleteBanner(id);
+      if (res?.data?.success) {
+        toast.success(res?.data?.message || "Banner deleted successfully");
+      } else {
+        toast.error(
+          res?.data?.message || "Something went wrong, please try again",
+        );
+      }
     }
   };
-
-  useEffect(() => {
-    if (isSuccess) {
-      Swal.fire("", "delete success", "success");
-    }
-    if (deleteError) {
-      Swal.fire("", "somethin wront, please try again", "error");
-    }
-  }, [isSuccess, deleteError]);
 
   if (isLoading) {
     return <Spinner />;
   }
+
   if (isError) {
     return <p>Fail fetch </p>;
   }
 
   return (
-    <section className="bg-base-100 shadow rounded">
-      <div className="p-4 border-b text-neutral font-medium flex justify-between items-center">
+    <section className="rounded bg-base-100 shadow">
+      <div className="flex items-center justify-between border-b p-4 font-medium text-neutral">
         <h3>Banner Lists</h3>
         <Link to="/admin/ecommerce-setting/add-banner" className="primary_btn">
           Add Banner
@@ -56,7 +53,7 @@ export default function Banner() {
               </tr>
             </thead>
             <tbody>
-              {data?.data?.map((banner, i) => (
+              {data?.data?.map((banner) => (
                 <tr key={banner?._id}>
                   <td>{banner?.order}</td>
                   <td>
@@ -66,7 +63,7 @@ export default function Banner() {
                           banner?.image
                         }`}
                         alt=""
-                        className="w-16 h-10"
+                        className="h-10 w-16"
                       />
                     </div>
                   </td>
@@ -75,13 +72,13 @@ export default function Banner() {
                     <div className="flex items-center gap-2 text-lg">
                       <Link
                         to={`/admin/ecommerce-setting/edit-banner/${banner?._id}`}
-                        className="hover:text-red-500 duration-200"
+                        className="duration-200 hover:text-red-500"
                       >
                         <MdEdit />
                       </Link>
                       <button
                         onClick={() => handleDeleteBanner(banner?._id)}
-                        className="hover:text-red-500 duration-200"
+                        className="duration-200 hover:text-red-500"
                       >
                         <MdDelete />
                       </button>

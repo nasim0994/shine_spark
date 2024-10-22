@@ -12,9 +12,9 @@ exports.addProduct = async (req, res) => {
   const images = req?.files?.map((file) => file.filename);
 
   if (images?.length < 1) {
-    return res.status(400).json({
+    return res.json({
       success: false,
-      error: "Please upload at least one image",
+      message: "Please upload at least one image",
     });
   }
 
@@ -46,9 +46,9 @@ exports.addProduct = async (req, res) => {
       });
     }
 
-    res.status(500).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -127,9 +127,9 @@ exports.getAllProducts = async (req, res) => {
       data: products,
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -141,7 +141,7 @@ exports.getProductById = async (req, res) => {
     );
 
     if (!result) {
-      return res.status(404).json({
+      return res.json({
         success: false,
         message: "Product not found",
       });
@@ -153,9 +153,9 @@ exports.getProductById = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -168,7 +168,7 @@ exports.getProductBySlug = async (req, res) => {
     );
 
     if (!result) {
-      return res.status(404).json({
+      return res.json({
         success: false,
         message: "Product not found",
       });
@@ -180,9 +180,9 @@ exports.getProductBySlug = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -193,7 +193,7 @@ exports.deleteProductById = async (req, res) => {
 
     const product = await Product.findById(id);
     if (!product) {
-      return res.status(404).json({
+      return res.json({
         success: false,
         message: "Product not found",
       });
@@ -216,9 +216,9 @@ exports.deleteProductById = async (req, res) => {
       message: "Product deleted successfully",
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -242,7 +242,7 @@ exports.updateProduct = async (req, res) => {
         });
       });
 
-      return res.status(404).json({
+      return res.json({
         success: false,
         message: "Product not found",
       });
@@ -298,9 +298,9 @@ exports.updateProduct = async (req, res) => {
       });
     }
 
-    res.status(500).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -319,9 +319,9 @@ exports.getFeaturedProducts = async (req, res) => {
       data: products,
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };

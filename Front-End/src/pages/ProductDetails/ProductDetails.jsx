@@ -9,14 +9,17 @@ import Reviews from "./Review/Reviews";
 import RelatedProducts from "./RelatedProducts/RelatedProducts";
 
 export default function ProductDetails() {
-  useEffect(() => {
-    window.scroll(0, 0);
-  }, []);
+  window.scroll(0, 0);
+
   const [tab, setTab] = useState("description");
   const params = useParams();
   let slug = params?.id;
   const { data, isLoading, isError, error, isSuccess } =
     useGetProductBySlugQuery(slug);
+
+  useEffect(() => {
+    document.title = slug;
+  }, [slug]);
 
   const description = isSuccess ? data?.data?.description : "";
   const parcerDescription = parcer(description);
@@ -31,18 +34,18 @@ export default function ProductDetails() {
   if (!isLoading && !isError && isSuccess) {
     content = (
       <div>
-        <div className="lg:flex shadow-lg mt-4 rounded overflow-hidden">
-          <div className="lg:w-[75%] bg-base-100 p-4 text-neutral">
+        <div className="mt-4 overflow-hidden rounded shadow-lg lg:flex">
+          <div className="bg-base-100 p-4 text-neutral lg:w-[75%]">
             <ProductInfo product={data?.data} />
           </div>
 
-          <div className="lg:w-[25%] bg-stone-50 p-4 text-sm">
+          <div className="bg-stone-50 p-4 text-sm lg:w-[25%]">
             <RightSideInfo service={data?.data?.service} />
           </div>
         </div>
 
         {/* Details */}
-        <div className="bg-base-100 shadow-lg p-4 rounded mt-6">
+        <div className="mt-6 rounded bg-base-100 p-4 shadow-lg">
           <div className="flex items-center gap-6 border-b">
             <button
               onClick={() => setTab("description")}

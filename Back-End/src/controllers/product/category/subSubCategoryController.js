@@ -19,7 +19,7 @@ exports.insert = async (req, res) => {
 
     if (!subCategory) {
       await SubSubCategory.findByIdAndDelete(newSubSubCategory._id);
-      return res.status(404).json({
+      return res.json({
         success: false,
         message: "SubCategory not found.",
       });
@@ -34,7 +34,7 @@ exports.insert = async (req, res) => {
       data: newSubSubCategory,
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
       message: error.message,
     });
@@ -52,7 +52,7 @@ exports.get = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
       message: error.message,
     });
@@ -64,7 +64,7 @@ exports.getById = async (req, res) => {
     const subSubCategory = await SubSubCategory.findById(req.params.id);
 
     if (!subSubCategory) {
-      return res.status(404).json({
+      return res.json({
         success: false,
         message: "SubSubCategory not found",
       });
@@ -76,7 +76,7 @@ exports.getById = async (req, res) => {
       data: subSubCategory,
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
       message: error.message,
     });
@@ -89,7 +89,7 @@ exports.update = async (req, res) => {
     const subSubCategory = await SubSubCategory.findById(req.params.id);
 
     if (!subSubCategory) {
-      return res.status(404).json({
+      return res.json({
         success: false,
         message: "SubSubCategory not found",
       });
@@ -123,7 +123,7 @@ exports.update = async (req, res) => {
       data: subSubCategory,
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
       message: error.message,
     });
@@ -137,7 +137,7 @@ exports.destroy = async (req, res) => {
     );
 
     if (!subSubCategory) {
-      return res.status(404).json({
+      return res.json({
         success: false,
         message: "SubSubCategory not found",
       });
@@ -154,7 +154,7 @@ exports.destroy = async (req, res) => {
       message: "SubSubCategory deleted successfully",
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
       message: error.message,
     });

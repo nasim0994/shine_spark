@@ -9,7 +9,6 @@ import { useAllUsersQuery } from "../../../Redux/user/userApi";
 import { useGetAllAdminsQuery } from "../../../Redux/admin/adminApi";
 import { FaBoxOpen, FaUsers, FaUserShield, FaCartPlus } from "react-icons/fa";
 import { GrView } from "react-icons/gr";
-import { AiOutlineDelete } from "react-icons/ai";
 import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import { SiBrandfolder } from "react-icons/si";
 import { MdOutlineCategory } from "react-icons/md";
@@ -27,122 +26,122 @@ export default function Dashboard() {
   return (
     <section>
       {/* card */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
-        <div className="flex justify-between items-center rounded-lg shadow p-4 bg-base-100">
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
+        <div className="flex items-center justify-between rounded-lg bg-base-100 p-4 shadow">
           <div>
-            <p className="text-neutral font-dinMedium">Total Products</p>
-            <h3 className="text-primary font-bold">{products?.data?.length}</h3>
+            <p className="font-dinMedium text-neutral">Total Products</p>
+            <h3 className="font-bold text-primary">{products?.data?.length}</h3>
           </div>
-          <div className="bg-primary text-base-100 w-11 h-11 rounded-lg flex justify-center items-center">
+          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary text-base-100">
             <FaBoxOpen className="text-xl" />
           </div>
         </div>
 
-        <div className="flex justify-between items-center rounded-lg shadow p-4 bg-base-100">
+        <div className="flex items-center justify-between rounded-lg bg-base-100 p-4 shadow">
           <div>
-            <p className="text-neutral font-dinMedium">Total Orders</p>
-            <h3 className="text-red-600 font-bold">{orders?.data?.length}</h3>
+            <p className="font-dinMedium text-neutral">Total Orders</p>
+            <h3 className="font-bold text-red-600">{orders?.data?.length}</h3>
           </div>
 
-          <div className="bg-red-600 text-base-100 w-11 h-11 rounded-lg flex justify-center items-center">
+          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-red-600 text-base-100">
             <FaCartPlus className="text-xl" />
           </div>
         </div>
 
-        <div className="flex justify-between items-center rounded-lg shadow p-4 bg-base-100">
+        <div className="flex items-center justify-between rounded-lg bg-base-100 p-4 shadow">
           <div>
-            <p className="text-neutral font-dinMedium">Total Users</p>
-            <h3 className="text-green-600 font-bold">{users?.data?.length}</h3>
+            <p className="font-dinMedium text-neutral">Total Users</p>
+            <h3 className="font-bold text-green-600">{users?.data?.length}</h3>
           </div>
 
-          <div className="bg-green-600 text-base-100 w-11 h-11 rounded-lg flex justify-center items-center">
+          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-green-600 text-base-100">
             <FaUsers className="text-xl" />
           </div>
         </div>
 
-        <div className="flex justify-between items-center rounded-lg shadow p-4 bg-base-100">
+        <div className="flex items-center justify-between rounded-lg bg-base-100 p-4 shadow">
           <div>
-            <p className="text-neutral font-dinMedium">Total Administrators</p>
-            <h3 className="text-green-600 font-bold">{admin?.data?.length}</h3>
+            <p className="font-dinMedium text-neutral">Total Administrators</p>
+            <h3 className="font-bold text-green-600">{admin?.data?.length}</h3>
           </div>
 
-          <div className="bg-primary text-base-100 w-11 h-11 rounded-lg flex justify-center items-center">
+          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary text-base-100">
             <FaUserShield className="text-xl" />
           </div>
         </div>
 
-        <div className="flex justify-between items-center rounded-lg shadow p-4 bg-base-100">
+        <div className="flex items-center justify-between rounded-lg bg-base-100 p-4 shadow">
           <div>
-            <p className="text-neutral font-dinMedium">Total Categories</p>
-            <h3 className="text-green-600 font-bold">
+            <p className="font-dinMedium text-neutral">Total Categories</p>
+            <h3 className="font-bold text-green-600">
               {category?.data?.length}
             </h3>
           </div>
 
-          <div className="bg-primary text-base-100 w-11 h-11 rounded-lg flex justify-center items-center">
+          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary text-base-100">
             <MdOutlineCategory className="text-xl" />
           </div>
         </div>
 
-        <div className="flex justify-between items-center rounded-lg shadow p-4 bg-base-100">
+        <div className="flex items-center justify-between rounded-lg bg-base-100 p-4 shadow">
           <div>
-            <p className="text-neutral font-dinMedium">Total SubCategories</p>
-            <h3 className="text-green-600 font-bold">
+            <p className="font-dinMedium text-neutral">Total SubCategories</p>
+            <h3 className="font-bold text-green-600">
               {subCategory?.data?.length}
             </h3>
           </div>
 
-          <div className="bg-primary text-base-100 w-11 h-11 rounded-lg flex justify-center items-center">
+          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary text-base-100">
             <MdOutlineCategory className="text-xl" />
           </div>
         </div>
 
-        <div className="flex justify-between items-center rounded-lg shadow p-4 bg-base-100">
+        <div className="flex items-center justify-between rounded-lg bg-base-100 p-4 shadow">
           <div>
-            <p className="text-neutral font-dinMedium">
+            <p className="font-dinMedium text-neutral">
               Total Sub Sub-Categories
             </p>
-            <h3 className="text-green-600 font-bold">
+            <h3 className="font-bold text-green-600">
               {subSubCategory?.data?.length}
             </h3>
           </div>
 
-          <div className="bg-primary text-base-100 w-11 h-11 rounded-lg flex justify-center items-center">
+          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary text-base-100">
             <MdOutlineCategory className="text-xl" />
           </div>
         </div>
 
-        <div className="flex justify-between items-center rounded-lg shadow p-4 bg-base-100">
+        <div className="flex items-center justify-between rounded-lg bg-base-100 p-4 shadow">
           <div>
-            <p className="text-neutral font-dinMedium">Total Brand</p>
-            <h3 className="text-green-600 font-bold">{brand?.data?.length}</h3>
+            <p className="font-dinMedium text-neutral">Total Brand</p>
+            <h3 className="font-bold text-green-600">{brand?.data?.length}</h3>
           </div>
 
-          <div className="bg-primary text-base-100 w-11 h-11 rounded-lg flex justify-center items-center">
+          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary text-base-100">
             <SiBrandfolder className="text-xl" />
           </div>
         </div>
       </div>
 
       {/* sales */}
-      <div className="mt-4 bg-base-100 p-4 rounded shadow">
+      <div className="mt-4 rounded bg-base-100 p-4 shadow">
         <p>Sales Report</p>
 
-        <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
-          <div className="flex justify-between items-center rounded-lg p-4 border">
+        <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
+          <div className="flex items-center justify-between rounded-lg border p-4">
             <div>
-              <p className="text-neutral font-dinMedium">Total Sales</p>
+              <p className="font-dinMedium text-neutral">Total Sales</p>
               <div className="flex items-end gap-1">
-                <h3 className="text-primary font-bold">
+                <h3 className="font-bold text-primary">
                   {orders?.data.reduce(
                     (total, item) => total + item.totalPrice,
-                    0
+                    0,
                   )}
                 </h3>
                 <small>tk</small>
               </div>
             </div>
-            <div className="bg-primary text-base-100 w-11 h-11 rounded-lg flex justify-center items-center">
+            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary text-base-100">
               <FaMoneyBillTrendUp className="text-xl" />
             </div>
           </div>
@@ -150,7 +149,7 @@ export default function Dashboard() {
       </div>
 
       {/* Order */}
-      <div className="mt-4 bg-base-100 p-4 rounded shadow">
+      <div className="mt-4 rounded bg-base-100 p-4 shadow">
         <div className="flex items-center justify-between">
           <p>Latest Orders</p>
           <Link to="/admin/order/all-orders" className="primary_btn text-sm">
@@ -158,7 +157,7 @@ export default function Dashboard() {
           </Link>
         </div>
 
-        <div className="mt-4 relative overflow-x-auto">
+        <div className="relative mt-4 overflow-x-auto">
           <table className="dashboard_table">
             <thead>
               <tr>
@@ -179,8 +178,8 @@ export default function Dashboard() {
                         order?.status === "pending"
                           ? "border-yellow-500"
                           : order?.status === "shipped"
-                          ? "border-green-500"
-                          : "border-red-500"
+                            ? "border-green-500"
+                            : "border-red-500"
                       } rounded px-2 py-1`}
                     >
                       {order?.status === "pending" ? (
@@ -192,19 +191,13 @@ export default function Dashboard() {
                       )}
                     </div>
                   </td>
-                  <td className="flex gap-3">
+                  <td>
                     <Link
                       to={`/admin/order/${order?._id}`}
-                      className=" hover:text-blue-700"
+                      className="hover:text-blue-700"
                     >
                       <GrView />
                     </Link>
-                    <button
-                      onClick={() => deleteOrderHandler(order?._id)}
-                      className="hover:text-red-700"
-                    >
-                      <AiOutlineDelete />
-                    </button>
                   </td>
                 </tr>
               ))}

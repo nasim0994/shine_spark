@@ -19,9 +19,9 @@ exports.createAboutUs = async (req, res) => {
       data: result,
     });
   } catch (err) {
-    res.status(500).json({
+    res.json({
       success: false,
-      error: err.message,
+      message: err.message,
     });
   }
 };
@@ -31,9 +31,9 @@ exports.getAboutUs = async (req, res) => {
     const result = await AboutUs.find();
 
     if (!result) {
-      return res.status(404).json({
+      return res.json({
         success: false,
-        error: "About Us not found",
+        message: "About Us not found",
       });
     }
 
@@ -43,9 +43,9 @@ exports.getAboutUs = async (req, res) => {
       data: result,
     });
   } catch (err) {
-    res.status(500).json({
+    res.json({
       success: false,
-      error: err.message,
+      message: err.message,
     });
   }
 };
@@ -59,9 +59,9 @@ exports.updateAboutUs = async (req, res) => {
     const isExist = await AboutUs.findById(id);
 
     if (!isExist) {
-      return res.status(404).json({
+      return res.json({
         success: false,
-        error: "About Us not found",
+        message: "About Us not found",
       });
     }
 
@@ -87,9 +87,9 @@ exports.updateAboutUs = async (req, res) => {
     });
 
     if (!result) {
-      return res.status(404).json({
+      return res.json({
         success: false,
-        error: "About Us not updated",
+        message: "About Us not updated",
       });
     }
 
@@ -99,9 +99,9 @@ exports.updateAboutUs = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };

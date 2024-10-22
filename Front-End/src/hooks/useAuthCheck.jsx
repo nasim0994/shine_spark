@@ -6,10 +6,10 @@ import { useJwt } from "react-jwt";
 export default async function useAuthCheck() {
   const dispatch = useDispatch();
   const [authChecked, setAuthChecked] = useState(false);
-  const token = localStorage?.getItem("eshop_jwt");
+  const token = localStorage?.getItem("token");
   const { isExpired } = useJwt(token);
   if (isExpired) {
-    localStorage.removeItem("eshop_jwt");
+    localStorage.removeItem("token");
   }
 
   useEffect(() => {
@@ -26,7 +26,7 @@ export default async function useAuthCheck() {
               userLoggedIn({
                 token: token,
                 data: data,
-              })
+              }),
             );
           }
         })

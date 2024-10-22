@@ -7,9 +7,9 @@ exports.insert = async (req, res) => {
 
   try {
     if (!icon) {
-      return res.status(400).json({
+      return res.json({
         success: false,
-        error: "Brand icon is required",
+        message: "Brand icon is required",
       });
     }
 
@@ -32,9 +32,9 @@ exports.insert = async (req, res) => {
         console.log(err);
       }
     });
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -48,9 +48,9 @@ exports.get = async (req, res) => {
       data: brands,
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -61,9 +61,9 @@ exports.destroy = async (req, res) => {
   try {
     const brand = await Brand.findById(id);
     if (!brand) {
-      return res.status(400).json({
+      return res.json({
         success: false,
-        error: "Brand not found",
+        message: "Brand not found",
       });
     }
 
@@ -82,9 +82,9 @@ exports.destroy = async (req, res) => {
       message: "Brand deleted successfully",
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error,
+      message: error,
     });
   }
 };
@@ -101,9 +101,9 @@ exports.getById = async (req, res) => {
       data: brand,
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error,
+      message: error,
     });
   }
 };
@@ -119,9 +119,9 @@ exports.update = async (req, res) => {
     const brand = await Brand.findById(id);
 
     if (!brand) {
-      return res.status(400).json({
+      return res.json({
         success: false,
-        error: "Brand not found",
+        message: "Brand not found",
       });
     }
 
@@ -157,9 +157,9 @@ exports.update = async (req, res) => {
         console.log(err);
       }
     });
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error,
+      message: error,
     });
   }
 };

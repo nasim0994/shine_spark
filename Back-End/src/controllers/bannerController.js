@@ -6,9 +6,9 @@ exports.addBanner = async (req, res) => {
     const image = req?.file?.filename;
 
     if (!image) {
-      return res.status(400).json({
+      return res.json({
         success: false,
-        error: "banner image is required",
+        message: "banner image is required",
       });
     }
 
@@ -25,9 +25,9 @@ exports.addBanner = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -42,9 +42,9 @@ exports.allBanners = async (req, res) => {
       data: banners,
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -68,15 +68,15 @@ exports.deleteBanner = async (req, res) => {
         message: "Delete success",
       });
     } else {
-      res.status(400).json({
+      res.json({
         success: false,
-        error: "Banner not found",
+        message: "Banner not found",
       });
     }
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -93,9 +93,9 @@ exports.getBannerById = async (req, res) => {
       data: banner,
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error,
+      message: error,
     });
   }
 };
@@ -109,9 +109,9 @@ exports.updateBanner = async (req, res) => {
     const banner = await Banner.findById(id);
 
     if (!banner) {
-      return res.status(400).json({
+      return res.json({
         success: false,
-        error: "Banner not found",
+        message: "Banner not found",
       });
     }
 
@@ -140,9 +140,9 @@ exports.updateBanner = async (req, res) => {
       message: "Banner updated successfully",
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error,
+      message: error,
     });
   }
 };

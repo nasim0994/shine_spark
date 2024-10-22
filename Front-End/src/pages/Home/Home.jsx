@@ -4,9 +4,11 @@ import CategoryWaysProducts from "../../components/HomeComponents/CategoryWaysPr
 import ChooseByBrand from "../../components/HomeComponents/ChooseByBrand/ChooseByBrand";
 import ChooseByCategory from "../../components/HomeComponents/ChooseByCategory/ChooseByCategory";
 import FeaturedProducts from "../../components/HomeComponents/FeaturedProducts/FeaturedProducts";
-import FlashSale from "../../components/HomeComponents/FlashSale/FlashSale";
+
 import Hero from "../../components/HomeComponents/Hero/Hero";
 import MobileCategories from "../../components/HomeComponents/MobileCategories/MobileCategories";
+
+import FlashSale from "../../components/HomeComponents/FlashSale/FlashSale";
 
 export default function Home() {
   useEffect(() => {
@@ -19,8 +21,8 @@ export default function Home() {
       <MobileCategories />
       <ChooseByCategory />
       <FlashSale />
-      <FeaturedProducts />
       <TopCampaignBanner />
+      <FeaturedProducts />
       <CategoryWaysProducts />
       <ChooseByBrand />
     </>

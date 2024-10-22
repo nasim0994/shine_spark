@@ -6,36 +6,39 @@ export default function TopCampaignBanner() {
 
   if (isLoading) {
     return (
-      <div className="w-full h-28 sm:h-40 lg:h-60 bg-gray-100 rounded"></div>
+      <div className="h-28 w-full rounded bg-gray-100 sm:h-40 lg:h-60"></div>
     );
   }
 
-  return (
-    <section className="py-4">
-      <div className="container">
-        <div className="sm:w-3/4 mx-auto">
-          <div className="w-full h-28 sm:h-40 lg:h-60 relative">
-            <Link to="/shops">
-              <img
-                src={`${import.meta.env.VITE_BACKEND_URL}/campaignBanner/${
-                  data?.data[0]?.image
-                }`}
-                alt=""
-                className="w-full h-full rounded"
-              />
-            </Link>
-
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2">
-              <Link
-                to="/shops"
-                className="block bg-green-700 text-base-100 px-6 py-2 rounded-full text-[10px] sm:text-sm animate_btn"
-              >
-                Shop Now
+  if (data?.data?.length > 0) {
+    return (
+      <section className="py-4">
+        <div className="container">
+          <div className="mx-auto sm:w-3/4">
+            <div className="relative h-28 w-full sm:h-40 lg:h-60">
+              <Link to="/shops">
+                <img
+                  src={`${import.meta.env.VITE_BACKEND_URL}/campaignBanner/${
+                    data?.data[0]?.image
+                  }`}
+                  alt="campaign"
+                  className="h-full w-full rounded"
+                  loading="lazy"
+                />
               </Link>
+
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2">
+                <Link
+                  to="/shops"
+                  className="animate_btn block rounded-full bg-primary px-6 py-2 text-[10px] text-base-100 sm:text-sm"
+                >
+                  Shop Now
+                </Link>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
-  );
+      </section>
+    );
+  }
 }

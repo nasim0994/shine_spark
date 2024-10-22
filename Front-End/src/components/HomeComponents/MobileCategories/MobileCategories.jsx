@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 
 export default function MobileCategories() {
   const { data, isLoading, isError, error } = useGetCategoriesQuery();
+  const categories = data?.data;
 
   let content = null;
   if (isLoading) {
@@ -21,7 +22,7 @@ export default function MobileCategories() {
     content = <p>{error.error}</p>;
   }
 
-  if (!isLoading && !isError && data?.data?.length > 0) {
+  if (!isLoading && !isError && categories?.length > 0) {
     content = (
       <Swiper
         slidesPerView={1}
@@ -29,7 +30,7 @@ export default function MobileCategories() {
         loop={true}
         modules={[Autoplay]}
         autoplay={{
-          delay: 3000,
+          delay: 2000,
           disableOnInteraction: false,
         }}
         breakpoints={{
@@ -38,7 +39,7 @@ export default function MobileCategories() {
             spaceBetween: 3,
           },
           350: {
-            slidesPerView: 4,
+            slidesPerView: 3,
             spaceBetween: 3,
           },
           600: {
@@ -47,7 +48,7 @@ export default function MobileCategories() {
           },
         }}
       >
-        {data?.data?.map((category) => (
+        {categories?.map((category) => (
           <SwiperSlide key={category?._id}>
             <Link
               to={`shops/${category.slug}`}
@@ -70,9 +71,11 @@ export default function MobileCategories() {
     );
   }
 
-  return (
-    <section className="mt-2 md:hidden">
-      <div className="container">{content}</div>
-    </section>
-  );
+  if (categories?.length > 0) {
+    return (
+      <section className="mt-2 md:hidden">
+        <div className="container">{content}</div>
+      </section>
+    );
+  }
 }

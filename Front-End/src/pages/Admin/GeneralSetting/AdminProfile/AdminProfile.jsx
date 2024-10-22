@@ -38,26 +38,26 @@ export default function AdminProfile() {
       Swal.fire(
         "",
         error?.data?.error ? error?.data?.error : "Something went wrong",
-        "error"
+        "error",
       );
     }
   };
 
   return (
     <>
-      <section className="bg-base-100 shadow rounded pb-4">
-        <div className="p-4 border-b text-neutral font-medium flex justify-between items-center">
+      <section className="rounded bg-base-100 pb-4 shadow">
+        <div className="flex items-center justify-between border-b p-4 font-medium text-neutral">
           <h3>My Profile</h3>
         </div>
 
-        <div className="p-4 border md:w-2/3 mx-auto mt-4 rounded">
-          <form
-            onSubmit={handleEdit}
-            className="form_group flex flex-col gap-4"
-          >
-            <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid gap-4 xl:grid-cols-2 xl:border-b">
+          <div className="p-4 xl:border-r">
+            <form
+              onSubmit={handleEdit}
+              className="form_group flex flex-col gap-4"
+            >
               <div>
-                <p className="text-neutral-content text-sm">Full Name</p>
+                <p className="text-sm text-neutral-content">Full Name</p>
                 <input
                   type="text"
                   name="name"
@@ -65,8 +65,9 @@ export default function AdminProfile() {
                   defaultValue={admin?.name}
                 />
               </div>
+
               <div>
-                <p className="text-neutral-content text-sm">Email</p>
+                <p className="text-sm text-neutral-content">Email</p>
                 <input
                   type="email"
                   name="email"
@@ -74,11 +75,9 @@ export default function AdminProfile() {
                   defaultValue={admin?.email}
                 />
               </div>
-            </div>
 
-            <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <p className="text-neutral-content text-sm">Phone</p>
+                <p className="text-sm text-neutral-content">Phone</p>
                 <input
                   type="text"
                   name="phone"
@@ -88,26 +87,26 @@ export default function AdminProfile() {
               </div>
 
               <div>
-                <p className="text-neutral-content text-sm">Role</p>
+                <p className="text-sm text-neutral-content">Role</p>
                 <input type="text" value={admin?.role} disabled />
               </div>
-            </div>
 
-            <div>
-              <button
-                disabled={isLoading && "disabled"}
-                className="primary_btn my-4"
-              >
-                {isLoading ? "Loading..." : "Update Profile"}
-              </button>
-            </div>
-          </form>
+              <div>
+                <button
+                  disabled={isLoading && "disabled"}
+                  className="primary_btn"
+                >
+                  {isLoading ? "Loading..." : "Update Profile"}
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <EditAdminPassword id={id} />
         </div>
       </section>
 
       <br />
-
-      <EditAdminPassword id={id} admin={admin} />
     </>
   );
 }

@@ -313,11 +313,12 @@ export default function ProductCard({ product, discount: flashDiscount = 0 }) {
         <div className="product_card">
           <div className="flex h-full flex-col justify-between rounded shadow">
             <Link to={`/product/${slug}?discount=${newDiscount}`}>
-              <div className="relative h-56 overflow-hidden">
+              <div className="relative h-60 overflow-hidden">
                 <img
                   src={`${import.meta.env.VITE_BACKEND_URL}/products/${images[0]}`}
-                  alt=""
-                  className="product_img h-full w-full"
+                  alt={title}
+                  className="product_img h-full w-full rounded"
+                  loading="lazy"
                 />
 
                 {newDiscount > 0 && (
@@ -327,8 +328,8 @@ export default function ProductCard({ product, discount: flashDiscount = 0 }) {
                 )}
               </div>
 
-              <h1 className="title mb-1 p-2 text-sm font-medium sm:text-base">
-                {title.length > 30 ? `${title.slice(0, 30)}...` : title}
+              <h1 className="title p-2 text-sm font-medium sm:text-base">
+                {title.length > 25 ? `${title.slice(0, 25)}...` : title}
               </h1>
             </Link>
 
@@ -340,25 +341,26 @@ export default function ProductCard({ product, discount: flashDiscount = 0 }) {
                     {variants?.length > 0
                       ? parseInt(
                           variants[0]?.sellingPrice -
-                            (variants[0]?.sellingPrice * discount) / 100,
+                            (variants[0]?.sellingPrice * newDiscount) / 100,
                         )
                       : parseInt(
-                          sellingPrice - (sellingPrice * discount) / 100,
+                          sellingPrice - (sellingPrice * newDiscount) / 100,
                         )}
                   </p>
-                  {discount > 0 && (
-                    <del className="text-xs text-neutral/70 sm:text-sm">
+
+                  {newDiscount > 0 && (
+                    <del className="text-xs text-red-400 sm:text-sm">
                       ৳
                       {variants?.length > 0
-                        ? parseInt((variants[0]?.sellingPrice * discount) / 100)
-                        : parseInt((sellingPrice * discount) / 100)}
+                        ? parseInt(variants[0]?.sellingPrice)
+                        : parseInt(sellingPrice)}
                     </del>
                   )}
                 </div>
 
                 <div className="flex items-center gap-1 text-sm">
                   <Rating rating={rating || 0} />
-                  <p className="text-neutral-content text-xs">
+                  <p className="text-xs text-neutral-content">
                     ({reviewer ? reviewer : 0})
                   </p>
                 </div>

@@ -7,6 +7,7 @@ import ProductCard from "../../components/ProductCard/ProductCard";
 import ProductCards from "../../components/Skeleton/ProductCards/ProductCards";
 import Pagination from "../../components/Pagination/Pagination";
 import PriceRangeSlider from "../../components/PriceRange/PriceRange";
+import MobileCategoriesSidebar from "../../components/MobileCategoriesSidebar/MobileCategoriesSidebar";
 
 export default function Shop() {
   useEffect(() => {
@@ -136,6 +137,15 @@ export default function Shop() {
 
         <div className="mt-4 gap-4 md:flex">
           <div className="shop_categories hidden h-full md:block">
+            <h3 className="border-b pb-1 font-medium text-neutral">
+              Categories
+            </h3>
+            <div className="mt-2 text-[15px]">
+              <MobileCategoriesSidebar />
+            </div>
+
+            <br />
+
             <PriceRangeSlider
               values={values}
               setValues={setValues}
@@ -143,12 +153,6 @@ export default function Shop() {
               MAX={MAX}
               STEP={STEP}
             />
-            {/* <h3 className="border-b pb-1 font-medium text-neutral">
-              Categories
-            </h3> */}
-            <div className="mt-2 text-[15px]">
-              {/* <MobileCategoriesSidebar /> */}
-            </div>
           </div>
 
           <div className="shop_products min-h-[70vh]">

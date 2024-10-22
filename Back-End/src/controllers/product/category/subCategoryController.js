@@ -19,7 +19,7 @@ exports.insert = async (req, res) => {
     if (!category) {
       await SubCategory.findByIdAndDelete(newSubCategory._id);
 
-      return res.status(404).json({
+      return res.json({
         success: false,
         message: "Parent Category not found.",
       });
@@ -34,7 +34,7 @@ exports.insert = async (req, res) => {
       data: newSubCategory,
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
       message: error.message,
     });
@@ -49,10 +49,10 @@ exports.get = async (req, res) => {
       data: subCategories,
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
       message: "Error retrieving subcategories",
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -62,7 +62,7 @@ exports.getById = async (req, res) => {
     const subCategory = await SubCategory.findById(req.params.id);
 
     if (!subCategory) {
-      return res.status(404).json({
+      return res.json({
         success: false,
         message: "SubCategory not found",
       });
@@ -73,10 +73,10 @@ exports.getById = async (req, res) => {
       data: subCategory,
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
       message: "Error retrieving subcategory",
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -87,7 +87,7 @@ exports.update = async (req, res) => {
     const subCategory = await SubCategory.findById(req.params.id);
 
     if (!subCategory) {
-      return res.status(404).json({
+      return res.json({
         success: false,
         message: "SubCategory not found",
       });
@@ -121,7 +121,7 @@ exports.update = async (req, res) => {
       data: subCategory,
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
       message: error.message,
     });
@@ -133,14 +133,14 @@ exports.destroy = async (req, res) => {
     const subCategory = await SubCategory.findById(req.params.id);
 
     if (!subCategory) {
-      return res.status(404).json({
+      return res.json({
         success: false,
         message: "SubCategory not found",
       });
     }
 
     if (subCategory?.subSubCategories.length > 0) {
-      return res.status(400).json({
+      return res.json({
         success: false,
         message: "SubCategory has SubSubCategories. Please delete them first.",
       });
@@ -158,7 +158,7 @@ exports.destroy = async (req, res) => {
       message: "SubCategory deleted successfully",
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
       message: error.message,
     });

@@ -2,7 +2,7 @@ import { BiSolidPencil } from "react-icons/bi";
 import { MdDeleteOutline } from "react-icons/md";
 import { Link } from "react-router-dom";
 import Spinner from "../../../components/Spinner/Spinner";
-import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 import {
   useAllBrandsQuery,
   useDeleteBrandMutation,
@@ -18,9 +18,10 @@ export default function AllBrands() {
     if (isConfirm) {
       const result = await deleteBrand(id);
       if (result?.data?.success) {
-        Swal.fire("", "Brand Delete Success", "success");
+        toast.success("Brand Deleted Successfully");
       } else {
-        Swal.fire("", "Somethin went worng", "error");
+        toast.error(result?.data?.message || "An error occurred");
+        console.log(result);
       }
     }
   };
@@ -40,8 +41,8 @@ export default function AllBrands() {
         <td>
           <img
             src={`${import.meta.env.VITE_BACKEND_URL}/${brand?.icon}`}
-            alt=""
-            className="w-10 h-10 rounded-full border"
+            alt={brand?.name}
+            className="h-10 w-10 rounded-full border"
           />
         </td>
         <td>{brand?.name}</td>
@@ -49,13 +50,13 @@ export default function AllBrands() {
           <div className="flex items-center gap-2">
             <Link
               to={`/admin/edit-brand/${brand?._id}`}
-              className="hover:text-green-700 duration-200"
+              className="duration-200 hover:text-green-700"
             >
               <BiSolidPencil />
             </Link>
             <button
               onClick={() => handleDeleteBrand(brand?._id)}
-              className="hover:text-red-600 duration-200 text-lg"
+              className="text-lg duration-200 hover:text-red-600"
             >
               <MdDeleteOutline />
             </button>
@@ -67,7 +68,7 @@ export default function AllBrands() {
 
   return (
     <div>
-      <div className="flex justify-end mb-3">
+      <div className="mb-3 flex justify-end">
         <Link to="/admin/add-brand" className="primary_btn text-sm">
           Add New Brand
         </Link>
@@ -88,7 +89,7 @@ export default function AllBrands() {
               content
             ) : (
               <tr>
-                <td colSpan={4} className="text-center text-red-500 text-sm">
+                <td colSpan={4} className="text-center text-sm text-red-500">
                   No brand found!
                 </td>
               </tr>

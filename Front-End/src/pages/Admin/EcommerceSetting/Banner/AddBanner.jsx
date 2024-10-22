@@ -1,21 +1,27 @@
 import { useState } from "react";
 import { AiFillDelete } from "react-icons/ai";
 import ImageUploading from "react-images-uploading";
-import Swal from "sweetalert2";
-import { useEffect } from "react";
+import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { useAddBannerMutation } from "../../../../Redux/banner/bannerApi";
+import {
+  useAddBannerMutation,
+  useGetBannersQuery,
+} from "../../../../Redux/banner/bannerApi";
 
 export default function AddBanner() {
   const [banners, setbanners] = useState([]);
-  const [addBanner, { isLoading, isSuccess, isError }] = useAddBannerMutation();
   const navigate = useNavigate();
 
-  const handleAddBanner = (e) => {
+  const { data } = useGetBannersQuery();
+  const allBanners = data?.data;
+
+  const [addBanner, { isLoading }] = useAddBannerMutation();
+
+  const handleAddBanner = async (e) => {
     e.preventDefault();
     const image = banners[0]?.file;
     if (!image) {
-      return Swal.fire("", "Image is required", "error");
+      return toast.error("Please select an image");
     }
 
     const form = e.target;
@@ -27,28 +33,26 @@ export default function AddBanner() {
     formData.append("link", link);
     formData.append("order", order);
 
-    addBanner(formData);
+    const res = await addBanner(formData);
+
+    if (res?.data?.success) {
+      toast.success(res?.data?.message || "Banner added successfully");
+      navigate("/admin/ecommerce-setting/banner");
+    } else {
+      toast.error(
+        res?.data?.message || "Something went wrong, please try again",
+      );
+      console.log(res);
+    }
   };
 
-  useEffect(() => {
-    if (isSuccess) {
-      Swal.fire("", "banner add success", "success");
-      setbanners([]);
-      navigate("/admin/ecommerce-setting/banner");
-    }
-    if (isError) {
-      Swal.fire("", "something went wrong, please try again", "error");
-    }
-  }, [isSuccess, isError, navigate]);
-
   return (
-    <section className="md:w-[600px] bg-base-100 shadow rounded">
-      <div className="p-4 border-b text-neutral font-medium">
+    <section className="rounded bg-base-100 shadow xl:w-[600px]">
+      <div className="border-b p-4 font-medium text-neutral">
         <h3>Add New Banner</h3>
       </div>
       <form onSubmit={handleAddBanner} className="p-4">
         <div className="p-4">
-          <p className="text-neutral-content text-sm pb-1">Max hight (350px)</p>
           <ImageUploading
             value={banners}
             onChange={(icn) => setbanners(icn)}
@@ -56,13 +60,13 @@ export default function AddBanner() {
           >
             {({ onImageUpload, onImageRemove, dragProps }) => (
               <div
-                className="border rounded border-dashed p-4 w-max"
+                className="w-max rounded border border-dashed p-4"
                 {...dragProps}
               >
-                <div className="flex flex-col sm:flex-row items-center gap-2">
+                <div className="flex flex-col items-center gap-2 sm:flex-row">
                   <span
                     onClick={onImageUpload}
-                    className="px-4 py-1.5 rounded-2xl text-base-100 bg-primary cursor-pointer text-sm"
+                    className="cursor-pointer rounded-2xl bg-primary px-4 py-1.5 text-sm text-base-100"
                   >
                     Choose Image
                   </span>
@@ -76,7 +80,7 @@ export default function AddBanner() {
                       <img src={img["data_url"]} alt="" className="w-40" />
                       <div
                         onClick={() => onImageRemove(index)}
-                        className="w-7 h-7 bg-primary rounded-full flex justify-center items-center text-base-100 absolute top-0 right-0 cursor-pointer"
+                        className="absolute right-0 top-0 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-primary text-base-100"
                       >
                         <AiFillDelete />
                       </div>
@@ -94,8 +98,7 @@ export default function AddBanner() {
             type="text"
             name="link"
             placeholder="Enter Link"
-            className="w-full px-3 py-2 border rounded outline-none text-sm"
-            required
+            className="w-full rounded border px-3 py-2 text-sm outline-none"
           />
         </div>
 
@@ -105,12 +108,13 @@ export default function AddBanner() {
             type="number"
             name="order"
             placeholder="Enter Link"
-            className="w-full px-3 py-2 border rounded outline-none text-sm"
+            className="w-full rounded border px-3 py-2 text-sm outline-none"
             required
+            defaultValue={allBanners?.length > 0 ? allBanners?.length + 1 : 1}
           />
         </div>
 
-        <div className="flex justify-end mt-6 border-t p-4">
+        <div className="mt-6 flex justify-end border-t p-4">
           <button disabled={isLoading && "disabled"} className="primary_btn">
             {isLoading ? "Loading..." : "Add Banner"}
           </button>

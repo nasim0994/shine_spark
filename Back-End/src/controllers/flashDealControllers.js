@@ -11,9 +11,9 @@ exports.addFlashDeal = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -30,9 +30,9 @@ exports.getAllFlashDeal = async (req, res) => {
       data: flashDeal,
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -49,9 +49,9 @@ exports.getActiveFlashDeal = async (req, res) => {
       data: flashDeal,
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -64,7 +64,7 @@ exports.getFlashDealById = async (req, res) => {
       "flashProducts.product"
     );
     if (!flashDeal) {
-      return res.status(404).json({ message: "Flash Deal not found" });
+      return res.json({ message: "Flash Deal not found" });
     }
 
     res.status(200).json({
@@ -73,9 +73,9 @@ exports.getFlashDealById = async (req, res) => {
       data: flashDeal,
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -86,7 +86,7 @@ exports.updateFlashDealstatus = async (req, res) => {
 
     const flashDeal = await FlashDeal.findById(id);
     if (!flashDeal) {
-      return res.status(404).json({ message: "Flash Deal not found" });
+      return res.json({ message: "Flash Deal not found" });
     }
 
     const filter = { _id: id };
@@ -98,9 +98,9 @@ exports.updateFlashDealstatus = async (req, res) => {
       message: "flash Deal status update success",
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -111,9 +111,9 @@ exports.deleteFlashDeal = async (req, res) => {
     const flashDeal = await FlashDeal.findById(id);
 
     if (!flashDeal) {
-      return res.status(400).json({
+      return res.json({
         success: false,
-        error: "FlashDeal not found",
+        message: "FlashDeal not found",
       });
     }
 
@@ -124,9 +124,9 @@ exports.deleteFlashDeal = async (req, res) => {
       message: "FlashDeal delete success",
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -139,9 +139,9 @@ exports.updateFlashDeal = async (req, res) => {
     const flashDeal = await FlashDeal.findById(id);
 
     if (!flashDeal) {
-      return res.status(400).json({
+      return res.json({
         success: false,
-        error: "FlashDeal not found",
+        message: "FlashDeal not found",
       });
     }
 
@@ -152,9 +152,9 @@ exports.updateFlashDeal = async (req, res) => {
       message: "FlashDeal update success",
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };

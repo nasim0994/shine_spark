@@ -4,7 +4,6 @@ import React, { Suspense } from "react";
 import MainLayout from "../Layout/MainLayout";
 import Home from "../pages/Home/Home";
 
-import OrderSuccess from "../pages/OrderSuccess/OrderSuccess";
 import Spinner from "../components/Spinner/Spinner";
 
 // Main pages
@@ -27,7 +26,9 @@ const Profile = React.lazy(() => import("../pages/Account/Profile/Profile"));
 const Setting = React.lazy(() => import("../pages/Account/Setting/Setting"));
 const Wishlist = React.lazy(() => import("../pages/Account/Wishlist/Wishlist"));
 const Checkout = React.lazy(() => import("../pages/Checkout/Checkout"));
-// Order Success Page
+const OrderSuccess = React.lazy(
+  () => import("../pages/OrderSuccess/OrderSuccess"),
+);
 
 const PaymentResult = React.lazy(
   () => import("../pages/Checkout/PaymentResult"),
@@ -39,7 +40,10 @@ const MyReviews = React.lazy(
   () => import("../pages/Account/Reviews/MyReviews"),
 );
 
-// Admin Layout and Routes
+// ------------------------------------------------------------------------------
+//Admin Layout and Routes
+// ------------------------------------------------------------------------------
+
 const AdminLayout = React.lazy(
   () => import("../Layout/AdminLayout/AdminLayout"),
 );
@@ -201,11 +205,7 @@ const SEOSetting = React.lazy(
 export const routes = createBrowserRouter([
   {
     path: "/",
-    element: (
-      <Suspense fallback={<Spinner />}>
-        <MainLayout />
-      </Suspense>
-    ),
+    element: <MainLayout />,
     children: [
       {
         path: "/",
@@ -213,58 +213,104 @@ export const routes = createBrowserRouter([
       },
       {
         path: "/shops",
-        element: <Shop />,
+        element: (
+          <Suspense fallback={<Spinner />}>
+            <Shop />
+          </Suspense>
+        ),
       },
       {
         path: "/shops/:category",
-        element: <Shop />,
+        element: (
+          <Suspense fallback={<Spinner />}>
+            <Shop />
+          </Suspense>
+        ),
       },
       {
         path: "/shops/:category/:subCategory",
-        element: <Shop />,
+        element: (
+          <Suspense fallback={<Spinner />}>
+            <Shop />
+          </Suspense>
+        ),
       },
       {
         path: "/shops/:category/:subCategory/:subSubCategory",
-        element: <Shop />,
+        element: (
+          <Suspense fallback={<Spinner />}>
+            <Shop />
+          </Suspense>
+        ),
       },
       {
         path: "/shops/brand/:brand",
-        element: <Shop />,
+        element: (
+          <Suspense fallback={<Spinner />}>
+            <Shop />
+          </Suspense>
+        ),
       },
       {
         path: "/product/:id",
-        element: <ProductDetails />,
+        element: (
+          <Suspense fallback={<Spinner />}>
+            <ProductDetails />
+          </Suspense>
+        ),
       },
       {
         path: "/login",
-        element: <Login />,
+        element: (
+          <Suspense fallback={<Spinner />}>
+            <Login />
+          </Suspense>
+        ),
       },
       {
         path: "/signup",
-        element: <Signup />,
+        element: (
+          <Suspense fallback={<Spinner />}>
+            <Signup />
+          </Suspense>
+        ),
       },
       {
         path: "/cart",
-        element: <Cart />,
+        element: (
+          <Suspense fallback={<Spinner />}>
+            <Cart />
+          </Suspense>
+        ),
       },
       {
         path: "/checkout",
-        element: <Checkout />,
+        element: (
+          <Suspense fallback={<Spinner />}>
+            <Checkout />
+          </Suspense>
+        ),
       },
 
       {
         path: "/payment-result/:transactionId",
         element: (
-          <PrivateRoute>
-            <PaymentResult />
-          </PrivateRoute>
+          <Suspense fallback={<Spinner />}>
+            <PrivateRoute>
+              <PaymentResult />
+            </PrivateRoute>
+          </Suspense>
         ),
       },
     ],
   },
   {
     path: "/order/success",
-    element: <OrderSuccess />,
+    element: (
+      <Suspense fallback={<Spinner />}>
+        <OrderSuccess />
+      </Suspense>
+    ),
   },
   {
     path: "/account",

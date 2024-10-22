@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 import {
   useGetAdminByIdQuery,
   useUpdateAdminProfileMutation,
@@ -20,7 +20,8 @@ export default function EditAdministrator() {
     const name = form.name.value;
     const email = form.email.value;
     const phone = form.phone.value;
-    const role = form.role.value;
+    const role = "admin";
+
     const info = {
       name,
       email,
@@ -29,57 +30,37 @@ export default function EditAdministrator() {
     };
 
     try {
-      const res = await updateAdminById({ id, info }).unwrap();
+      const res = await updateAdminById({ id, info });
 
-      if (res?.success) {
-        Swal.fire({
-          icon: "success",
-          title: "",
-          text: "Administrator update success",
-        });
+      if (res?.data?.success) {
+        toast.success("Admin updated successfully");
         form.reset();
         navigate("/admin/administrator/all-administrator");
+      } else {
+        toast.error(res?.data?.message || "An error occurred");
+        console.log(res);
       }
     } catch (error) {
+      toast.error(error?.message || "An error occurred");
       console.log(error);
-      Swal.fire(
-        "",
-        error?.data?.error ? error?.data?.error : "Something went wrong",
-        "error"
-      );
     }
   };
 
-  const roles = [
-    {
-      role: "user",
-      text: "User",
-    },
-    {
-      role: "admin",
-      text: "Admin",
-    },
-    {
-      role: "superAdmin",
-      text: "Super Admin",
-    },
-  ];
-
   return (
     <>
-      <section className="bg-base-100 shadow rounded pb-4">
-        <div className="p-4 border-b text-neutral font-medium flex justify-between items-center">
+      <section className="rounded bg-base-100 pb-4 shadow">
+        <div className="flex items-center justify-between border-b p-4 font-medium text-neutral">
           <h3>Edit Admin</h3>
         </div>
 
-        <div className="p-4 border md:w-2/3 mx-auto mt-4 rounded">
+        <div className="mx-auto mt-4 rounded border p-4 md:w-2/3">
           <form
             onSubmit={handleEdit}
             className="form_group flex flex-col gap-4"
           >
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid gap-4 md:grid-cols-2">
               <div>
-                <p className="text-neutral-content text-sm">Full Name</p>
+                <p className="text-sm text-neutral-content">Full Name</p>
                 <input
                   type="text"
                   name="name"
@@ -88,7 +69,7 @@ export default function EditAdministrator() {
                 />
               </div>
               <div>
-                <p className="text-neutral-content text-sm">Email</p>
+                <p className="text-sm text-neutral-content">Email</p>
                 <input
                   type="email"
                   name="email"
@@ -98,30 +79,15 @@ export default function EditAdministrator() {
               </div>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid gap-4 md:grid-cols-2">
               <div>
-                <p className="text-neutral-content text-sm">Phone</p>
+                <p className="text-sm text-neutral-content">Phone</p>
                 <input
                   type="text"
                   name="phone"
                   required
                   defaultValue={admin?.phone}
                 />
-              </div>
-
-              <div>
-                <p className="text-neutral-content text-sm">Role</p>
-                <select name="role" defaultValue={admin?.role}>
-                  {roles?.map((role, i) => (
-                    <option
-                      key={i}
-                      value={role?.role}
-                      selected={admin?.role === role?.role && "selected"}
-                    >
-                      {role?.text}
-                    </option>
-                  ))}
-                </select>
               </div>
             </div>
 

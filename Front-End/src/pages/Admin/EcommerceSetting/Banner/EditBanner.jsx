@@ -2,7 +2,7 @@ import { useState } from "react";
 import ImageUploading from "react-images-uploading";
 import { AiFillDelete } from "react-icons/ai";
 import { useNavigate, useParams } from "react-router-dom";
-import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 import {
   useEditBannerMutation,
   useGetBannerByIdQuery,
@@ -29,19 +29,24 @@ export default function EditBanner() {
 
     const res = await editCampaignBanner({ formData, id });
     if (res?.data?.success) {
-      Swal.fire("", "Banner update success", "success");
+      toast.success(res?.data?.message || "Banner updated successfully");
       navigate("/admin/ecommerce-setting/banner");
+    } else {
+      toast.error(
+        res?.data?.message || "Something went wrong, please try again",
+      );
+      console.log(res);
     }
   };
 
   return (
-    <section className="md:w-[600px] bg-base-100 shadow rounded">
-      <div className="p-4 border-b text-neutral font-medium">
+    <section className="rounded bg-base-100 shadow md:w-[600px]">
+      <div className="border-b p-4 font-medium text-neutral">
         <h3>Edit Campaign Banner</h3>
       </div>
-      <form onSubmit={handleEditCampaign} className="p-4 flex flex-col gap-4">
+      <form onSubmit={handleEditCampaign} className="flex flex-col gap-4 p-4">
         <div>
-          <p className="text-neutral-content text-sm pb-1">Max hight (350px)</p>
+          <p className="pb-1 text-sm text-neutral-content">Max hight (350px)</p>
           <ImageUploading
             value={images}
             onChange={(icn) => setImages(icn)}
@@ -49,13 +54,13 @@ export default function EditBanner() {
           >
             {({ onImageUpload, onImageRemove, dragProps }) => (
               <div
-                className="border rounded border-dashed p-4 w-max"
+                className="w-max rounded border border-dashed p-4"
                 {...dragProps}
               >
-                <div className="flex flex-col sm:flex-row items-center gap-2">
+                <div className="flex flex-col items-center gap-2 sm:flex-row">
                   <span
                     onClick={onImageUpload}
-                    className="px-4 py-1.5 rounded-2xl text-base-100 bg-primary cursor-pointer text-sm"
+                    className="cursor-pointer rounded-2xl bg-primary px-4 py-1.5 text-sm text-base-100"
                   >
                     Choose Image
                   </span>
@@ -69,7 +74,7 @@ export default function EditBanner() {
                       <img src={img["data_url"]} alt="" className="w-40" />
                       <div
                         onClick={() => onImageRemove(index)}
-                        className="w-7 h-7 bg-primary rounded-full flex justify-center items-center text-base-100 absolute top-0 right-0 cursor-pointer"
+                        className="absolute right-0 top-0 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-primary text-base-100"
                       >
                         <AiFillDelete />
                       </div>
@@ -85,8 +90,8 @@ export default function EditBanner() {
               src={`${import.meta.env.VITE_BACKEND_URL}/banner/${
                 data?.data?.image
               }`}
-              alt=""
-              className="w-40 rounded mt-4"
+              alt="banner"
+              className="mt-4 w-40 rounded"
             />
           )}
         </div>
@@ -97,8 +102,7 @@ export default function EditBanner() {
             type="text"
             name="link"
             placeholder="Enter Link"
-            className="w-full px-3 py-2 border rounded outline-none text-sm"
-            required
+            className="w-full rounded border px-3 py-2 text-sm outline-none"
             defaultValue={data?.data?.link}
           />
         </div>
@@ -109,13 +113,13 @@ export default function EditBanner() {
             type="text"
             name="order"
             placeholder="Enter Link"
-            className="w-full px-3 py-2 border rounded outline-none text-sm"
+            className="w-full rounded border px-3 py-2 text-sm outline-none"
             required
             defaultValue={data?.data?.order}
           />
         </div>
 
-        <div className="flex justify-end mt-6 border-t p-4">
+        <div className="mt-6 flex justify-end border-t p-4">
           <button className="primary_btn">Edit Campaign Banner</button>
         </div>
       </form>

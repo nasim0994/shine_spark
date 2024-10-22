@@ -3,9 +3,16 @@ const ShippingConfig = require("../models/shippingConfigModel");
 
 exports.addShippingConfig = async (req, res) => {
   const data = req?.body;
-  console.log(data);
 
   try {
+    const isExist = await ShippingConfig.findOne();
+    if (isExist) {
+      return res.json({
+        success: false,
+        message: "Shipping already exist",
+      });
+    }
+
     const result = await ShippingConfig.create(data);
 
     res.status(201).json({
@@ -14,24 +21,16 @@ exports.addShippingConfig = async (req, res) => {
       data: result,
     });
   } catch (err) {
-    res.status(500).json({
+    res.json({
       success: false,
-      error: err.message,
+      message: err.message,
     });
   }
 };
 
 exports.getShippingConfig = async (req, res) => {
   try {
-    const result = await ShippingConfig.find();
-
-    if (!result) {
-      return res.status(404).json({
-        success: false,
-        error: "ShippingConfig Setting not found",
-        data: result,
-      });
-    }
+    const result = await ShippingConfig.findOne();
 
     res.status(200).json({
       success: true,
@@ -39,9 +38,9 @@ exports.getShippingConfig = async (req, res) => {
       data: result,
     });
   } catch (err) {
-    res.status(500).json({
+    res.json({
       success: false,
-      error: err.message,
+      message: err.message,
     });
   }
 };
@@ -54,9 +53,9 @@ exports.updateShippingConfig = async (req, res) => {
     const isExist = await ShippingConfig.findById(id);
 
     if (!isExist) {
-      return res.status(404).json({
+      return res.json({
         success: false,
-        error: "ShippingConfig Setting not found",
+        message: "ShippingConfig Setting not found",
       });
     }
 
@@ -65,9 +64,9 @@ exports.updateShippingConfig = async (req, res) => {
     });
 
     if (!result) {
-      return res.status(404).json({
+      return res.json({
         success: false,
-        error: "ShippingConfig Setting not updated",
+        message: "ShippingConfig Setting not updated",
       });
     }
 
@@ -77,9 +76,9 @@ exports.updateShippingConfig = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };

@@ -2,30 +2,22 @@ const mongoose = require("mongoose");
 
 const shippingConfigSchema = new mongoose.Schema(
   {
-    dhakaCity: {
-      time: {
-        type: String,
+    shipping: [
+      {
+        area: {
+          type: String,
+          required: true,
+        },
+        time: {
+          type: String,
+          required: true,
+        },
+        charge: {
+          type: Number,
+          required: true,
+        },
       },
-      charge: {
-        type: Number,
-      },
-    },
-    dhakaOutCity: {
-      time: {
-        type: String,
-      },
-      charge: {
-        type: Number,
-      },
-    },
-    outsideDhaka: {
-      time: {
-        type: String,
-      },
-      charge: {
-        type: Number,
-      },
-    },
+    ],
   },
   { timestamps: false }
 );

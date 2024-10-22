@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { AiOutlineHeart } from "react-icons/ai";
 import { BiLogOutCircle } from "react-icons/bi";
-import { FiHeart, FiLogIn, FiMonitor } from "react-icons/fi";
+import { FiLogIn, FiMonitor } from "react-icons/fi";
 import { IoBagCheckOutline } from "react-icons/io5";
 import { RiShoppingCartLine } from "react-icons/ri";
 import { RxDashboard } from "react-icons/rx";
@@ -12,11 +12,18 @@ import { userLogout } from "../../Redux/user/userSlice";
 import SearchBox from "./SearchBox";
 import { BsSearch } from "react-icons/bs";
 import Menu from "./Menu/Menu";
+import TopHeader from "./TopHeader";
 
 export default function Header() {
   const dispatch = useDispatch();
   const carts = useSelector((state) => state.cart.carts);
   const { loggedUser } = useSelector((state) => state.user);
+  const image =
+    !loggedUser?.data?.image ||
+    loggedUser?.data?.image === "" ||
+    loggedUser?.data?.image === null
+      ? "/images/demo_user.jpg"
+      : `${import.meta.env.VITE_BACKEND_URL}/user/${loggedUser?.data?.image}`;
   const { data: logo } = useGetMainLogoQuery();
 
   const [search, setSearch] = useState(false);
@@ -42,7 +49,9 @@ export default function Header() {
 
   return (
     <>
-      <header className="border-b bg-base-100 py-1 text-neutral">
+      <TopHeader />
+
+      <header className="sticky top-0 z-50 border-b bg-gray-100 py-1 text-neutral">
         <div className="container">
           <div className="flex items-center justify-between gap-2">
             <div>
@@ -55,8 +64,8 @@ export default function Header() {
                           logo?.data[0]?.logo
                         }`
                   }
-                  alt=""
-                  className="w-32 sm:w-40"
+                  alt="logo"
+                  className="w-32 sm:w-44 md:w-60"
                 />
               </Link>
             </div>
@@ -82,16 +91,8 @@ export default function Header() {
 
             <div className="hidden items-center gap-3 sm:flex lg:gap-6">
               <Link
-                to="/account/wishlist"
-                className="flex items-center gap-1 text-neutral duration-300 hover:text-primary"
-              >
-                <FiHeart className="text-xl lg:text-[17px]" />
-                <h1 className="hidden font-medium lg:block">wishlist</h1>
-              </Link>
-
-              <Link
                 to="/cart"
-                className="flex items-center gap-2 duration-300 hover:text-primary lg:gap-3"
+                className="flex items-center gap-2 duration-300 hover:text-secondary lg:gap-3"
               >
                 <div className="relative">
                   <RiShoppingCartLine className="text-xl lg:text-2xl" />
@@ -120,15 +121,8 @@ export default function Header() {
                     className="profileDropdownBtn"
                   >
                     <img
-                      src={
-                        loggedUser?.data?.image === "" ||
-                        loggedUser?.data?.image === null
-                          ? "/images/demo_user.jpg"
-                          : `${import.meta.env.VITE_BACKEND_URL}/user/${
-                              loggedUser?.data?.image
-                            }`
-                      }
-                      alt=""
+                      src={image}
+                      alt={loggedUser?.data?.name}
                       className="h-8 w-8 rounded-full border border-base-100"
                     />
                   </button>
@@ -138,15 +132,8 @@ export default function Header() {
                       <li className="user_info border-b px-2 py-1">
                         <div className="flex items-center gap-2">
                           <img
-                            src={
-                              loggedUser?.data?.image === "" ||
-                              loggedUser?.data?.image === null
-                                ? "/images/demo_user.jpg"
-                                : `${import.meta.env.VITE_BACKEND_URL}/user/${
-                                    loggedUser?.data?.image
-                                  }`
-                            }
-                            alt=""
+                            src={image}
+                            alt={loggedUser?.data?.name}
                             className="h-9 w-9 rounded-full border border-base-100"
                           />
                           <div>

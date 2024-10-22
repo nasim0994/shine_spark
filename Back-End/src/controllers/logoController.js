@@ -5,18 +5,18 @@ exports.addLogo = async (req, res) => {
   try {
     const logo = req?.file?.filename;
     if (!logo) {
-      return res.status(404).json({
+      return res.json({
         success: false,
-        error: "Logo is requred",
+        message: "Logo is requred",
       });
     }
 
     const result = await Logo.create({ logo: logo });
 
     if (!result) {
-      return res.status(404).json({
+      return res.json({
         success: false,
-        error: "Logo not added",
+        message: "Logo not added",
       });
     }
 
@@ -26,9 +26,9 @@ exports.addLogo = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -38,9 +38,9 @@ exports.getLogos = async (req, res) => {
     const logo = await Logo.find({});
 
     if (!logo) {
-      return res.status(404).json({
+      return res.json({
         success: false,
-        error: "Logo not found",
+        message: "Logo not found",
       });
     }
 
@@ -50,9 +50,9 @@ exports.getLogos = async (req, res) => {
       data: logo,
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -61,9 +61,9 @@ exports.updateLogo = async (req, res) => {
   try {
     const logo = req?.file?.filename;
     if (!logo) {
-      return res.status(400).json({
+      return res.json({
         success: false,
-        error: "Logo is required",
+        message: "Logo is required",
       });
     }
 
@@ -86,9 +86,9 @@ exports.updateLogo = async (req, res) => {
       });
     }
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };

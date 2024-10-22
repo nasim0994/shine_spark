@@ -14,9 +14,9 @@ exports.registerUser = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -30,9 +30,9 @@ exports.loginUser = async (req, res) => {
     const user = await User.findOne({ phone: phone });
 
     if (!user) {
-      return res.status(401).json({
+      return res.json({
         success: false,
-        error: "User not found",
+        message: "User not found",
       });
     }
 
@@ -40,9 +40,9 @@ exports.loginUser = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user?.password);
 
     if (!isMatch) {
-      return res.status(404).json({
+      return res.json({
         success: false,
-        error: "Email or password is incorrect",
+        message: "Email or password is incorrect",
       });
     }
 
@@ -61,9 +61,9 @@ exports.loginUser = async (req, res) => {
       data: user,
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -77,15 +77,15 @@ exports.getMe = async (req, res) => {
         data: user,
       });
     } else {
-      res.status(404).json({
+      res.json({
         success: false,
-        error: "user not found",
+        message: "user not found",
       });
     }
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -117,9 +117,9 @@ exports.updateImage = async (req, res) => {
       message: "Image update success",
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -134,9 +134,9 @@ exports.updateInfo = async (req, res) => {
       message: "update success",
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -151,9 +151,9 @@ exports.getAllUsers = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -167,9 +167,9 @@ exports.getAllCustomers = async (req, res) => {
       data: customer,
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -180,9 +180,9 @@ exports.deleteAnUser = async (req, res) => {
 
     const isExist = await User.findById(id);
     if (!isExist) {
-      return res.status(404).json({
+      return res.json({
         success: false,
-        error: "User not found",
+        message: "User not found",
       });
     }
 
@@ -201,9 +201,9 @@ exports.deleteAnUser = async (req, res) => {
       message: "user delete success",
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };

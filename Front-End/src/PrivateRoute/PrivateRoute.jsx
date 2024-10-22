@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 const PrivateRoute = ({ children }) => {
   const { loggedUser } = useSelector((state) => state.user);
   const location = useLocation();
-  const token = localStorage.getItem("eshop_jwt");
+  const token = localStorage.getItem("token");
 
   if (!loggedUser?.success || loggedUser == "undefined" || !token) {
     return <Navigate to="/login" state={{ from: location }} replace />;

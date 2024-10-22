@@ -18,16 +18,16 @@ export default function FlashSection({ deal, isLoading }) {
       <SwiperSlide key={product._id}>
         <ProductCard
           key={product?._id}
-          product={product?.product}
           discount={product?.discount}
+          product={product?.product}
         />
       </SwiperSlide>
     ));
   }
 
   return (
-    <div className="container rounded-lg">
-      <div className="flex justify-between sm:items-center">
+    <div className="container rounded-lg bg-base-100 p-4 shadow-lg">
+      <div className="flex justify-between border-b border-primary pb-2 sm:items-center">
         <h1 className="font-medium text-neutral md:text-xl md:font-semibold">
           {deal?.title}
         </h1>
@@ -43,7 +43,7 @@ export default function FlashSection({ deal, isLoading }) {
         </div>
       </div>
 
-      <div className="sm:p-3">
+      <div className="mt-2">
         <Swiper
           navigation={true}
           modules={[Navigation, Autoplay]}

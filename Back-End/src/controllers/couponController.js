@@ -10,9 +10,9 @@ exports.addCoupon = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -22,23 +22,23 @@ exports.applyCoupon = async (req, res) => {
     const { coupon, totalShopping } = req.body;
     const result = await Coupon.findOne({ code: coupon });
     if (!result) {
-      return res.status(500).json({
+      return res.json({
         success: false,
-        error: "Coupon not available",
+        message: "Coupon not available",
       });
     }
 
     if (!result.status) {
-      return res.status(500).json({
+      return res.json({
         success: false,
-        error: "Coupon not active",
+        message: "Coupon not active",
       });
     }
 
     if (Number(totalShopping) < Number(result.minimumShopping)) {
-      return res.status(500).json({
+      return res.json({
         success: false,
-        error: `Minimum Shopping ${result.minimumShopping} tk, add more itmes.`,
+        message: `Minimum Shopping ${result.minimumShopping} tk, add more itmes.`,
       });
     }
 
@@ -47,16 +47,16 @@ exports.applyCoupon = async (req, res) => {
     const currentDate = new Date();
 
     if (currentDate < couponStartDate) {
-      return res.status(500).json({
+      return res.json({
         success: false,
-        error: `Coupon not started`,
+        message: `Coupon not started`,
       });
     }
 
     if (currentDate > couponEndDate) {
-      return res.status(500).json({
+      return res.json({
         success: false,
-        error: `Coupon expired!`,
+        message: `Coupon expired!`,
       });
     }
 
@@ -66,9 +66,9 @@ exports.applyCoupon = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -82,9 +82,9 @@ exports.getCoupon = async (req, res) => {
       data: coupons,
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -95,9 +95,9 @@ exports.deleteCoupon = async (req, res) => {
     const coupon = await Coupon.findById(id);
 
     if (!coupon) {
-      return res.status(400).json({
+      return res.json({
         success: false,
-        error: "Coupon not found",
+        message: "Coupon not found",
       });
     }
 
@@ -108,9 +108,9 @@ exports.deleteCoupon = async (req, res) => {
       message: "Coupon delete success",
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -121,9 +121,9 @@ exports.getCouponbyId = async (req, res) => {
     const coupon = await Coupon.findById(id);
 
     if (!coupon) {
-      return res.status(400).json({
+      return res.json({
         success: false,
-        error: "Coupon not found",
+        message: "Coupon not found",
       });
     }
 
@@ -133,9 +133,9 @@ exports.getCouponbyId = async (req, res) => {
       data: coupon,
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -147,9 +147,9 @@ exports.editCoupon = async (req, res) => {
     const coupon = await Coupon.findById(id);
 
     if (!coupon) {
-      return res.status(400).json({
+      return res.json({
         success: false,
-        error: "Coupon not found",
+        message: "Coupon not found",
       });
     }
 
@@ -162,9 +162,9 @@ exports.editCoupon = async (req, res) => {
       message: "Coupon edit success",
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -176,9 +176,9 @@ exports.updateStatus = async (req, res) => {
     const coupon = await Coupon.findById(id);
 
     if (!coupon) {
-      return res.status(400).json({
+      return res.json({
         success: false,
-        error: "Coupon not found",
+        message: "Coupon not found",
       });
     }
 
@@ -190,9 +190,9 @@ exports.updateStatus = async (req, res) => {
       message: "Coupon status update success",
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };

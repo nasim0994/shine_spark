@@ -37,7 +37,7 @@ exports.insert = async (req, res) => {
     });
   } catch (error) {
     deleteIcon(`/uploads/${icon}`);
-    res.status(500).json({
+    res.json({
       success: false,
       message: "Error creating category",
       message: error.message,
@@ -47,21 +47,23 @@ exports.insert = async (req, res) => {
 
 exports.get = async (req, res) => {
   try {
-    const categories = await Model.find({}).populate({
-      path: "subCategories",
-      select: "name slug",
-      populate: {
-        path: "subSubCategories",
+    const categories = await Model.find({})
+      .sort({ order: 1 })
+      .populate({
+        path: "subCategories",
         select: "name slug",
-      },
-    });
+        populate: {
+          path: "subSubCategories",
+          select: "name slug",
+        },
+      });
     res.status(200).json({
       success: true,
       message: "Categories get successfully",
       data: categories,
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
       message: error.message,
     });
@@ -76,7 +78,7 @@ exports.getById = async (req, res) => {
     });
 
     if (!category) {
-      return res.status(404).json({
+      return res.json({
         success: false,
         message: "Category not found",
       });
@@ -88,7 +90,7 @@ exports.getById = async (req, res) => {
       data: category,
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
       message: error.message,
     });
@@ -103,7 +105,7 @@ exports.update = async (req, res) => {
     const category = await Model.findById(req.params.id);
 
     if (!category) {
-      return res.status(404).json({
+      return res.json({
         success: false,
         message: "Category not found",
       });
@@ -128,7 +130,7 @@ exports.update = async (req, res) => {
     });
   } catch (error) {
     deleteIcon(`./uploads/${icon}`);
-    res.status(500).json({
+    res.json({
       success: false,
       message: error.message,
     });
@@ -140,14 +142,14 @@ exports.destroy = async (req, res) => {
     const category = await Model.findById(req.params.id);
 
     if (!category) {
-      return res.status(404).json({
+      return res.json({
         success: false,
         message: "Category not found",
       });
     }
 
     if (category?.subCategories?.length > 0) {
-      return res.status(400).json({
+      return res.json({
         success: false,
         message: "Category has subcategories! please delete them first",
       });
@@ -156,7 +158,7 @@ exports.destroy = async (req, res) => {
     const result = await Model.findByIdAndDelete(req.params.id);
 
     if (!result) {
-      return res.status(404).json({
+      return res.json({
         success: false,
         message: "Category not found",
       });
@@ -169,7 +171,7 @@ exports.destroy = async (req, res) => {
       message: "Category deleted successfully",
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
       message: error.message,
     });

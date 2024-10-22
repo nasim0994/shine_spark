@@ -2,11 +2,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import Select from "react-dropdown-select";
 import { useGetAllProductsQuery } from "../../../Redux/product/productApi";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import {
   useGetFlashDealByIdQuery,
   useUpdateFlashDealMutation,
 } from "../../../Redux/flashDeal/flashDeal";
-import Swal from "sweetalert2";
 
 export default function EditFlashDeal() {
   const { id } = useParams();
@@ -15,10 +15,12 @@ export default function EditFlashDeal() {
 
   const [selectedProducts, setSelectedProducts] = useState([]);
 
+  console.log(selectedProducts);
+
   useEffect(() => {
     if (deal?.data?.flashProducts?.length > 0) {
       setSelectedProducts(
-        deal?.data?.flashProducts?.map((products) => products.product),
+        deal?.data?.flashProducts?.map((products) => products?.product),
       );
     }
   }, [deal]);
@@ -71,20 +73,18 @@ export default function EditFlashDeal() {
     const res = await updateFlashDeal({ id, data });
 
     if (res?.data?.success) {
-      Swal.fire("", "Flash deal update success", "success");
+      toast.success("Flash Deal updated successfully");
       setSelectedProducts([]);
       form.reset();
       setFlashProducts([]);
       navigate("/admin/flash-deal");
     } else {
-      Swal.fire("", "Something went wrong", "error");
+      toast.error("Failed to update flash deal");
       console.log(res);
     }
   };
 
-  if (dealIslOading) {
-    return <p>Loading...</p>;
-  }
+  if (dealIslOading) return <p>Loading...</p>;
 
   return (
     <section className="rounded bg-base-100 p-3 text-neutral">
@@ -135,7 +135,7 @@ export default function EditFlashDeal() {
             multi
             options={products}
             labelField="title"
-            valueField="title"
+            valueField="_id"
             onChange={(product) => setSelectedProducts(product)}
             values={selectedProducts}
           />
@@ -196,19 +196,12 @@ export default function EditFlashDeal() {
                         />
                       </td>
                       <td>
-                        <select
-                          className="rounded border px-4 py-1 outline-none"
-                          onChange={(e) =>
-                            handleInputChange(
-                              productIndex,
-                              "discountType",
-                              e.target.value,
-                            )
-                          }
-                          required
-                        >
-                          <option value="1">%</option>
-                        </select>
+                        <input
+                          type="text"
+                          defaultValue="%"
+                          disabled
+                          className="bg-base-100"
+                        />
                       </td>
                     </tr>
                   ))}

@@ -12,9 +12,9 @@ exports.initPayment = async (req, res) => {
   const user = await User.findById(userId);
 
   if (!user) {
-    return res.status(400).json({
+    return res.json({
       success: false,
-      error: "User does not exist!",
+      message: "User does not exist!",
     });
   }
 
@@ -93,9 +93,9 @@ exports.initPayment = async (req, res) => {
     if (response?.data?.status === "SUCCESS") {
       await Order.create(orderData);
     } else {
-      res.status(400).json({
+      res.json({
         success: false,
-        error: response?.data?.failedreason,
+        message: response?.data?.failedreason,
       });
     }
 
@@ -105,9 +105,9 @@ exports.initPayment = async (req, res) => {
       data: response?.data?.GatewayPageURL,
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -118,9 +118,9 @@ exports.paymentSuccess = async (req, res) => {
   const order = await Order.findOne({ transactionId });
 
   if (!order) {
-    return res.status(400).json({
+    return res.json({
       success: false,
-      error: "Order does not exist!",
+      message: "Order does not exist!",
     });
   }
 
@@ -237,9 +237,9 @@ exports.paymentFailed = async (req, res) => {
       `${process.env.front_end_url}/payment-result/${transactionId}`
     );
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };

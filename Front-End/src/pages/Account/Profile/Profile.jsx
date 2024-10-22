@@ -32,7 +32,7 @@ export default function Profile() {
     const requestOptions = {
       method: "PUT",
       headers: {
-        authorization: `bearer ${localStorage.getItem("eshop_jwt")}`,
+        authorization: `bearer ${localStorage.getItem("token")}`,
       },
       body: formData,
     };
@@ -69,8 +69,8 @@ export default function Profile() {
 
   return (
     <div>
-      <div className="bg-primary/20 rounded-md lg:grid grid-cols-3 gap-6">
-        <div className="bg-primary/70 rounded-md flex flex-col justify-center items-center py-4 text-base-100 font-medium">
+      <div className="grid-cols-3 gap-6 rounded-md bg-primary/20 lg:grid">
+        <div className="flex flex-col items-center justify-center rounded-md bg-primary/70 py-4 font-medium text-base-100">
           <div className="update_image_wrap">
             <img
               src={
@@ -81,7 +81,7 @@ export default function Profile() {
                     }`
               }
               alt=""
-              className="w-full h-full rounded-full"
+              className="h-full w-full rounded-full"
             />
 
             <button onClick={() => setModal(true)} className="update_image_btn">
@@ -95,7 +95,7 @@ export default function Profile() {
                   modal && "modal_show"
                 }`}
               >
-                <div className="bg-primary/10 p-5 text-center text-neutral flex justify-between">
+                <div className="flex justify-between bg-primary/10 p-5 text-center text-neutral">
                   <h1 className="text-xl">Update Profile Photo</h1>
                   <button onClick={() => setModal(false)}>
                     <AiOutlineCloseCircle className="text-2xl text-neutral-content" />
@@ -110,13 +110,13 @@ export default function Profile() {
                   >
                     {({ onImageUpload, onImageRemove, dragProps }) => (
                       <div
-                        className="border rounded border-dashed p-4 w-max"
+                        className="w-max rounded border border-dashed p-4"
                         {...dragProps}
                       >
                         <div className="flex flex-col items-center gap-2">
                           <span
                             onClick={onImageUpload}
-                            className="px-4 py-1.5 rounded-2xl text-base-100 bg-primary cursor-pointer text-sm"
+                            className="cursor-pointer rounded-2xl bg-primary px-4 py-1.5 text-sm text-base-100"
                           >
                             Choose Image
                           </span>
@@ -134,7 +134,7 @@ export default function Profile() {
                               />
                               <div
                                 onClick={() => onImageRemove(index)}
-                                className="w-7 h-7 bg-primary rounded-full flex justify-center items-center text-base-100 absolute top-0 right-0 cursor-pointer"
+                                className="absolute right-0 top-0 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-primary text-base-100"
                               >
                                 <AiFillDelete />
                               </div>
@@ -148,7 +148,7 @@ export default function Profile() {
                   <div className="mt-4">
                     <button
                       onClick={handleUploadImage}
-                      className="bg-primary text-base-100 px-6 py-1.5 rounded"
+                      className="rounded bg-primary px-6 py-1.5 text-base-100"
                       disabled={loading && "disabled"}
                     >
                       {loading ? "Loading.." : "Upload"}
@@ -161,7 +161,7 @@ export default function Profile() {
           <h1 className="mt-2 text-xl">{loggedUser?.data?.name}</h1>
         </div>
 
-        <div className="col-span-2 grid grid-cols-2 gap-4 items-center text-center py-5">
+        <div className="col-span-2 grid grid-cols-2 items-center gap-4 py-5 text-center">
           <div className="border-r border-neutral/50">
             <h1 className="font-medium">Total Order</h1>
             <p className="font-medium">0</p>
@@ -173,13 +173,13 @@ export default function Profile() {
         </div>
       </div>
 
-      <div className="mt-4 border rounded-md p-4 col-span-2">
+      <div className="col-span-2 mt-4 rounded-md border p-4">
         <h3 className="mb-2 font-medium">Personal Info</h3>
         <div>
           <div>
             <input
               type="text"
-              className="w-full border outline-none rounded px-3 py-1.5 mb-4 "
+              className="mb-4 w-full rounded border px-3 py-1.5 outline-none"
               defaultValue={name}
               disabled
             />
@@ -187,7 +187,7 @@ export default function Profile() {
           <div>
             <input
               type="text"
-              className="w-full border outline-none rounded px-3 py-1.5 mb-4 bg-gray-100"
+              className="mb-4 w-full rounded border bg-gray-100 px-3 py-1.5 outline-none"
               defaultValue={phone}
               disabled
             />
@@ -196,7 +196,7 @@ export default function Profile() {
           <div>
             <input
               type="email"
-              className="w-full border outline-none rounded px-3 py-1.5 mb-4"
+              className="mb-4 w-full rounded border px-3 py-1.5 outline-none"
               defaultValue={email}
               disabled
             />
@@ -206,7 +206,7 @@ export default function Profile() {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <input
-                className="w-full border outline-none rounded px-3 py-1.5 mb-4"
+                className="mb-4 w-full rounded border px-3 py-1.5 outline-none"
                 defaultValue={city}
                 disabled
               />
@@ -214,7 +214,7 @@ export default function Profile() {
 
             <div>
               <input
-                className="w-full border outline-none rounded px-3 py-1.5 mb-4"
+                className="mb-4 w-full rounded border px-3 py-1.5 outline-none"
                 defaultValue={area}
                 disabled
               />
@@ -223,7 +223,7 @@ export default function Profile() {
 
           <div>
             <textarea
-              className="w-full border outline-none rounded px-3 py-1.5 mb-4"
+              className="mb-4 w-full rounded border px-3 py-1.5 outline-none"
               defaultValue={street}
               disabled
             />
@@ -231,7 +231,7 @@ export default function Profile() {
           <div>
             <Link
               to="/account/profile/edite"
-              className="block text-center bg-primary text-base-100 py-2 rounded scale-[1] hover:scale-[.99] duration-300"
+              className="block scale-[1] rounded bg-primary py-2 text-center text-base-100 duration-300 hover:scale-[.99]"
             >
               Edit Profile
             </Link>

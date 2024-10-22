@@ -9,9 +9,9 @@ exports.updateProfile = async (req, res) => {
 
     const isExit = await Admin.findById(id);
     if (!isExit)
-      return res.status(400).json({
+      return res.json({
         success: false,
-        error: "User Not Found",
+        message: "User Not Found",
       });
 
     const result = await Admin.findByIdAndUpdate(id, data, {
@@ -24,9 +24,9 @@ exports.updateProfile = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error?.message,
+      message: error?.message,
     });
   }
 };
@@ -38,31 +38,44 @@ exports.updatePassword = async (req, res) => {
 
     const isExit = await Admin.findById(id);
     if (!isExit)
-      return res.status(400).json({
+      return res.json({
         success: false,
-        error: "Admin Not Found",
+        message: "Admin Not Found",
       });
 
-    const salt = await bcrypt.genSalt(10);
-    const password = await bcrypt.hash(data?.password, salt);
-
-    const result = await Admin.findByIdAndUpdate(
-      id,
-      { password },
-      {
-        new: true,
-      }
+    const isMatch = await bcrypt.compare(
+      data?.currentPassword,
+      isExit?.password
     );
+
+    if (!isMatch) {
+      return res.json({
+        success: false,
+        message: "Current password does not match",
+      });
+    }
+
+    const hash = await bcrypt.hash(data?.password, 10);
+    data.password = hash;
+
+    const result = await Admin.findByIdAndUpdate(id, data, { new: true });
+
+    if (!result) {
+      return res.json({
+        success: false,
+        message: "Something went wrong",
+      });
+    }
 
     res.status(200).json({
       success: true,
-      message: "Profile update success",
+      message: "Password update success",
       data: result,
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error?.message,
+      message: error?.message,
     });
   }
 };
@@ -73,9 +86,9 @@ exports.addAdmin = async (req, res) => {
     const result = await Admin.create(data);
 
     if (!result) {
-      return res.status(404).json({
+      return res.json({
         success: false,
-        error: "Something went wrong",
+        message: "Something went wrong",
       });
     }
 
@@ -85,9 +98,9 @@ exports.addAdmin = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
-      error: error?.message,
+      message: error?.message,
     });
   }
 };
@@ -104,9 +117,9 @@ exports.getAllAdmins = async (req, res) => {
       data: admins,
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -121,9 +134,9 @@ exports.getAdminById = async (req, res) => {
       data: admin,
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -134,9 +147,9 @@ exports.deleteAdmin = async (req, res) => {
 
     const isExist = await Admin.findById(id);
     if (!isExist) {
-      return res.status(404).json({
+      return res.json({
         success: false,
-        error: "Admin not found",
+        message: "Admin not found",
       });
     }
 
@@ -155,9 +168,9 @@ exports.deleteAdmin = async (req, res) => {
       message: "Admin delete success",
     });
   } catch (error) {
-    res.status(400).json({
+    res.json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 };

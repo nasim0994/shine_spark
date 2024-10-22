@@ -1,101 +1,84 @@
-import { useEffect } from "react";
-import Swal from "sweetalert2";
+import { useEffect, useState } from "react";
 import {
   useAddContactMutation,
   useGetContactQuery,
   useUpdateContactMutation,
 } from "../../../../Redux/contact/contactApi";
 import Spinner from "../../../../components/Spinner/Spinner";
+import MultiSocial from "./MultiSocial";
+import { toast } from "react-toastify";
 
 export default function Contact() {
-  const { data, isLoading, isError, error } = useGetContactQuery();
-  const [
-    updateContact,
-    {
-      isLoading: updateLoading,
-      isSuccess: updateSuccess,
-      isError: updateError,
-    },
-  ] = useUpdateContactMutation();
+  const [socials, setSocials] = useState([]);
+  const { data, isLoading } = useGetContactQuery();
 
-  const [
-    addContact,
-    { isLoading: addLoading, isSuccess: addSuccess, isError: addError },
-  ] = useAddContactMutation();
+  useEffect(() => {
+    if (data?.data[0]?.socials) {
+      setSocials(data?.data[0]?.socials);
+    }
+  }, [data]);
+
+  const [updateContact, { isLoading: updateLoading }] =
+    useUpdateContactMutation();
+
+  const [addContact, { isLoading: addLoading }] = useAddContactMutation();
 
   const id = data?.data[0]?._id;
-  console.log(id);
 
-  const handleUpdateContact = async (e) => {
+  const handleContact = async (e) => {
     e.preventDefault();
     const form = e.target;
     const title = form.title.value;
-    const description = form.description.value;
     const phone = form.phone.value;
     const whatsapp = form.whatsapp.value;
     const email = form.email.value;
     const address = form.address.value;
-    const facebookLink = form.facebook.value;
-    const instagramLink = form.instagram.value;
-    const youtubeLink = form.youtube.value;
-    const linkedinLink = form.linkedin.value;
 
     const contactInfo = {
       title,
-      description,
       phone,
       whatsapp,
       email,
       address,
-      facebookLink,
-      instagramLink,
-      youtubeLink,
-      linkedinLink,
+      socials,
     };
 
     if (id) {
-      await updateContact({ id, contactInfo });
+      const res = await updateContact({ id, contactInfo });
+      if (res?.data?.success) {
+        toast.success("Contact updated successfully");
+      } else {
+        toast.error(
+          res?.data?.message ? res?.data?.message : "Something went wrong",
+        );
+        console.log(res);
+      }
     } else {
-      await addContact(contactInfo);
+      const res = await addContact(contactInfo);
+      if (res?.data?.success) {
+        toast.success("Contact add successfully");
+      } else {
+        toast.error(
+          res?.data?.message ? res?.data?.message : "Something went wrong",
+        );
+        console.log(res);
+      }
     }
   };
 
-  useEffect(() => {
-    if (updateSuccess) {
-      Swal.fire("", "Update Success", "success");
-    }
-    if (addSuccess) {
-      Swal.fire("", "Add Success", "success");
-    }
-    if (addError) {
-      Swal.fire("", "Somethin Wrong, please try again", "error");
-    }
-    if (updateError) {
-      Swal.fire("", "Somethin Wrong, please try again", "error");
-    }
-  }, [updateSuccess, updateError, addSuccess, addError]);
-
-  if (isLoading) {
-    return <Spinner />;
-  }
-  if (isError) {
-    return (
-      <p>
-        {error?.data?.message ? error?.data?.message : "something went wrong"}
-      </p>
-    );
-  }
+  if (isLoading) return <Spinner />;
 
   return (
-    <section className="bg-base-100 shadow rounded pb-4 min-h-[86vh]">
-      <div className="p-4 border-b text-neutral font-medium">
+    <section className="rounded bg-base-100 pb-4 shadow">
+      <div className="border-b p-4 font-medium text-neutral">
         <h3>Contact Info</h3>
       </div>
+
       <form
-        onSubmit={handleUpdateContact}
-        className="p-4 form_group flex flex-col gap-3 md:mx-48 border rounded mt-3 text-sm"
+        onSubmit={handleContact}
+        className="form_group mx-4 mt-3 flex flex-col gap-3 rounded border p-4 text-sm"
       >
-        <div className="grid sm:grid-cols-2 gap-4">
+        <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <p className="text-neutral-content">Title</p>
             <input
@@ -115,7 +98,7 @@ export default function Contact() {
           </div>
         </div>
 
-        <div className="grid sm:grid-cols-2 gap-4">
+        <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <p className="text-neutral-content">Phone</p>
             <input
@@ -134,14 +117,6 @@ export default function Contact() {
             />
           </div>
         </div>
-        <div>
-          <p className="text-neutral-content">Description</p>
-          <textarea
-            name="description"
-            rows="5"
-            defaultValue={data?.data[0]?.description}
-          ></textarea>
-        </div>
 
         <div>
           <p className="text-neutral-content">Address</p>
@@ -152,45 +127,7 @@ export default function Contact() {
           ></textarea>
         </div>
 
-        <div className="grid sm:grid-cols-2 gap-4">
-          <div>
-            <p className="text-neutral-content">Facebook Link</p>
-            <input
-              type="text"
-              name="facebook"
-              defaultValue={data?.data[0]?.facebookLink}
-            />
-          </div>
-
-          <div>
-            <p className="text-neutral-content">Instagram Link</p>
-            <input
-              type="text"
-              name="instagram"
-              defaultValue={data?.data[0]?.instagramLink}
-            />
-          </div>
-        </div>
-
-        <div className="grid sm:grid-cols-2 gap-4">
-          <div>
-            <p className="text-neutral-content">Youtube Link</p>
-            <input
-              type="text"
-              name="youtube"
-              defaultValue={data?.data[0]?.youtubeLink}
-            />
-          </div>
-
-          <div>
-            <p className="text-neutral-content">Linkedin Link</p>
-            <input
-              type="text"
-              name="linkedin"
-              defaultValue={data?.data[0]?.linkedinLink}
-            />
-          </div>
-        </div>
+        <MultiSocial socials={socials} setSocials={setSocials} />
 
         <div className="flex justify-end">
           <button

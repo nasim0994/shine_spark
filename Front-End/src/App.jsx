@@ -98,6 +98,7 @@ export default function App() {
           style={{ display: "none", visibility: "hidden" }}
         ></iframe>
       </noscript>
+
       <RouterProvider router={routes}></RouterProvider>
     </>
   );

@@ -1,12 +1,14 @@
 import { useNavigate } from "react-router-dom";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Select from "react-select";
 import { AiFillDelete } from "react-icons/ai";
 import JoditEditor from "jodit-react";
 import ImageUploading from "react-images-uploading";
 import TagsInput from "react-tagsinput";
 import "react-tagsinput/react-tagsinput.css";
-import Swal from "sweetalert2";
+import { toast } from "react-toastify";
+import { FaStar } from "react-icons/fa";
+import { MdDeleteForever } from "react-icons/md";
 
 import {
   useGetCategoriesQuery,
@@ -17,6 +19,7 @@ import { useAddProductMutation } from "../../../Redux/product/productApi";
 import { useGetSubCategoryQuery } from "../../../Redux/subCategory/subCategoryApi";
 import { useAllBrandsQuery } from "../../../Redux/brand/brandApi";
 import { useAllColorsQuery } from "../../../Redux/color/colorApi";
+import { FaCartPlus } from "react-icons/fa";
 
 export default function AddProduct() {
   const editor = useRef(null);
@@ -30,131 +33,196 @@ export default function AddProduct() {
   const { data: color } = useAllColorsQuery();
   const colorOptions = color?.data?.map((item) => ({
     label: item?.name,
-    value: item?.code,
+    code: item?.code,
   }));
 
   const subCategories = category?.data?.subCategories;
   const subSubCategories = subCategory?.data?.subSubCategories;
 
-  const [images, setImages] = useState([]);
+  const [thumbnail, setThumbnail] = useState([]);
+  const [galleries, setGalleries] = useState([]);
+
+  const handleFileChange = (event) => {
+    const files = Array.from(event.target.files);
+    const newImages = files.map((file) => ({
+      name: file.name,
+      file: file,
+    }));
+
+    setGalleries((prevGalleries) => [...prevGalleries, ...newImages]);
+  };
+
+  // Remove image from the gallery
+  const removeImage = (index) => {
+    const updatedGallery = galleries.filter((_, i) => i !== index);
+    setGalleries(updatedGallery);
+  };
+
   const [title, setTitle] = useState("");
   const [subSubCategoryId, setSubSubCategoryId] = useState("");
   const [brand, setBrand] = useState("");
   const [discount, setDiscount] = useState(0);
-  const [sellingPrice, setSellingPrice] = useState(0);
-  const [purchasePrice, setPurchasePrice] = useState(0);
-  const [quantity, setQuantity] = useState(0);
+
   const [featured, setFeatured] = useState(false);
   const [details, setDetails] = useState("");
 
-  const [variant, setVariant] = useState("no");
+  const [sellingPrice, setSellingPrice] = useState(0);
+  const [purchasePrice, setPurchasePrice] = useState(0);
+  const [stock, setStock] = useState(0);
+  const [variant, setVariant] = useState(false);
   const [variants, setVariants] = useState([]);
   const [colors, setColors] = useState([]);
   const [sizes, setSizes] = useState([]);
 
-  const [addProduct, { isLoading }] = useAddProductMutation();
+  const [skus, setSkus] = useState([]);
 
-  // Function to handle changes in input fields
-  const handleInputChange = (colorIndex, sizeIndex, field, value) => {
-    setVariants((prevVariants) => {
-      const updatedVariants = [...prevVariants];
+  const makeSku = (colors, sizes) => {
+    let sku = [];
 
-      if (!updatedVariants[colorIndex]) {
-        updatedVariants[colorIndex] = [];
-      }
-
-      // if (!updatedVariants[colorIndex][sizeIndex]) {
-      //   updatedVariants[colorIndex][sizeIndex] = {};
-      // }
-
-      // Store all information (color, size, quantity, price) in each entry
-      updatedVariants[colorIndex][sizeIndex] = {
-        ...updatedVariants[colorIndex][sizeIndex],
-        colorName: colors[colorIndex].label,
-        colorCode: colors[colorIndex].value,
-        size: sizes[sizeIndex],
-        [field]: value,
-      };
-
-      return updatedVariants;
-    });
-  };
-
-  // arranged right array
-  const variantsArray = () => {
-    const result = [];
-
-    variants.forEach((colorData, colorIndex) => {
-      const color = colors[colorIndex].label;
-      const colorCode = colors[colorIndex].value;
-
-      // eslint-disable-next-line no-unused-vars
-      colorData.forEach((sizeData, sizeIndex) => {
-        const { size, quantity, sellingPrice, purchasePrice } = sizeData;
-        result.push({
-          color,
-          colorCode,
-          size,
-          quantity,
-          sellingPrice,
-          purchasePrice,
+    if (colors?.length && sizes?.length) {
+      colors.forEach((color) => {
+        sizes.forEach((size) => {
+          sku.push(`${color.label.split(" ").join("")}-${size}`);
         });
       });
-    });
+    } else if (colors.length) {
+      colors.forEach((color) => {
+        sku.push(color.label.split(" ").join(""));
+      });
+    } else if (sizes.length) {
+      sizes.forEach((size) => {
+        sku.push(size);
+      });
+    }
 
-    return result;
+    return sku;
   };
+
+  useEffect(() => {
+    const skus = makeSku(colors, sizes);
+    setSkus(skus);
+
+    setVariants((prevVariants) => {
+      const filteredVariants = prevVariants.filter((variant) => {
+        const [color, size] = variant.sku.split("-");
+        const colorExists = colors.some(
+          (selectedColor) => selectedColor.label === color,
+        );
+        const sizeExists = sizes.includes(size);
+
+        return colorExists && (size ? sizeExists : true);
+      });
+
+      // Generate new variants based on the selected colors and sizes
+      const newVariants = skus.map((sku) => {
+        const existingVariant = filteredVariants.find(
+          (variant) => variant.sku === sku,
+        );
+
+        return (
+          existingVariant || {
+            sku,
+            sellingPrice: sellingPrice || "",
+            purchasePrice: purchasePrice || "",
+            stock: stock || "",
+          }
+        );
+      });
+
+      return newVariants;
+    });
+  }, [colors, sizes, setVariants, sellingPrice, purchasePrice, stock]);
+
+  const handleVariantChange = (e, sku, field) => {
+    const value = e.target.value;
+
+    setVariants((prevVariants) => {
+      const existingVariantIndex = prevVariants.findIndex(
+        (variant) => variant.sku === sku,
+      );
+
+      if (value === "") {
+        return prevVariants.filter((variant) => variant.sku !== sku);
+      }
+
+      if (existingVariantIndex >= 0) {
+        const updatedVariants = [...prevVariants];
+        updatedVariants[existingVariantIndex] = {
+          ...updatedVariants[existingVariantIndex],
+          [field]: value,
+        };
+        return updatedVariants;
+      } else {
+        return [
+          ...prevVariants,
+          {
+            sku,
+            [field]: value,
+          },
+        ];
+      }
+    });
+  };
+
+  const [addProduct, { isLoading }] = useAddProductMutation();
 
   // Add product
   const handleAddProduct = async (e) => {
     e.preventDefault();
 
-    if (images?.length <= 0)
-      return Swal.fire("", "Image is required", "warning");
-    if (!title) return Swal.fire("", "Title is required", "warning");
-    if (!categoryId) return Swal.fire("", "Category is required", "warning");
-    if (!brand) return Swal.fire("", "Brand is required", "warning");
-    if (!details) return Swal.fire("", "Details is required", "warning");
-    if (variant == "yes" && variants?.length <= 0) {
-      return Swal.fire("", "Variants is required", "warning");
-    }
-    if (variant == "no" && !sellingPrice) {
-      return Swal.fire("", "sellingPrice is required", "warning");
-    }
-    if (variant == "no" && !purchasePrice) {
-      return Swal.fire("", "purchasePrice is required", "warning");
-    }
-    if (variant == "no" && !quantity) {
-      return Swal.fire("", "quantity is required", "warning");
+    if (thumbnail?.length <= 0) return toast.warning("Thumbnail is required");
+
+    if (!title) return toast.warning("Title is required");
+    if (!categoryId) return toast.warning("Category is required");
+
+    if (!sellingPrice) return toast.warning("Selling Price is required");
+    if (!purchasePrice) return toast.warning("Purchase Price is required");
+    if (!variant && !stock) return toast.warning("Stock is required");
+
+    if (!details) return toast.warning("Description is required");
+    if (variant && variants?.length <= 0) {
+      return toast.warning("Variant is required");
     }
 
+    const totalStock =
+      variant && variants?.length > 0
+        ? variants?.reduce((acc, curr) => acc + parseInt(curr?.stock), 0)
+        : stock;
+
     const formData = new FormData();
+    formData.append("thumbnail", thumbnail[0]?.file);
+    if (galleries?.length > 0)
+      galleries.forEach((gallery) => formData.append("gallery", gallery.file));
+
     formData.append("title", title);
     formData.append("category", categoryId);
     if (subSubCategoryId) formData.append("subCategory", subSubCategoryId);
     if (subSubCategoryId) formData.append("subSubCategory", subSubCategoryId);
-    formData.append("brand", brand);
-    formData.append("discount", discount);
-    formData.append("featured", featured);
-    formData.append("description", details);
+    if (brand) formData.append("brand", brand);
+
     formData.append("sellingPrice", sellingPrice);
     formData.append("purchasePrice", purchasePrice);
-    formData.append("quantity", quantity);
-    images?.map((image) => {
-      formData.append("images", image?.file);
-    });
-    if (variants?.length > 0)
-      formData.append("variants", JSON.stringify(variantsArray()));
+    formData.append("totalStock", totalStock);
+    formData.append("discount", discount);
+
+    formData.append("featured", featured);
+    formData.append("description", details);
+
+    if (variant && variants?.length > 0)
+      formData.append(
+        "variant",
+        JSON.stringify({
+          colors,
+          sizes,
+          variants,
+        }),
+      );
 
     const res = await addProduct(formData);
 
-    if (res?.error) {
-      Swal.fire("", "Product add Fail, please try again", "error");
-    }
-
     if (res?.data?.success) {
-      Swal.fire("", "Product add success", "success");
-      setImages([]);
+      toast.success("Product added successfully");
+      setThumbnail([]);
       setTitle("");
       setCategoryId("");
       setSubCategoryId("");
@@ -163,241 +231,291 @@ export default function AddProduct() {
       setDiscount("");
       setSellingPrice("");
       setPurchasePrice("");
-      setQuantity("");
+      setStock("");
       setFeatured(false);
       setVariants("");
       setDetails("");
       navigate("/admin/product/all-products");
     } else {
-      Swal.fire("", "Product add Fail, please try again", "error");
+      toast.error(res?.data?.message || "Failed to add product");
       console.log(res);
     }
   };
 
   return (
-    <div className="add_product  bg-base-100 rounded shadow p-4">
-      <h3 className="text-lg text-neutral font-medium mb-4">Add Product</h3>
-      <div className="text-neutral-content">
-        <div className="mb-5 border rounded p-4">
-          <p className="text-sm mb-2">Add Images (max 5 images select)</p>
-          <ImageUploading
-            value={images}
-            onChange={(img) => setImages(img)}
-            dataURLKey="data_url"
-            multiple={true}
-            maxNumber={5}
-          >
-            {({ onImageUpload, onImageRemove, dragProps }) => (
-              <div className="grid sm:grid-cols-2 gap-4" {...dragProps}>
-                <div className="flex flex-col items-center justify-center gap-2 border rounded border-dashed p-3">
-                  <span
-                    onClick={onImageUpload}
-                    className="px-4 py-1.5 rounded-2xl text-base-100 bg-primary cursor-pointer text-sm"
-                  >
-                    Choose Image
-                  </span>
+    <div className="add_product rounded bg-base-100 shadow">
+      <h3 className="border-b p-4 text-lg font-medium text-neutral">
+        Add Product
+      </h3>
 
-                  <p className="text-neutral-content">or Drop here</p>
-                </div>
+      <div className="grid items-start gap-4 p-4 sm:grid-cols-4">
+        <div className="text-neutral-content sm:col-span-3">
+          <div className="rounded border p-4">
+            <p className="mb-2 text-sm">Add Thumbnail </p>
+            <ImageUploading
+              value={thumbnail}
+              onChange={(img) => setThumbnail(img)}
+              dataURLKey="data_url"
+            >
+              {({ onImageUpload, onImageRemove, dragProps }) => (
+                <div className="grid gap-4 sm:grid-cols-2" {...dragProps}>
+                  <div className="flex flex-col items-center justify-center gap-2 rounded border border-dashed p-3">
+                    <span
+                      onClick={onImageUpload}
+                      className="cursor-pointer rounded-2xl bg-primary px-4 py-1.5 text-sm text-base-100"
+                    >
+                      Choose Image
+                    </span>
 
-                <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 border rounded border-dashed p-3">
-                  {images?.map((img, index) => (
-                    <div key={index} className="image-item relative">
-                      <img
-                        src={img["data_url"]}
-                        alt=""
-                        className="w-full h-20"
-                      />
-                      <div
-                        onClick={() => onImageRemove(index)}
-                        className="w-7 h-7 bg-primary rounded-full flex justify-center items-center text-base-100 absolute top-0 right-0 cursor-pointer"
-                      >
-                        <AiFillDelete />
+                    <p className="text-neutral-content">or Drop here</p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 rounded border border-dashed p-3 lg:grid-cols-3 xl:grid-cols-4">
+                    {thumbnail?.map((img, index) => (
+                      <div key={index} className="image-item relative">
+                        <img
+                          src={img["data_url"]}
+                          alt="thumbnail"
+                          className="h-20 w-full"
+                        />
+                        <div
+                          onClick={() => onImageRemove(index)}
+                          className="absolute right-0 top-0 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-primary text-base-100"
+                        >
+                          <AiFillDelete />
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
-          </ImageUploading>
-        </div>
+              )}
+            </ImageUploading>
+          </div>
 
-        <div className="form_group">
-          <div className="border rounded p-4  flex flex-col gap-3 mb-5">
-            <div>
-              <p className="text-sm">Product Title</p>
-              <input
-                type="text"
-                name="title"
-                onChange={(e) => setTitle(e.target.value)}
-                required
-              />
-            </div>
+          <div className="mt-3 rounded border p-4">
+            <p className="mb-2 text-sm">
+              Add Gallery <small>(optional)</small>
+            </p>
 
-            <div className="grid md:grid-cols-3 gap-4">
-              <div>
-                <p className="text-sm">Category *</p>
-                <select
-                  name="category"
-                  required
-                  onChange={(e) => setCategoryId(e.target.value)}
-                >
-                  <option value="">Select Category</option>
-                  {categories?.data?.map((category) => (
-                    <option key={category?._id} value={category?._id}>
-                      {category?.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+            <div className="mt-2 text-sm">
+              <div className="flex flex-wrap space-x-2">
+                {galleries?.map((img, index) => (
+                  <div
+                    key={index}
+                    className="relative mb-2 h-14 w-20 overflow-hidden rounded object-cover"
+                  >
+                    <img
+                      src={URL.createObjectURL(img?.file)}
+                      alt={img?.name}
+                      className="h-full w-full rounded border object-cover"
+                    />
 
-              <div>
-                <p className="text-sm">Sub Category</p>
-                <select
-                  name="sub_category"
-                  onChange={(e) => setSubCategoryId(e.target.value)}
-                >
-                  <option value="">Select Sub Category</option>
-                  {subCategories?.length > 0 &&
-                    subCategories?.map((subCategory) => (
-                      <option key={subCategory?._id} value={subCategory?._id}>
-                        {subCategory?.name}
-                      </option>
-                    ))}
-                </select>
-              </div>
+                    <button
+                      onClick={() => removeImage(index)}
+                      className="absolute left-0 top-0 flex h-full w-full items-center justify-center bg-black/60 text-base-100 opacity-0 duration-300 hover:text-red-500 hover:opacity-100"
+                    >
+                      <MdDeleteForever className="text-2xl" />
+                    </button>
+                  </div>
+                ))}
 
-              <div>
-                <p className="text-sm">Sub SubCategory</p>
-                <select
-                  name="sub_subCategory"
-                  onChange={(e) => setSubSubCategoryId(e.target.value)}
-                >
-                  <option value="">Select Sub SubCategory</option>
-                  {subSubCategories?.length > 0 &&
-                    subSubCategories?.map((subSubCategory) => (
-                      <option
-                        key={subSubCategory?._id}
-                        value={subSubCategory?._id}
-                      >
-                        {subSubCategory?.name}
-                      </option>
-                    ))}
-                </select>
-              </div>
-            </div>
+                <div className="relative flex h-14 w-32 cursor-pointer items-center justify-center rounded border-2 border-dashed border-primary bg-primary/10">
+                  <input
+                    type="file"
+                    multiple
+                    className="absolute z-50 h-full w-full cursor-pointer"
+                    style={{ opacity: 0, top: 0, left: 0, cursor: "pointer" }}
+                    onChange={handleFileChange}
+                  />
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm">Brand</p>
-                <select name="brand" onChange={(e) => setBrand(e.target.value)}>
-                  <option value="">Select Brand</option>
-                  <option value="No Brand">No Brand</option>
-                  {brands?.data?.length > 0 &&
-                    brands?.data?.map((brand) => (
-                      <option key={brand?._id} value={brand?.slug}>
-                        {brand?.name}
-                      </option>
-                    ))}
-                </select>
-              </div>
-
-              <div>
-                <p className="text-sm">Discount %</p>
-                <input
-                  type="number"
-                  name="discount"
-                  onChange={(e) => setDiscount(e.target.value)}
-                />
+                  <span className="text-primary">+ Add more</span>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Variants */}
-          <div className="mt-4 border rounded p-4">
-            <div className="flex items-center gap-3">
-              <p>Variant: </p>
-
-              <div className="flex items-center">
+          <div className="form_group mt-3">
+            <div className="mb-5 flex flex-col gap-3 rounded border p-4">
+              <div>
+                <p className="text-sm">Product Title</p>
                 <input
-                  defaultChecked={variant == "no" && true}
-                  id="variant-1"
-                  type="radio"
-                  value="no"
-                  name="variant"
-                  className="cursor-pointer"
-                  onClick={(e) => setVariant(e.target.value)}
+                  type="text"
+                  name="title"
+                  onChange={(e) => setTitle(e.target.value)}
+                  required
                 />
-                <label
-                  htmlFor="variant-1"
-                  className="pl-1 text-sm font-medium mt-[3px] cursor-pointer"
-                >
-                  No
-                </label>
               </div>
 
-              <div className="flex items-center">
-                <input
-                  defaultChecked={variant == "yes" && true}
-                  id="variant-2"
-                  type="radio"
-                  value="yes"
-                  name="variant"
-                  onClick={(e) => setVariant(e.target.value)}
-                  className="cursor-pointer"
-                />
-                <label
-                  htmlFor="variant-2"
-                  className="pl-1 text-sm font-medium mt-[3px] cursor-pointer"
-                >
-                  Yes
-                </label>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm">Category *</p>
+                  <select
+                    name="category"
+                    required
+                    onChange={(e) => setCategoryId(e.target.value)}
+                  >
+                    <option value="">Select Category</option>
+                    {categories?.data?.map((category) => (
+                      <option key={category?._id} value={category?._id}>
+                        {category?.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <p className="text-sm">Sub Category</p>
+                  <select
+                    name="sub_category"
+                    onChange={(e) => setSubCategoryId(e.target.value)}
+                  >
+                    <option value="">Select Sub Category</option>
+                    {subCategories?.length > 0 &&
+                      subCategories?.map((subCategory) => (
+                        <option key={subCategory?._id} value={subCategory?._id}>
+                          {subCategory?.name}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+
+                <div>
+                  <p className="text-sm">Sub SubCategory</p>
+                  <select
+                    name="sub_subCategory"
+                    onChange={(e) => setSubSubCategoryId(e.target.value)}
+                  >
+                    <option value="">Select Sub SubCategory</option>
+                    {subSubCategories?.length > 0 &&
+                      subSubCategories?.map((subSubCategory) => (
+                        <option
+                          key={subSubCategory?._id}
+                          value={subSubCategory?._id}
+                        >
+                          {subSubCategory?.name}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+
+                <div>
+                  <p className="text-sm">Brand</p>
+                  <select
+                    name="brand"
+                    onChange={(e) => setBrand(e.target.value)}
+                  >
+                    <option value="">Select Brand</option>
+                    <option value="No Brand">No Brand</option>
+                    {brands?.data?.length > 0 &&
+                      brands?.data?.map((brand) => (
+                        <option key={brand?._id} value={brand?.slug}>
+                          {brand?.name}
+                        </option>
+                      ))}
+                  </select>
+                </div>
               </div>
             </div>
 
-            <div className="mt-2 border rounded p-3">
-              {variant === "no" && (
-                <div className="grid grid-cols-3 gap-4">
-                  <div>
-                    <p className="text-sm">Selling Price</p>
-                    <input
-                      type="number"
-                      name="selling_price"
-                      required
-                      onChange={(e) => setSellingPrice(e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <p className="text-sm">Purchase Price</p>
-                    <input
-                      type="number"
-                      name="purchase_price"
-                      required
-                      onChange={(e) => setPurchasePrice(e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <p className="text-sm">Quantity</p>
-                    <input
-                      type="number"
-                      name="quantity"
-                      required
-                      onChange={(e) => setQuantity(e.target.value)}
-                    />
-                  </div>
-                </div>
-              )}
+            {/* Price & Discount & stock  */}
+            <div className="mt-4 rounded border p-4">
+              <p>Price & Discount </p>
 
-              {variant === "yes" && (
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
                 <div>
-                  <div className="grid md:grid-cols-2 gap-4">
+                  <p className="text-sm">Base Selling Price *</p>
+                  <input
+                    type="number"
+                    name="sellingPrice"
+                    onChange={(e) => setSellingPrice(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <p className="text-sm">Base Purchase Price *</p>
+                  <input
+                    type="number"
+                    name="purchasePrice"
+                    onChange={(e) => setPurchasePrice(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <p className="text-sm">Discount %</p>
+                  <input
+                    type="number"
+                    name="discount"
+                    onChange={(e) => setDiscount(e.target.value)}
+                  />
+                </div>
+
+                <div>
+                  <p className="text-sm">Stock *</p>
+                  <input
+                    type="number"
+                    name="stock"
+                    onChange={(e) => setStock(e.target.value)}
+                    required
+                    defaultValue={stock}
+                    disabled={variant && "disabled"}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Variants */}
+            <div className="mt-4 rounded border p-4">
+              <div className="flex items-center gap-3">
+                <p>Variant: </p>
+
+                <label className="relative flex cursor-pointer items-center">
+                  <input
+                    type="checkbox"
+                    className="peer sr-only"
+                    value={variant}
+                    onChange={() => {
+                      setVariant(!variant);
+                    }}
+                  />
+                  <div className="peer relative h-6 w-11 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-secondary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-blue-300 rtl:peer-checked:after:-translate-x-full"></div>
+                </label>
+              </div>
+
+              {variant && (
+                <div className="mt-2 rounded border p-3">
+                  <div className="grid gap-4 md:grid-cols-2">
                     <div>
                       <p className="text-sm">Colors</p>
+
                       <Select
+                        defaultValue={colors}
+                        onChange={setColors}
                         options={colorOptions}
-                        onChange={(color) => setColors(color)}
-                        values={colorOptions}
-                        isMulti
+                        isMulti={true}
+                        classNamePrefix="custom-select"
+                        getOptionLabel={(option) => (
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              cursor: "pointer",
+                            }}
+                          >
+                            <div
+                              style={{
+                                width: 13,
+                                height: 13,
+                                backgroundColor: option.colorCode,
+                                marginRight: 6,
+                                borderRadius: "50%",
+                              }}
+                            ></div>
+                            <span>{option.label}</span>
+                          </div>
+                        )}
+                        getOptionValue={(option) => option.value}
                       />
                     </div>
 
@@ -411,185 +529,183 @@ export default function AddProduct() {
                     </div>
                   </div>
 
-                  <div className="border rounded p-4 mt-5">
-                    <p className="mb-2 text-neutral-content text-sm">
-                      Variants
-                    </p>
-                    <div className="relative overflow-x-auto">
-                      <table className="border_table">
-                        <thead>
-                          <tr>
-                            <th className="w-1/5">Color</th>
-                            <th className="w-1/5">Size</th>
-                            <th className="w-1/5">Quantity</th>
-                            <th className="w-1/5">Selling Price</th>
-                            <th className="w-1/5">Purchase Price</th>
+                  <div className="relative mt-3 overflow-x-auto">
+                    <table className="border_table">
+                      <thead>
+                        <tr>
+                          <th>SKU</th>
+                          <th>Selling Price</th>
+                          <th>Purchase Price</th>
+                          <th>Stock</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        {skus.map((sku, i) => (
+                          <tr key={i}>
+                            <td className="whitespace-nowrap">{sku}</td>
+                            <td>
+                              <input
+                                type="number"
+                                onChange={(e) =>
+                                  handleVariantChange(e, sku, "sellingPrice")
+                                }
+                                required
+                                defaultValue={sellingPrice}
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="number"
+                                onChange={(e) =>
+                                  handleVariantChange(e, sku, "purchasePrice")
+                                }
+                                required
+                                defaultValue={purchasePrice}
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="number"
+                                onChange={(e) =>
+                                  handleVariantChange(e, sku, "stock")
+                                }
+                                required
+                                defaultValue={stock}
+                              />
+                            </td>
                           </tr>
-                        </thead>
-                        <tbody>
-                          {colors?.length > 0 &&
-                            colors?.map((color, colorIndex) => (
-                              <tr key={colorIndex}>
-                                <td>{color?.label}</td>
-                                <td>
-                                  {sizes?.map((size, sizeIndex) => (
-                                    <input
-                                      key={sizeIndex}
-                                      type="text"
-                                      disabled
-                                      defaultValue={size}
-                                    />
-                                  ))}
-                                </td>
-                                <td>
-                                  {sizes?.length > 0 ? (
-                                    sizes?.map((size, sizeIndex) => (
-                                      <input
-                                        key={sizeIndex}
-                                        type="number"
-                                        required
-                                        onChange={(e) =>
-                                          handleInputChange(
-                                            colorIndex,
-                                            sizeIndex,
-                                            "quantity",
-                                            e.target.value
-                                          )
-                                        }
-                                      />
-                                    ))
-                                  ) : (
-                                    <input
-                                      type="number"
-                                      required
-                                      onChange={(e) =>
-                                        handleInputChange(
-                                          colorIndex,
-                                          0,
-                                          "quantity",
-                                          e.target.value
-                                        )
-                                      }
-                                    />
-                                  )}
-                                </td>
-                                <td>
-                                  {sizes?.length > 0 ? (
-                                    sizes?.map((size, sizeIndex) => (
-                                      <input
-                                        key={sizeIndex}
-                                        type="number"
-                                        required
-                                        onChange={(e) =>
-                                          handleInputChange(
-                                            colorIndex,
-                                            sizeIndex,
-                                            "sellingPrice",
-                                            e.target.value
-                                          )
-                                        }
-                                      />
-                                    ))
-                                  ) : (
-                                    <input
-                                      type="number"
-                                      required
-                                      onChange={(e) =>
-                                        handleInputChange(
-                                          colorIndex,
-                                          0,
-                                          "sellingPrice",
-                                          e.target.value
-                                        )
-                                      }
-                                    />
-                                  )}
-                                </td>
-                                <td>
-                                  {sizes?.length > 0 ? (
-                                    sizes?.map((size, sizeIndex) => (
-                                      <input
-                                        key={sizeIndex}
-                                        type="number"
-                                        required
-                                        onChange={(e) =>
-                                          handleInputChange(
-                                            colorIndex,
-                                            sizeIndex,
-                                            "purchasePrice",
-                                            e.target.value
-                                          )
-                                        }
-                                      />
-                                    ))
-                                  ) : (
-                                    <input
-                                      type="number"
-                                      required
-                                      onChange={(e) =>
-                                        handleInputChange(
-                                          colorIndex,
-                                          0,
-                                          "purchasePrice",
-                                          e.target.value
-                                        )
-                                      }
-                                    />
-                                  )}
-                                </td>
-                              </tr>
-                            ))}
-                        </tbody>
-                      </table>
-                    </div>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               )}
             </div>
-          </div>
 
-          {/*  Featured */}
-          <div className="mt-6 border rounded p-4">
-            <p className="text-sm">Featured Product</p>
-            <div className="mt-2">
-              <div className="flex items-center gap-2">
-                <p>Status:</p>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    onChange={() => setFeatured(!featured)}
-                    type="checkbox"
-                    value={featured}
-                    className="sr-only peer"
-                  />
-                  <div className="w-11 h-[23px] bg-gray-200 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[1.5px] after:start-[1px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-                </label>
+            {/*  Featured */}
+            <div className="mt-6 rounded border p-4">
+              <p className="text-sm">Featured Product</p>
+              <div className="mt-2">
+                <div className="flex items-center gap-2">
+                  <p>Status:</p>
+                  <label className="relative inline-flex cursor-pointer items-center">
+                    <input
+                      onChange={() => setFeatured(!featured)}
+                      type="checkbox"
+                      value={featured}
+                      className="peer sr-only"
+                    />
+                    <div className="peer h-[23px] w-11 rounded-full bg-gray-200 after:absolute after:start-[1px] after:top-[1.5px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white rtl:peer-checked:after:-translate-x-full"></div>
+                  </label>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Details */}
-          <div className="mt-6 add_product_details border rounded p-4">
-            <p className="text-sm">Description</p>
+            {/* Details */}
+            <div className="add_product_details mt-6 rounded border p-4">
+              <p className="text-sm">Description</p>
 
-            <div className="mt-2">
-              <JoditEditor
-                ref={editor}
-                value={details}
-                onBlur={(text) => setDetails(text)}
-              />
+              <div className="mt-2">
+                <JoditEditor
+                  ref={editor}
+                  value={details}
+                  onBlur={(text) => setDetails(text)}
+                />
+              </div>
+            </div>
+
+            {/* Buttons */}
+            <div className="mt-6">
+              <button
+                onClick={handleAddProduct}
+                type="submit"
+                disabled={isLoading && "disabled"}
+                className="rounded bg-primary px-10 py-2 text-base-100"
+              >
+                {isLoading ? "Loading..." : "Add Product"}
+              </button>
             </div>
           </div>
+        </div>
 
-          {/* Buttons */}
-          <div className="mt-6 flex justify-end">
-            <button
-              onClick={handleAddProduct}
-              type="submit"
-              disabled={isLoading && "disabled"}
-              className="bg-primary text-base-100 px-10 py-2 rounded"
-            >
-              {isLoading ? "Loading..." : "Add Product"}
-            </button>
+        <div className="sticky top-2 hidden rounded border sm:block">
+          <div className="relative h-60 overflow-hidden">
+            {thumbnail?.length > 0 ? (
+              thumbnail?.map((img, index) => (
+                <div key={index} className="image-item relative">
+                  <img
+                    src={img["data_url"]}
+                    alt="image"
+                    className="h-60 w-full rounded"
+                  />
+                </div>
+              ))
+            ) : (
+              <img
+                src="/images/gallery.png"
+                alt="image"
+                className="h-60 w-full rounded object-cover"
+              />
+            )}
+
+            {discount > 0 && (
+              <div className="absolute right-0 top-1 w-max rounded-l-full bg-red-600 px-2 py-px text-base-100">
+                <p>{discount}%</p>
+              </div>
+            )}
+          </div>
+
+          <h1 className="title p-2 text-sm font-medium sm:text-base">
+            {title
+              ? title.length > 25
+                ? `${title.slice(0, 25)}...`
+                : title
+              : "Product Title"}
+          </h1>
+
+          <div>
+            <div className="p-2">
+              <div className="flex items-center gap-2">
+                <p className="text-sm text-primary sm:text-lg">
+                  ৳
+                  {variants?.length > 0
+                    ? parseInt(
+                        variants[0]?.sellingPrice -
+                          (variants[0]?.sellingPrice * discount) / 100,
+                      )
+                    : parseInt(sellingPrice - (sellingPrice * discount) / 100)}
+                </p>
+
+                {discount > 0 && (
+                  <del className="text-xs text-red-400 sm:text-sm">
+                    ৳
+                    {variants?.length > 0
+                      ? parseInt(variants[0]?.sellingPrice)
+                      : parseInt(sellingPrice)}
+                  </del>
+                )}
+              </div>
+
+              <div className="flex items-center gap-1 text-xs text-gray-300">
+                <FaStar />
+                <FaStar />
+                <FaStar />
+                <FaStar />
+                <FaStar /> (0)
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 p-2">
+              <button className="rounded bg-primary/20 py-1.5 text-sm text-primary duration-300 hover:bg-primary hover:text-base-100">
+                Buy Now
+              </button>
+
+              <button className="flex items-center justify-center gap-2 rounded bg-gray-200 py-1.5 text-sm duration-300 hover:bg-gray-500 hover:text-base-100">
+                <span className="hidden sm:block">Add to Cart</span>
+                <FaCartPlus className="sm:hidden" />
+              </button>
+            </div>
           </div>
         </div>
       </div>

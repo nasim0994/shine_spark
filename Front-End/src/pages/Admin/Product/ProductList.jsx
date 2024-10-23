@@ -1,14 +1,15 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { BiSolidPencil } from "react-icons/bi";
 import { Link } from "react-router-dom";
-import Swal from "sweetalert2";
+
 import {
   useDeleteProductMutation,
   useGetAllProductsQuery,
 } from "../../../Redux/product/productApi";
 import Spinner from "../../../components/Spinner/Spinner";
 import Pagination from "../../../components/Pagination/Pagination";
+import { toast } from "react-toastify";
 
 export default function ProductList() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -22,32 +23,20 @@ export default function ProductList() {
     ...query,
   });
 
-  const [
-    deleteProduct,
-    { isSuccess, isError: deleteIsError, error: deleteError },
-  ] = useDeleteProductMutation();
+  const [deleteProduct] = useDeleteProductMutation();
 
   const handleDeleteProduct = async (id) => {
     const isConfirm = window.confirm("Are you sure delete this product?");
     if (isConfirm) {
-      await deleteProduct(id);
+      const res = await deleteProduct(id);
+      if (res?.data?.success) {
+        toast.success(res?.data?.message);
+      } else {
+        toast.error(res?.data?.message || "Something went wrong!");
+        console.log(res);
+      }
     }
   };
-
-  useEffect(() => {
-    if (isSuccess) {
-      Swal.fire("", "Product Delete Success", "success");
-    }
-    if (deleteIsError) {
-      Swal.fire(
-        "",
-        deleteError?.message
-          ? deleteError?.message
-          : "something went worng, please try again",
-        "error",
-      );
-    }
-  }, [isSuccess, deleteIsError, deleteError]);
 
   let content = null;
   if (isLoading) {
@@ -63,10 +52,11 @@ export default function ProductList() {
           <div className="flex items-center gap-2">
             <img
               src={`${import.meta.env.VITE_BACKEND_URL}/products/${
-                product?.images[0]
+                product?.thumbnail
               }`}
-              alt=""
+              alt={product?.title}
               className="h-9 w-9 rounded-lg"
+              loading="lazy"
             />
             {product?.title?.length > 30
               ? product?.title.slice(0, 30) + "..."

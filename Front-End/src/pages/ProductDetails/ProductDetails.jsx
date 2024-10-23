@@ -1,37 +1,30 @@
+import { useState } from "react";
 import parcer from "html-react-parser";
 import { useParams } from "react-router-dom";
 import { useGetProductBySlugQuery } from "../../Redux/product/productApi";
 import Spinner from "../../components/Spinner/Spinner";
 import ProductInfo from "./ProductInfo";
 import RightSideInfo from "./RightSideInfo";
-import { useEffect, useState } from "react";
 import Reviews from "./Review/Reviews";
 import RelatedProducts from "./RelatedProducts/RelatedProducts";
 
 export default function ProductDetails() {
   window.scroll(0, 0);
+  const params = useParams();
 
   const [tab, setTab] = useState("description");
-  const params = useParams();
   let slug = params?.id;
-  const { data, isLoading, isError, error, isSuccess } =
-    useGetProductBySlugQuery(slug);
 
-  useEffect(() => {
-    document.title = slug;
-  }, [slug]);
+  const { data, isLoading } = useGetProductBySlugQuery(slug);
 
-  const description = isSuccess ? data?.data?.description : "";
+  const description = data?.data?.description ? data?.data?.description : "";
   const parcerDescription = parcer(description);
 
   let content = null;
-  if (isLoading) {
-    return (content = <Spinner />);
-  }
-  if (!isLoading && isError) {
-    content = <p>{error.error}</p>;
-  }
-  if (!isLoading && !isError && isSuccess) {
+
+  if (isLoading) return (content = <Spinner />);
+
+  if (!isLoading) {
     content = (
       <div>
         <div className="mt-4 overflow-hidden rounded shadow-lg lg:flex">

@@ -164,7 +164,7 @@ export default function EditFlashDeal() {
                           <img
                             src={`${
                               import.meta.env.VITE_BACKEND_URL
-                            }/products/${product?.images[0]}`}
+                            }/products/${product?.thumbnail}`}
                             alt=""
                             className="h-8 w-8 rounded"
                           />
@@ -172,11 +172,7 @@ export default function EditFlashDeal() {
                         </div>
                       </td>
                       <td className="border-r">
-                        <p>
-                          {product?.variants?.length > 0
-                            ? product?.variants[0]?.sellingPrice
-                            : product?.sellingPrice}
-                        </p>
+                        <p>{product?.sellingPrice}</p>
                       </td>
                       <td className="border-r">
                         <input

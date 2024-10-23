@@ -18,7 +18,10 @@ const storage = multer.diskStorage({
     cb(null, `${Date.now()}-${file.originalname}`);
   },
 });
-const upload = multer({ storage: storage }).array("images", 5);
+const upload = multer({ storage: storage }).fields([
+  { name: "thumbnail", maxCount: 1 },
+  { name: "gallery" },
+]);
 
 router.post("/add-product", upload, addProduct);
 router.get("/all-products", getAllProducts);

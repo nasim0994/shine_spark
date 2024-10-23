@@ -1,11 +1,22 @@
 const mongoose = require("mongoose");
+const FlashDeal = require("./flashDealModel");
 
 const productSchema = new mongoose.Schema(
   {
-    images: {
-      type: Array,
+    thumbnail: {
+      type: String,
       required: true,
     },
+    galleries: [
+      {
+        url: {
+          type: String,
+        },
+        name: {
+          type: String,
+        },
+      },
+    ],
     title: {
       type: String,
       required: true,
@@ -18,6 +29,7 @@ const productSchema = new mongoose.Schema(
     category: {
       type: mongoose.Types.ObjectId,
       ref: "Categories",
+      required: true,
     },
     subCategory: {
       type: mongoose.Types.ObjectId,
@@ -29,7 +41,6 @@ const productSchema = new mongoose.Schema(
     },
     brand: {
       type: String,
-      required: true,
     },
     discount: {
       type: Number,
@@ -41,15 +52,26 @@ const productSchema = new mongoose.Schema(
     },
     sellingPrice: {
       type: Number,
+      required: true,
     },
     purchasePrice: {
       type: Number,
+      required: true,
     },
-    quantity: {
+    totalStock: {
       type: Number,
+      required: true,
     },
-    variants: {
-      type: Array,
+    variant: {
+      colors: {
+        type: Array,
+      },
+      sizes: {
+        type: Array,
+      },
+      variants: {
+        type: Array,
+      },
     },
     rating: {
       type: Number,
@@ -65,6 +87,24 @@ const productSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// product cannot delete if flash sale is active
+productSchema.pre("findOneAndDelete", async function (next) {
+  const productId = this.getQuery()._id;
+  const result = await FlashDeal.countDocuments({
+    "flashProducts.product": productId,
+  });
+
+  if (result > 0) {
+    const error = new Error(
+      "Cannot delete the product as it is part of an active flash deal."
+    );
+
+    return next(error);
+  }
+
+  next();
+});
 
 const Product = mongoose.model("Product", productSchema);
 

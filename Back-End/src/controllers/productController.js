@@ -9,22 +9,30 @@ const { calculatePagination } = require("../utils/calculatePagination");
 const { pick } = require("../utils/pick");
 
 exports.addProduct = async (req, res) => {
-  const images = req?.files?.map((file) => file.filename);
+  const thumbnail = req?.files?.thumbnail[0]?.filename;
+  const galleries = req.files.gallery ? req.files.gallery : [];
 
-  if (images?.length < 1) {
+  if (!thumbnail) {
     return res.json({
       success: false,
-      message: "Please upload at least one image",
+      message: "Please upload thumbnail",
     });
   }
 
-  const { title, variants } = req?.body;
+  const { title, variant } = req?.body;
 
   const product = {
     ...req?.body,
     slug: slugify(`${title}-${Date.now()}`),
-    images,
-    variants: variants && JSON.parse(variants),
+    thumbnail,
+    variant: variant && JSON.parse(variant),
+    galleries:
+      galleries?.length > 0
+        ? galleries?.map((gallery) => ({
+            url: gallery.filename,
+            name: gallery.originalname,
+          }))
+        : [],
   };
 
   try {
@@ -35,21 +43,26 @@ exports.addProduct = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    if (images?.length > 0) {
-      images.forEach((imagePath) => {
-        const fullPath = `./uploads/products/${imagePath}`;
-        fs.unlink(fullPath, (err) => {
+    res.json({
+      success: false,
+      message: error.message,
+    });
+
+    fs.unlink(`./uploads/products/${thumbnail}`, (err) => {
+      if (err) {
+        console.error(err);
+      }
+    });
+
+    if (galleries?.length > 0) {
+      galleries?.forEach((gallery) => {
+        fs.unlink(`./uploads/products/${gallery?.filename}`, (err) => {
           if (err) {
             console.error(err);
           }
         });
       });
     }
-
-    res.json({
-      success: false,
-      message: error.message,
-    });
   }
 };
 
@@ -199,21 +212,27 @@ exports.deleteProductById = async (req, res) => {
       });
     }
 
-    const imagePaths = product?.images;
-    imagePaths.forEach((imagePath) => {
-      const fullPath = `./uploads/products/${imagePath}`;
-      fs.unlink(fullPath, (err) => {
-        if (err) {
-          console.error(err);
-        }
-      });
-    });
+    const result = await Product.findByIdAndDelete(id);
 
-    await Product.findByIdAndDelete(id);
+    if (!result) {
+      return res.json({
+        success: false,
+        message: "Product delete failed",
+      });
+    }
 
     res.status(200).json({
       success: true,
       message: "Product deleted successfully",
+    });
+
+    // delete thumbnail image
+    const thumbnail = product?.thumbnail;
+    const fullPath = `./uploads/products/${thumbnail}`;
+    fs.unlink(fullPath, (err) => {
+      if (err) {
+        console.error(err);
+      }
     });
   } catch (error) {
     res.json({

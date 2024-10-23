@@ -208,6 +208,8 @@ export default function AddProduct() {
     formData.append("featured", featured);
     formData.append("description", details);
 
+    formData.append("isVariant", variant);
+
     if (variant && variants?.length > 0)
       formData.append(
         "variant",
@@ -294,7 +296,7 @@ export default function AddProduct() {
 
           <div className="mt-3 rounded border p-4">
             <p className="mb-2 text-sm">
-              Add Gallery <small>(optional)</small>
+              Add Gallery <small>(optional - max 10 images)</small>
             </p>
 
             <div className="mt-2 text-sm">

@@ -7,16 +7,9 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    galleries: [
-      {
-        url: {
-          type: String,
-        },
-        name: {
-          type: String,
-        },
-      },
-    ],
+    galleries: {
+      type: Array,
+    },
     title: {
       type: String,
       required: true,
@@ -61,6 +54,10 @@ const productSchema = new mongoose.Schema(
     totalStock: {
       type: Number,
       required: true,
+    },
+    isVariant: {
+      type: Boolean,
+      default: false,
     },
     variant: {
       colors: {

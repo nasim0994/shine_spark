@@ -9,12 +9,14 @@ import "react-tagsinput/react-tagsinput.css";
 import { toast } from "react-toastify";
 import { FaStar } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
-
 import {
   useGetCategoriesQuery,
   useGetCategoryQuery,
 } from "../../../Redux/category/categoryApi";
-import { useAddProductMutation } from "../../../Redux/product/productApi";
+import {
+  useGetProductByIdQuery,
+  useUpdateProductMutation,
+} from "../../../Redux/product/productApi";
 
 import { useGetSubCategoryQuery } from "../../../Redux/subCategory/subCategoryApi";
 import { useAllBrandsQuery } from "../../../Redux/brand/brandApi";
@@ -25,6 +27,10 @@ export default function EditProduct() {
   const { id } = useParams();
   const editor = useRef(null);
   const navigate = useNavigate();
+
+  const { data, isLoading: pLoading } = useGetProductByIdQuery(id);
+  const product = data?.data;
+
   const [categoryId, setCategoryId] = useState("");
   const [subCategoryId, setSubCategoryId] = useState("");
   const { data: categories } = useGetCategoriesQuery();
@@ -42,6 +48,52 @@ export default function EditProduct() {
 
   const [thumbnail, setThumbnail] = useState([]);
   const [galleries, setGalleries] = useState([]);
+  const [galleriesUrl, setGalleriesUrl] = useState([]);
+
+  const [title, setTitle] = useState("");
+  const [subSubCategoryId, setSubSubCategoryId] = useState("");
+  const [brand, setBrand] = useState("");
+  const [discount, setDiscount] = useState(0);
+
+  const [featured, setFeatured] = useState(false);
+  const [details, setDetails] = useState("");
+
+  const [sellingPrice, setSellingPrice] = useState(0);
+  const [purchasePrice, setPurchasePrice] = useState(0);
+  const [stock, setStock] = useState(0);
+
+  const [skus, setSkus] = useState([]);
+  const [variant, setVariant] = useState(false);
+  const [variants, setVariants] = useState([]);
+  const [colors, setColors] = useState([]);
+  const [sizes, setSizes] = useState([]);
+
+  useEffect(() => {
+    if (product) {
+      setTitle(product?.title);
+      setCategoryId(product?.category?._id);
+      setSubCategoryId(product?.subCategory?._id);
+      setSubSubCategoryId(product?.subSubCategory?._id);
+      setBrand(product?.brand);
+      setDiscount(product?.discount);
+      setFeatured(product?.featured);
+      setDetails(product?.description);
+      setSellingPrice(product?.sellingPrice);
+      setPurchasePrice(product?.purchasePrice);
+      setStock(product?.totalStock);
+
+      if (product?.galleries?.length > 0) {
+        setGalleriesUrl(product?.galleries);
+      }
+
+      if (product?.isVariant) {
+        setVariant(product?.isVariant);
+        setColors(product?.variant?.colors);
+        setSizes(product?.variant?.sizes);
+        setVariants(product?.variant?.variants);
+      }
+    }
+  }, [product]);
 
   const handleFileChange = (event) => {
     const files = Array.from(event.target.files);
@@ -59,23 +111,10 @@ export default function EditProduct() {
     setGalleries(updatedGallery);
   };
 
-  const [title, setTitle] = useState("");
-  const [subSubCategoryId, setSubSubCategoryId] = useState("");
-  const [brand, setBrand] = useState("");
-  const [discount, setDiscount] = useState(0);
-
-  const [featured, setFeatured] = useState(false);
-  const [details, setDetails] = useState("");
-
-  const [sellingPrice, setSellingPrice] = useState(0);
-  const [purchasePrice, setPurchasePrice] = useState(0);
-  const [stock, setStock] = useState(0);
-  const [variant, setVariant] = useState(false);
-  const [variants, setVariants] = useState([]);
-  const [colors, setColors] = useState([]);
-  const [sizes, setSizes] = useState([]);
-
-  const [skus, setSkus] = useState([]);
+  const removeGalleryUrl = (index) => {
+    const updatedGallery = galleriesUrl?.filter((_, i) => i !== index);
+    setGalleriesUrl(updatedGallery);
+  };
 
   const makeSku = (colors, sizes) => {
     let sku = [];
@@ -165,13 +204,11 @@ export default function EditProduct() {
     });
   };
 
-  const [addProduct, { isLoading }] = useAddProductMutation();
+  const [updateProduct, { isLoading }] = useUpdateProductMutation();
 
-  // Add product
+  // Edit product
   const handleAddProduct = async (e) => {
     e.preventDefault();
-
-    if (thumbnail?.length <= 0) return toast.warning("Thumbnail is required");
 
     if (!title) return toast.warning("Title is required");
     if (!categoryId) return toast.warning("Category is required");
@@ -191,9 +228,14 @@ export default function EditProduct() {
         : stock;
 
     const formData = new FormData();
+
     formData.append("thumbnail", thumbnail[0]?.file);
+
     if (galleries?.length > 0)
       galleries.forEach((gallery) => formData.append("gallery", gallery.file));
+
+    if (galleriesUrl?.length > 0)
+      formData.append("galleriesUrl", JSON.stringify(galleriesUrl));
 
     formData.append("title", title);
     formData.append("category", categoryId);
@@ -219,7 +261,7 @@ export default function EditProduct() {
         }),
       );
 
-    const res = await addProduct(formData);
+    const res = await updateProduct({ id, formData });
 
     if (res?.data?.success) {
       toast.success("Product added successfully");
@@ -242,6 +284,8 @@ export default function EditProduct() {
       console.log(res);
     }
   };
+
+  if (pLoading) return <p>Loading...</p>;
 
   return (
     <div className="add_product rounded bg-base-100 shadow">
@@ -293,32 +337,59 @@ export default function EditProduct() {
             </ImageUploading>
           </div>
 
+          {/* gallery */}
           <div className="mt-3 rounded border p-4">
             <p className="mb-2 text-sm">
-              Edit Gallery <small>(optional)</small>
+              Edit Gallery <small>(optional - max 10 images)</small>
             </p>
 
             <div className="mt-2 text-sm">
               <div className="flex flex-wrap space-x-2">
-                {galleries?.map((img, index) => (
-                  <div
-                    key={index}
-                    className="relative mb-2 h-14 w-20 overflow-hidden rounded object-cover"
-                  >
-                    <img
-                      src={URL.createObjectURL(img?.file)}
-                      alt={img?.name}
-                      className="h-full w-full rounded border object-cover"
-                    />
-
-                    <button
-                      onClick={() => removeImage(index)}
-                      className="absolute left-0 top-0 flex h-full w-full items-center justify-center bg-black/60 text-base-100 opacity-0 duration-300 hover:text-red-500 hover:opacity-100"
+                {galleriesUrl?.length > 0 &&
+                  galleriesUrl?.map((img, index) => (
+                    <div
+                      key={index}
+                      className="relative mb-2 h-14 w-20 overflow-hidden rounded object-cover"
                     >
-                      <MdDeleteForever className="text-2xl" />
-                    </button>
-                  </div>
-                ))}
+                      <img
+                        src={
+                          import.meta.env.VITE_BACKEND_URL +
+                          "/products/" +
+                          img?.url
+                        }
+                        alt={img?.name}
+                        className="h-full w-full rounded border object-cover"
+                      />
+
+                      <button
+                        onClick={() => removeGalleryUrl(index)}
+                        className="absolute left-0 top-0 flex h-full w-full items-center justify-center bg-black/60 text-base-100 opacity-0 duration-300 hover:text-red-500 hover:opacity-100"
+                      >
+                        <MdDeleteForever className="text-2xl" />
+                      </button>
+                    </div>
+                  ))}
+
+                {galleries?.length > 0 &&
+                  galleries?.map((img, index) => (
+                    <div
+                      key={index}
+                      className="relative mb-2 h-14 w-20 overflow-hidden rounded object-cover"
+                    >
+                      <img
+                        src={URL.createObjectURL(img?.file)}
+                        alt={img?.name}
+                        className="h-full w-full rounded border object-cover"
+                      />
+
+                      <button
+                        onClick={() => removeImage(index)}
+                        className="absolute left-0 top-0 flex h-full w-full items-center justify-center bg-black/60 text-base-100 opacity-0 duration-300 hover:text-red-500 hover:opacity-100"
+                      >
+                        <MdDeleteForever className="text-2xl" />
+                      </button>
+                    </div>
+                  ))}
 
                 <div className="relative flex h-14 w-32 cursor-pointer items-center justify-center rounded border-2 border-dashed border-primary bg-primary/10">
                   <input
@@ -336,6 +407,7 @@ export default function EditProduct() {
           </div>
 
           <div className="form_group mt-3">
+            {/* product info , category & brand */}
             <div className="mb-5 flex flex-col gap-3 rounded border p-4">
               <div>
                 <p className="text-sm">Product Title</p>
@@ -344,6 +416,7 @@ export default function EditProduct() {
                   name="title"
                   onChange={(e) => setTitle(e.target.value)}
                   required
+                  defaultValue={title}
                 />
               </div>
 
@@ -354,6 +427,7 @@ export default function EditProduct() {
                     name="category"
                     required
                     onChange={(e) => setCategoryId(e.target.value)}
+                    value={categoryId}
                   >
                     <option value="">Select Category</option>
                     {categories?.data?.map((category) => (
@@ -369,6 +443,7 @@ export default function EditProduct() {
                   <select
                     name="sub_category"
                     onChange={(e) => setSubCategoryId(e.target.value)}
+                    value={subCategoryId}
                   >
                     <option value="">Select Sub Category</option>
                     {subCategories?.length > 0 &&
@@ -385,6 +460,7 @@ export default function EditProduct() {
                   <select
                     name="sub_subCategory"
                     onChange={(e) => setSubSubCategoryId(e.target.value)}
+                    value={subSubCategoryId}
                   >
                     <option value="">Select Sub SubCategory</option>
                     {subSubCategories?.length > 0 &&
@@ -404,6 +480,7 @@ export default function EditProduct() {
                   <select
                     name="brand"
                     onChange={(e) => setBrand(e.target.value)}
+                    value={brand}
                   >
                     <option value="">Select Brand</option>
                     <option value="No Brand">No Brand</option>
@@ -430,6 +507,7 @@ export default function EditProduct() {
                     name="sellingPrice"
                     onChange={(e) => setSellingPrice(e.target.value)}
                     required
+                    defaultValue={sellingPrice}
                   />
                 </div>
 
@@ -440,6 +518,7 @@ export default function EditProduct() {
                     name="purchasePrice"
                     onChange={(e) => setPurchasePrice(e.target.value)}
                     required
+                    defaultValue={purchasePrice}
                   />
                 </div>
 
@@ -449,6 +528,7 @@ export default function EditProduct() {
                     type="number"
                     name="discount"
                     onChange={(e) => setDiscount(e.target.value)}
+                    defaultValue={discount}
                   />
                 </div>
 
@@ -479,6 +559,7 @@ export default function EditProduct() {
                     onChange={() => {
                       setVariant(!variant);
                     }}
+                    checked={variant}
                   />
                   <div className="peer relative h-6 w-11 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-secondary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-blue-300 rtl:peer-checked:after:-translate-x-full"></div>
                 </label>
@@ -596,6 +677,7 @@ export default function EditProduct() {
                       type="checkbox"
                       value={featured}
                       className="peer sr-only"
+                      checked={featured}
                     />
                     <div className="peer h-[23px] w-11 rounded-full bg-gray-200 after:absolute after:start-[1px] after:top-[1.5px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white rtl:peer-checked:after:-translate-x-full"></div>
                   </label>
@@ -624,7 +706,7 @@ export default function EditProduct() {
                 disabled={isLoading && "disabled"}
                 className="rounded bg-primary px-10 py-2 text-base-100"
               >
-                {isLoading ? "Loading..." : "Add Product"}
+                {isLoading ? "Loading..." : "Edit Product"}
               </button>
             </div>
           </div>
@@ -644,7 +726,11 @@ export default function EditProduct() {
               ))
             ) : (
               <img
-                src="/images/gallery.png"
+                src={
+                  import.meta.env.VITE_BACKEND_URL +
+                  "/products/" +
+                  product?.thumbnail
+                }
                 alt="image"
                 className="h-60 w-full rounded object-cover"
               />

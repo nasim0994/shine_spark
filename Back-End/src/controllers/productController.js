@@ -19,21 +19,46 @@ exports.addProduct = async (req, res) => {
     });
   }
 
+  if (galleries?.length > 10) {
+    galleries?.forEach((gallery) => {
+      fs.unlink(`./uploads/products/${gallery?.filename}`, (err) => {
+        if (err) {
+          console.error(err);
+        }
+      });
+    });
+
+    // delete thumbnail image
+    fs.unlink(`./uploads/products/${thumbnail}`, (err) => {
+      if (err) {
+        console.error(err);
+      }
+    });
+
+    return res.json({
+      success: false,
+      message: "You can't upload more than 10 images",
+    });
+  }
+
   const { title, variant } = req?.body;
 
-  const product = {
+  let product = {
     ...req?.body,
     slug: slugify(`${title}-${Date.now()}`),
     thumbnail,
-    variant: variant && JSON.parse(variant),
-    galleries:
-      galleries?.length > 0
-        ? galleries?.map((gallery) => ({
-            url: gallery.filename,
-            name: gallery.originalname,
-          }))
-        : [],
   };
+
+  if (variant) {
+    product.variant = JSON.parse(variant);
+  }
+
+  if (galleries?.length > 0) {
+    product.galleries = galleries?.map((gallery) => ({
+      url: gallery.filename,
+      name: gallery.originalname,
+    }));
+  }
 
   try {
     const result = await Product.create(product);
@@ -234,6 +259,16 @@ exports.deleteProductById = async (req, res) => {
         console.error(err);
       }
     });
+
+    if (product?.galleries?.length > 0) {
+      product?.galleries?.forEach((gallery) => {
+        fs.unlink(`./uploads/products/${gallery?.url}`, (err) => {
+          if (err) {
+            console.error(err);
+          }
+        });
+      });
+    }
   } catch (error) {
     res.json({
       success: false,
@@ -244,60 +279,90 @@ exports.deleteProductById = async (req, res) => {
 
 exports.updateProduct = async (req, res) => {
   const id = req?.params?.id;
-  const images = req?.files?.map((file) => file.filename);
+  const thumbnail = req?.files?.thumbnail && req?.files?.thumbnail[0]?.filename;
+  const galleries = req.files.gallery ? req.files.gallery : [];
 
-  const { title, variants } = req?.body;
+  const { title, variant, galleriesUrl } = req?.body;
 
   try {
-    const isProduct = await Product.findById(id);
-    // console.log(isProduct);
-    if (!isProduct) {
-      images?.forEach((imagePath) => {
-        const fullPath = `./uploads/products/${imagePath}`;
-        fs.unlink(fullPath, (err) => {
-          if (err) {
-            console.error(err);
-          }
-        });
-      });
+    const isExit = await Product.findById(id);
 
+    if (!isExit) {
       return res.json({
         success: false,
         message: "Product not found",
       });
     }
 
-    if (images && images.length > 0) {
-      const product = {
-        ...req?.body,
-        slug: slugify(`${title}-${Date.now()}`),
-        images,
-        variants: JSON.parse(variants),
-      };
+    let product = {
+      ...req?.body,
+      slug: slugify(`${title}-${Date.now()}`),
+      thumbnail: thumbnail || isExit?.thumbnail,
+    };
 
-      const imagePaths = isProduct?.images;
-      imagePaths.forEach((imagePath) => {
-        const fullPath = `./uploads/products/${imagePath}`;
-        fs.unlink(fullPath, (err) => {
+    if (variant) {
+      product.variant = JSON.parse(variant);
+    }
+
+    if (galleriesUrl && isExit?.galleries) {
+      const deletedImages = isExit?.galleries?.filter(
+        (gallery) => !galleriesUrl?.includes(gallery?.url)
+      );
+
+      deletedImages?.forEach((image) => {
+        fs.unlink(`./uploads/products/${image?.url}`, (err) => {
           if (err) {
             console.error(err);
           }
         });
       });
+    }
 
-      await Product.findByIdAndUpdate(id, product, {
-        new: true,
+    let newImages = [];
+
+    if (galleries?.length > 0) {
+      const newImage = galleries?.map((gallery) => ({
+        url: gallery.filename,
+        name: gallery.originalname,
+      }));
+
+      newImages.push(...newImages, ...newImage);
+    }
+
+    if (isExit?.galleries) {
+      const filterImages = isExit?.galleries?.filter((gallery) =>
+        galleriesUrl?.includes(gallery?.url)
+      );
+
+      newImages = [...filterImages, ...newImages];
+    }
+
+    product.galleries = newImages;
+
+    if (newImages?.length > 10) {
+      if (galleries?.length > 0) {
+        galleries?.forEach((gallery) => {
+          fs.unlink(`./uploads/products/${gallery?.filename}`, (err) => {
+            if (err) {
+              console.error(err);
+            }
+          });
+        });
+      }
+
+      return res.json({
+        success: false,
+        message: "You can't upload more than 10 images",
       });
-    } else {
-      const product = {
-        ...req?.body,
-        images: isProduct?.images,
-        slug: slugify(`${title}-${Date.now()}`),
-        variants: JSON.parse(variants),
-      };
+    }
 
-      await Product.findByIdAndUpdate(id, product, {
-        new: true,
+    // update
+    const result = await Product.findByIdAndUpdate(id, product, { new: true });
+
+    if (!result) {
+      return res.json({
+        success: false,
+        message: "Product update failed",
       });
     }
 
@@ -305,22 +370,29 @@ exports.updateProduct = async (req, res) => {
       success: true,
       message: "Product updated successfully",
     });
-  } catch (error) {
-    if (images.length > 0) {
-      images.forEach((imagePath) => {
-        const fullPath = `./uploads/products/${imagePath}`;
-        fs.unlink(fullPath, (err) => {
-          if (err) {
-            console.error(err);
-          }
-        });
+
+    // delete previous thumbnail image
+    if (thumbnail) {
+      const fullPath = `./uploads/products/${isExit?.thumbnail}`;
+      fs.unlink(fullPath, (err) => {
+        if (err) {
+          console.error(err);
+        }
       });
     }
-
+  } catch (error) {
     res.json({
       success: false,
       message: error.message,
     });
+
+    if (thumbnail) {
+      fs.unlink(`./uploads/products/${thumbnail}`, (err) => {
+        if (err) {
+          console.error(err);
+        }
+      });
+    }
   }
 };
 

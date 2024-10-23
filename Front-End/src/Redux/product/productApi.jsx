@@ -59,6 +59,14 @@ export const productApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["product", "review"],
     }),
+
+    updateFeatured: builder.mutation({
+      query: (id) => ({
+        url: `/product/update/feature/${id}`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["product", "review"],
+    }),
   }),
 });
 
@@ -70,4 +78,5 @@ export const {
   useAddProductMutation,
   useUpdateProductMutation,
   useDeleteProductMutation,
+  useUpdateFeaturedMutation,
 } = productApi;

@@ -6,10 +6,12 @@ import { Link } from "react-router-dom";
 import {
   useDeleteProductMutation,
   useGetAllProductsQuery,
+  useUpdateFeaturedMutation,
 } from "../../../Redux/product/productApi";
 import Spinner from "../../../components/Spinner/Spinner";
 import Pagination from "../../../components/Pagination/Pagination";
 import { toast } from "react-toastify";
+import ButtonSpinner from "../../../components/ButtonSpinner/ButtonSpinner";
 
 export default function ProductList() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -35,6 +37,24 @@ export default function ProductList() {
         toast.error(res?.data?.message || "Something went wrong!");
         console.log(res);
       }
+    }
+  };
+
+  // update feature
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [updateFeatured, { isLoading: ufLoading }] =
+    useUpdateFeaturedMutation();
+
+  const handleUpdateFeatured = async (id) => {
+    setSelectedProduct(id);
+
+    const res = await updateFeatured(id);
+
+    if (res?.data?.success) {
+      toast.success("Status updated success");
+    } else {
+      toast.error(res?.data?.message || "Something went wrong!");
+      console.log(res);
     }
   };
 
@@ -65,17 +85,8 @@ export default function ProductList() {
         </td>
         <td>{product?.category?.name}</td>
         <td>
-          {product?.featured ? (
-            <label className="relative inline-flex cursor-pointer items-center">
-              <input
-                checked={product?.featured && product?.featured}
-                type="checkbox"
-                value={product?.featured}
-                className="peer sr-only"
-                disabled
-              />
-              <div className="peer h-[23px] w-11 rounded-full bg-gray-200 after:absolute after:start-[1px] after:top-[1.5px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white rtl:peer-checked:after:-translate-x-full"></div>
-            </label>
+          {ufLoading && selectedProduct === product?._id ? (
+            <ButtonSpinner />
           ) : (
             <label className="relative inline-flex cursor-pointer items-center">
               <input
@@ -83,7 +94,7 @@ export default function ProductList() {
                 type="checkbox"
                 value={product?.featured}
                 className="peer sr-only"
-                disabled
+                onChange={() => handleUpdateFeatured(product?._id)}
               />
               <div className="peer h-[23px] w-11 rounded-full bg-gray-200 after:absolute after:start-[1px] after:top-[1.5px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white rtl:peer-checked:after:-translate-x-full"></div>
             </label>

@@ -12,7 +12,7 @@ export default function TopCampaignBanner() {
 
   if (data?.data?.length > 0) {
     return (
-      <section className="py-4">
+      <section className="mt-8">
         <div className="container">
           <div className="mx-auto sm:w-3/4">
             <div className="relative h-28 w-full sm:h-40 lg:h-60">

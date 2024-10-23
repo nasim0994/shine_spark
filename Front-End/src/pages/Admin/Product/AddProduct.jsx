@@ -631,7 +631,7 @@ export default function AddProduct() {
           </div>
         </div>
 
-        <div className="sticky top-2 hidden rounded border sm:block">
+        <div className="sticky top-2 hidden rounded border xl:block">
           <div className="relative h-60 overflow-hidden">
             {thumbnail?.length > 0 ? (
               thumbnail?.map((img, index) => (

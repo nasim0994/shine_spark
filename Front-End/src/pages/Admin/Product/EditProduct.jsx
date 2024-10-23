@@ -712,7 +712,7 @@ export default function EditProduct() {
           </div>
         </div>
 
-        <div className="sticky top-2 hidden rounded border sm:block">
+        <div className="sticky top-2 hidden rounded border xl:block">
           <div className="relative h-60 overflow-hidden">
             {thumbnail?.length > 0 ? (
               thumbnail?.map((img, index) => (
@@ -748,7 +748,7 @@ export default function EditProduct() {
               ? title.length > 25
                 ? `${title.slice(0, 25)}...`
                 : title
-              : "Product Title"}
+              : "Product Title Demo"}
           </h1>
 
           <div>

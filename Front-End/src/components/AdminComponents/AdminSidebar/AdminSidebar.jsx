@@ -178,8 +178,8 @@ export default function AdminSidebar() {
                     data?.data[0]?.logo
                   }`
             }
-            alt=""
-            className="mx-auto h-16 w-28"
+            alt="logo"
+            className="mx-auto w-2/3"
           />
         </Link>
 

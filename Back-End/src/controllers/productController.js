@@ -416,3 +416,30 @@ exports.getFeaturedProducts = async (req, res) => {
     });
   }
 };
+
+exports.updateFeatured = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const product = await Product.findById(id);
+
+    if (!product) {
+      return res.json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    await Product.findByIdAndUpdate(id, { featured: !product.featured });
+
+    res.status(200).json({
+      success: true,
+      message: "Product updated successfully",
+    });
+  } catch (error) {
+    res.son({
+      success: false,
+      message: error.message,
+    });
+  }
+};

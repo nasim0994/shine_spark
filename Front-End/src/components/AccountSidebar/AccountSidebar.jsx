@@ -21,10 +21,10 @@ export default function AccountSidebar() {
                   loggedUser?.data?.image
                 }`
           }
-          alt=""
+          alt="logo"
           className="mx-auto h-28 w-28 rounded-full border"
         />
-        <h3 className="text-neutral-content text-center text-lg font-medium">
+        <h3 className="text-center text-lg font-medium text-neutral-content">
           {loggedUser?.data?.firstName} {loggedUser?.data?.lastName}
         </h3>
       </div>

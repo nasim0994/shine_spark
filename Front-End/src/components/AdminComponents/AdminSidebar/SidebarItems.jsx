@@ -14,7 +14,7 @@ export default function SidebarItems({ item }) {
       <li>
         <button onClick={() => setDropdown(!dropdown)}>
           <div className="flex items-center gap-1.5">
-            {item.icon} {item.title}
+            <i>{item.icon}</i> {item.title}
           </div>
 
           {dropdown ? (
@@ -41,7 +41,7 @@ export default function SidebarItems({ item }) {
     return (
       <li>
         <NavLink to={item?.path}>
-          {item.icon}
+          <i>{item.icon}</i>
           {item.title}
         </NavLink>
       </li>

@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { HiOutlineMenuAlt2 } from "react-icons/hi";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { FaRegUserCircle } from "react-icons/fa";
+import { TbWorldWww } from "react-icons/tb";
+
 import { userLogout } from "../../../Redux/user/userSlice";
 
 export default function AdminHeader({ setSidebar }) {
   const [dropdown, setDropdown] = useState(false);
-  const { pathname } = useLocation();
   const { loggedUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
@@ -20,8 +21,8 @@ export default function AdminHeader({ setSidebar }) {
   }, []);
 
   return (
-    <header className="py-3 px-6 bg-base-100 text-neutral shadow">
-      <div className="flex justify-between items-center">
+    <header className="bg-base-100 px-6 py-3 text-neutral shadow">
+      <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <button
             onClick={() => setSidebar(true)}
@@ -29,12 +30,14 @@ export default function AdminHeader({ setSidebar }) {
           >
             <HiOutlineMenuAlt2 className="text-xl" />
           </button>
-          <div className="flex items-center text-[15px]">
-            <Link to="/admin/dashboard">Dashboard</Link>
-            {pathname !== "/admin/dashboard" && (
-              <p className="hidden sm:block">{pathname}</p>
-            )}
-          </div>
+          <Link
+            to="/"
+            className="flex items-center gap-1 text-[15px] duration-300 hover:text-secondary"
+            target="_blank"
+          >
+            <TbWorldWww className="text-xl" />
+            Visit Website
+          </Link>
         </div>
 
         <div className="relative">
@@ -47,16 +50,16 @@ export default function AdminHeader({ setSidebar }) {
           </button>
 
           {dropdown && (
-            <div className="absolute top-[140%] right-0 w-40 bg-base-100 rounded shadow p-2">
+            <div className="absolute right-0 top-[140%] w-40 rounded bg-base-100 p-2 shadow">
               <Link
                 to="/admin/general-setting/profile"
-                className="block hover:bg-gray-100 w-full text-start px-2 py-1 rounded"
+                className="block w-full rounded px-2 py-1 text-start hover:bg-gray-100"
               >
                 Profile
               </Link>
               <button
                 onClick={() => dispatch(userLogout())}
-                className="hover:bg-gray-100 text-red-500 w-full text-start px-2 py-1 rounded"
+                className="w-full rounded px-2 py-1 text-start text-red-500 hover:bg-gray-100"
               >
                 Logout
               </button>

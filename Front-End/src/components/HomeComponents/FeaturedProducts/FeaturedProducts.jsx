@@ -26,8 +26,8 @@ export default function FeaturedProducts() {
   }
 
   return (
-    <section className="mt-2">
-      <div className="container rounded-lg bg-base-100 p-4 shadow-lg">
+    <section className="mt-8">
+      <div className="container">
         <div className="flex justify-between border-b border-primary pb-2 sm:items-center">
           <h1 className="font-medium text-neutral md:text-xl md:font-semibold">
             Featured Products

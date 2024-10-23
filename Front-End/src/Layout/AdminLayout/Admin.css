@@ -1,6 +1,6 @@
 .admin_sidebar {
-  background: #293845;
-  color: #ffffffe3;
+  background: #fff;
+  color: #293845;
   height: 100vh;
   overflow-y: auto;
   position: fixed;
@@ -20,35 +20,36 @@
   left: 300px;
 }
 
-.admin_siderbar ul li button {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.admin_siderbar ul li button,
+.admin_siderbar ul li a {
   padding: 10px;
   font-size: 15px;
-  border-bottom: 1px solid #293845;
+  border-radius: 4px;
   transition: all 0.3s ease;
+
+  display: flex;
+  align-items: center;
+}
+
+.admin_siderbar ul li button {
+  width: 100%;
+  justify-content: space-between;
 }
 
 .admin_siderbar ul li a {
-  display: flex;
-  align-items: center;
   gap: 6px;
-  padding: 10px;
-  font-size: 15px;
-  border-bottom: 1px solid #293845;
-  transition: all 0.3s ease;
 }
 
 .admin_siderbar ul li a:hover,
 .admin_siderbar ul li button:hover {
-  background: #445360;
+  background: var(--primary);
+  color: #fff;
   padding: 10px;
 }
 
 .admin_siderbar .active {
-  background: #445360;
+  background: var(--primary);
+  color: #fff;
   padding: 10px;
 }
 

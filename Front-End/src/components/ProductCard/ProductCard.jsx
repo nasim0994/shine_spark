@@ -152,7 +152,7 @@ export default function ProductCard({ product, discount: flashDiscount = 0 }) {
       <div className="product_card">
         <div className="flex h-full flex-col justify-between rounded shadow">
           <Link to={`/product/${slug}?discount=${newDiscount}`}>
-            <div className="relative h-60 overflow-hidden">
+            <div className="relative h-56 overflow-hidden sm:h-60">
               <img
                 src={`${import.meta.env.VITE_BACKEND_URL}/products/${thumbnail}`}
                 alt={title}
@@ -192,12 +192,6 @@ export default function ProductCard({ product, discount: flashDiscount = 0 }) {
                   ({reviewer ? reviewer : 0})
                 </p>
               </div>
-            </div>
-
-            <div className="mt-2">
-              <Link to="" className="primary_btn">
-                More Details
-              </Link>
             </div>
 
             {/* <div className="grid grid-cols-2 gap-2 p-2">

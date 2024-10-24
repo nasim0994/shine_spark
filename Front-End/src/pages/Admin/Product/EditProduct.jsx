@@ -40,7 +40,7 @@ export default function EditProduct() {
   const { data: color } = useAllColorsQuery();
   const colorOptions = color?.data?.map((item) => ({
     label: item?.name,
-    code: item?.code,
+    value: item?.code,
   }));
 
   const subCategories = category?.data?.subCategories;
@@ -589,7 +589,7 @@ export default function EditProduct() {
                               style={{
                                 width: 13,
                                 height: 13,
-                                backgroundColor: option.colorCode,
+                                backgroundColor: option.value,
                                 marginRight: 6,
                                 borderRadius: "50%",
                               }}

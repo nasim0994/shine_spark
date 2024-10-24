@@ -11,7 +11,8 @@ import {
   addToWishlist,
   removeFromWishlist,
 } from "../../Redux/wishlist/wishlistSlice";
-// import ReactShare from "./ReactShare/ReactShare";
+import Rating from "../../components/Rating/Rating";
+import ProductImage from "./ProductImage";
 
 export default function ProductInfo({ product }) {
   const navigate = useNavigate();
@@ -24,72 +25,25 @@ export default function ProductInfo({ product }) {
 
   const {
     title,
-    images,
+    thumbnail,
     brand,
     category,
-    subCategory,
-    subSubCategory,
+    rating,
+    reviewer,
     sellingPrice,
-    quantity,
-    variants,
+    totalStock,
+    galleries,
+    variant,
   } = product;
 
-  // Total Stock
-  const totakStock = variants?.length
-    ? variants?.reduce(
-        (quantity, item) => parseInt(quantity) + parseInt(item.quantity),
-        0,
-      )
-    : quantity;
-  const price = variants?.length ? variants[0]?.sellingPrice : sellingPrice;
+  const { colors, sizes, variants } = variant || {};
 
-  const [showImage, setShowImage] = useState(images[0]);
-  const [selectedSize, setSelectedSize] = useState("");
-  const [selectedColor, setSelectedColor] = useState("");
-  const [availableStock, setAvailableStock] = useState(totakStock);
-  const [selectedPrice, setSelectedPrice] = useState(price);
+  const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedColor, setSelectedColor] = useState(null);
+  const [selectedStock, setSelectedStock] = useState(totalStock);
+  const [selectedPrice, setSelectedPrice] = useState(sellingPrice);
+
   const [selectedQuantity, setSelectedQuantity] = useState(1);
-
-  useEffect(() => {
-    setShowImage(images[0]);
-  }, [images]);
-
-  const [colors, setColors] = useState([]);
-  const sizes = [
-    ...new Set(variants?.map((size) => size.size !== undefined && size.size)),
-  ];
-
-  useEffect(() => {
-    const uniqueSet = new Set();
-
-    variants.forEach((item) => {
-      const { color, colorCode } = item;
-      const combinationKey = `${color}-${colorCode}`;
-      uniqueSet.add(combinationKey);
-    });
-
-    const uniqueArray = Array.from(uniqueSet).map((combinationKey) => {
-      const [color, colorCode] = combinationKey.split("-");
-      return { color, colorCode };
-    });
-
-    setColors(uniqueArray);
-  }, [variants]);
-
-  useEffect(() => {
-    const findVariant = variants?.find(
-      (variant) =>
-        variant.color === selectedColor && variant.size === selectedSize,
-    );
-
-    if (findVariant) {
-      setAvailableStock(findVariant?.quantity);
-      setSelectedPrice(findVariant?.sellingPrice);
-    } else {
-      setAvailableStock(totakStock);
-      setSelectedPrice(price);
-    }
-  }, [selectedSize, selectedColor, totakStock, price, variants]);
 
   const handelSelectSize = (size) => {
     if (selectedSize === size) {
@@ -100,18 +54,49 @@ export default function ProductInfo({ product }) {
   };
 
   const handelColorSelect = (clr) => {
-    if (selectedColor === clr.color) {
+    if (selectedColor === clr) {
       setSelectedColor("");
     } else {
-      setSelectedColor(clr.color);
+      setSelectedColor(clr);
     }
   };
 
   useEffect(() => {
-    if (availableStock < selectedQuantity) {
-      setSelectedQuantity(1);
+    let sku = "";
+    let color = "";
+    let size = "";
+
+    if (selectedColor) {
+      color = selectedColor?.label.split(" ").join("");
     }
-  }, [availableStock, selectedQuantity]);
+
+    if (selectedSize) {
+      size = selectedSize;
+    }
+
+    if (color && size) {
+      sku = `${color}-${size}`;
+    } else if (color) {
+      sku = `${color}`;
+    } else if (size) {
+      sku = `${size}`;
+    }
+
+    const findVariant = variants?.find((item) => item.sku === sku);
+
+    if (findVariant) {
+      setSelectedStock(findVariant.stock);
+      setSelectedPrice(findVariant?.sellingPrice);
+    }
+  }, [selectedSize, selectedColor, variants]);
+
+  console.log(selectedPrice);
+
+  // useEffect(() => {
+  //   if (availableStock < selectedQuantity) {
+  //     setSelectedQuantity(1);
+  //   }
+  // }, [selectedQuantity]);
 
   const handelDecrease = () => {
     if (selectedQuantity > 1) {
@@ -120,7 +105,7 @@ export default function ProductInfo({ product }) {
   };
 
   const handelIncrease = () => {
-    if (availableStock > selectedQuantity) {
+    if (selectedStock > selectedQuantity) {
       setSelectedQuantity(selectedQuantity + 1);
     }
   };
@@ -138,13 +123,13 @@ export default function ProductInfo({ product }) {
       _id: product._id,
       title: title,
       slug: product.slug,
-      image: images[0],
+      // image: images[0],
       discount: discount,
-      price: selectedPrice,
+      // price: selectedPrice,
       quantity: selectedQuantity,
       size: selectedSize,
       color: selectedColor,
-      stock: availableStock,
+      // stock: availableStock,
     };
 
     dispatch(addToCart([cartProduct]));
@@ -164,13 +149,13 @@ export default function ProductInfo({ product }) {
       _id: product._id,
       title: title,
       slug: product.slug,
-      image: images[0],
+      // image: images[0],
       discount: discount,
-      price: selectedPrice,
+      // price: selectedPrice,
       quantity: selectedQuantity,
       size: selectedSize,
       color: selectedColor,
-      stock: availableStock,
+      // stock: availableStock,
     };
 
     const findProduct = carts?.find(
@@ -199,85 +184,57 @@ export default function ProductInfo({ product }) {
       Swal.fire("", "Product added to wishlist successfully", "success");
     }
   };
+
   const isWishlist = wishlists?.find((item) => item._id === product._id);
 
-  // const img = `${import.meta.env.VITE_BACKEND_URL}/products/${showImage}`;
-
   return (
-    <div className="gap-6 lg:flex">
+    <div className="flex flex-col gap-4 lg:flex-row lg:gap-6">
       {/* Image */}
       <div className="lg:w-[42%]">
-        <div className="relative">
-          <img
-            src={`${import.meta.env.VITE_BACKEND_URL}/products/${showImage}`}
-            alt={title}
-            className="h-[350px] w-full rounded"
-            loading="lazy"
-          />
-
-          {/* Discount */}
-          {discount > 0 && (
-            <div className="absolute right-0 top-1 w-max rounded-l-full bg-red-600 px-2 py-px text-base-100">
-              <p>{discount}%</p>
-            </div>
-          )}
-        </div>
-
-        <div className="mt-5 grid grid-cols-5 gap-2">
-          {images.map((img, index) => (
-            <div key={index} onClick={() => setShowImage(img)}>
-              <img
-                src={`${import.meta.env.VITE_BACKEND_URL}/products/${img}`}
-                alt={title}
-                className="h-12 w-full rounded"
-                loading="lazy"
-              />
-            </div>
-          ))}
-        </div>
+        <ProductImage
+          discount={discount}
+          galleries={galleries}
+          thumbnail={thumbnail}
+        />
       </div>
 
       {/* Details */}
-      <div className="mt-4 lg:mt-0 lg:w-[58%]">
-        {/* title  */}
+      <div className="lg:w-[58%]">
         <div>
-          <h1 className="text-2xl font-medium text-neutral">{title}</h1>
-          <div className="text-sm">
-            <p>
-              <span className="text-neutral/80">Brand:</span>{" "}
-              <span>{brand ? brand : "No Brand"}</span>
+          <div className="flex items-center justify-between text-xs text-neutral-content">
+            <p className="rounded bg-primary/10 px-2 py-1 text-primary">
+              {category?.name}
             </p>
-            <p>
-              <span className="text-neutral/80">Category:</span>{" "}
-              <span>
-                {category?.name}
-                {subCategory && ` - ${subCategory?.name}`}
-                {subSubCategory && ` - ${subSubCategory?.name}`}
-              </span>
+          </div>
+
+          <h1 className="mt-2 text-2xl font-medium text-neutral">{title}</h1>
+          {selectedStock > 0 ? (
+            <p className="text-xs text-primary">In Stock</p>
+          ) : (
+            <p className="text-xs text-red-500">Out of Stock</p>
+          )}
+
+          <div className="mt-2 flex items-center gap-1 text-[13px]">
+            <Rating rating={rating || 0} />
+            <p className="text-xs text-neutral-content">
+              ({reviewer ? reviewer : 0})
             </p>
-            <p>
-              <span className="text-neutral/80">Available Stock:</span>{" "}
-              <span>{availableStock}</span>
-            </p>
+          </div>
+
+          <div className="text-[13px] text-neutral-content">
+            {brand && (
+              <p>
+                <span className="text-neutral/80">Brand:</span>{" "}
+                <span>{brand}</span>
+              </p>
+            )}
           </div>
         </div>
 
-        {/*  wishlist */}
-        <div className="flex items-center justify-end gap-4">
-          <button
-            onClick={() => handelAddToWishlist(product)}
-            className={`rounded-full p-3 shadow-lg ${
-              isWishlist && "bg-primary text-base-100"
-            }`}
-          >
-            <FiHeart />
-          </button>
-        </div>
-
         {/* Price */}
-        <div className="mt-3 border-y py-3">
+        <div className="mt-3 flex items-center justify-between py-3 pr-2">
           <div className="flex items-center gap-6">
-            <p className="text-neutral opacity-70">Price: </p>
+            <p className="text-neutral-content">Price: </p>
 
             <div className="flex items-end gap-2">
               <p className="text-2xl font-medium text-primary">
@@ -287,6 +244,42 @@ export default function ProductInfo({ product }) {
                 <del className="text-red-400">৳{selectedPrice}</del>
               )}
             </div>
+          </div>
+
+          <div className="flex items-center justify-end gap-4">
+            <button
+              onClick={() => handelAddToWishlist(product)}
+              className={`rounded-full p-3 shadow-lg ${
+                isWishlist && "bg-primary text-base-100"
+              }`}
+            >
+              <FiHeart />
+            </button>
+          </div>
+        </div>
+
+        {/* Quantity */}
+        <div className="flex items-center gap-4 border-y py-3">
+          <h3 className="text-neutral-content">Quantity: </h3>
+
+          <div className="flex gap-2">
+            <button
+              onClick={handelDecrease}
+              className="text-2xl duration-200 hover:text-neutral"
+            >
+              <FiMinusCircle />
+            </button>
+            <div>
+              <p className="w-10 text-center font-semibold">
+                {selectedQuantity}
+              </p>
+            </div>
+            <button
+              onClick={handelIncrease}
+              className="text-2xl duration-200 hover:text-neutral"
+            >
+              <FiPlusCircle />
+            </button>
           </div>
         </div>
 
@@ -299,13 +292,15 @@ export default function ProductInfo({ product }) {
                 <button
                   key={clr._id}
                   onClick={() => handelColorSelect(clr)}
-                  className={`scale-[.96] rounded-full border p-4 text-sm duration-300 hover:scale-[1]`}
+                  className={`scale-[.96] rounded-lg border-2 px-2 py-1 text-sm duration-300 hover:scale-[1]`}
                   style={{
-                    backgroundColor: clr.colorCode,
                     borderColor:
-                      clr.color === selectedColor ? "#f47c20" : "#DDD",
+                      clr.value === selectedColor?.value && clr.value,
+                    color: clr.value === selectedColor?.value && clr?.value,
                   }}
-                ></button>
+                >
+                  {clr?.label}
+                </button>
               ))}
             </div>
           </div>
@@ -331,31 +326,6 @@ export default function ProductInfo({ product }) {
             </div>
           </div>
         )}
-
-        {/* Quantity */}
-        <div className="flex items-center gap-4 border-y py-3">
-          <h3>Quantity: </h3>
-
-          <div className="flex gap-2">
-            <button
-              onClick={handelDecrease}
-              className="text-2xl duration-200 hover:text-neutral"
-            >
-              <FiMinusCircle />
-            </button>
-            <div>
-              <p className="w-10 text-center font-semibold">
-                {selectedQuantity}
-              </p>
-            </div>
-            <button
-              onClick={handelIncrease}
-              className="text-2xl duration-200 hover:text-neutral"
-            >
-              <FiPlusCircle />
-            </button>
-          </div>
-        </div>
 
         {/* Buttons */}
         <div className="mt-6 grid grid-cols-2 items-center gap-2 sm:grid-cols-3">
@@ -383,12 +353,6 @@ export default function ProductInfo({ product }) {
             Call Now
           </Link>
         </div>
-
-        {/* Share */}
-        {/* <div className="mt-4 flex items-center gap-3">
-          <p className="text-gray-500">Share: </p>
-          <ReactShare slug={slug} />
-        </div> */}
       </div>
     </div>
   );

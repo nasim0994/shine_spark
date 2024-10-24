@@ -33,7 +33,7 @@ export default function AddProduct() {
   const { data: color } = useAllColorsQuery();
   const colorOptions = color?.data?.map((item) => ({
     label: item?.name,
-    code: item?.code,
+    value: item?.code,
   }));
 
   const subCategories = category?.data?.subCategories;
@@ -492,10 +492,10 @@ export default function AddProduct() {
                       <p className="text-sm">Colors</p>
 
                       <Select
+                        onChange={(color) => setColors(color)}
                         defaultValue={colors}
-                        onChange={setColors}
                         options={colorOptions}
-                        isMulti={true}
+                        isMulti
                         classNamePrefix="custom-select"
                         getOptionLabel={(option) => (
                           <div
@@ -509,7 +509,7 @@ export default function AddProduct() {
                               style={{
                                 width: 13,
                                 height: 13,
-                                backgroundColor: option.colorCode,
+                                backgroundColor: option.value,
                                 marginRight: 6,
                                 borderRadius: "50%",
                               }}

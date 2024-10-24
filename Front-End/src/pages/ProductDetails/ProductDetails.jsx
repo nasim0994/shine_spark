@@ -27,8 +27,8 @@ export default function ProductDetails() {
   if (!isLoading) {
     content = (
       <div>
-        <div className="mt-4 overflow-hidden rounded shadow-lg lg:flex">
-          <div className="bg-base-100 p-4 text-neutral lg:w-[75%]">
+        <div className="mt-4 overflow-hidden lg:flex">
+          <div className="text-neutral lg:w-[75%]">
             <ProductInfo product={data?.data} />
           </div>
 
@@ -38,7 +38,7 @@ export default function ProductDetails() {
         </div>
 
         {/* Details */}
-        <div className="mt-6 rounded bg-base-100 p-4 shadow-lg">
+        <div className="mt-6">
           <div className="flex items-center gap-6 border-b">
             <button
               onClick={() => setTab("description")}

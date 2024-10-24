@@ -26,14 +26,14 @@ export default function RelatedProducts({ category }) {
 
   return (
     <section className="mt-6">
-      <div className="bg-base-100 p-4 rounded-lg shadow-lg">
-        <div className="flex justify-between sm:items-center border-b pb-2 border-primary">
-          <h1 className="md:text-xl font-medium md:font-semibold text-neutral">
+      <div>
+        <div className="flex justify-between border-b border-primary pb-2 sm:items-center">
+          <h1 className="font-medium text-neutral md:text-xl md:font-semibold">
             Related Products
           </h1>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 mt-2">
+        <div className="mt-3 grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {content}
         </div>
       </div>

@@ -242,7 +242,6 @@ header nav ul li a:hover {
 /* ----------------Account --------------------- */
 .account_sidebar {
   width: 300px;
-  min-height: 70vh;
   background: var(--base100);
   box-shadow:
     3px -2px 20px 0px #0000000c,

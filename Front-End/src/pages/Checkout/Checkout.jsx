@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import { clearCart } from "../../Redux/cart/cartSlice";
@@ -13,10 +13,10 @@ export default function Checkout() {
   useEffect(() => {
     window.scroll(0, 0);
   }, []);
-
   const navigate = useNavigate();
-  const carts = useSelector((state) => state.cart.carts);
   const dispatch = useDispatch();
+
+  const carts = useSelector((state) => state.cart.carts);
 
   const [addOrder, { isLoading }] = useAddOrderMutation();
 
@@ -66,20 +66,20 @@ export default function Checkout() {
         productId: product._id,
         discount: product?.discount,
         quantity: product.quantity,
-        size: product.size,
-        color: product.color,
-        variant: product?.variant,
+        sku: product.sku,
       }),
     );
 
     const order = {
-      userId: loggedUser?.data?._id,
+      user: {
+        id: loggedUser?.data?._id,
+        name,
+        email,
+        phone: number,
+      },
       shippingInfo: {
         address,
         note,
-        name,
-        phone: number,
-        email,
       },
       paymentMethod,
       products,
@@ -91,12 +91,31 @@ export default function Checkout() {
       const res = await addOrder(order);
 
       if (res?.data?.success) {
-        Swal.fire("", "order success", "success");
+        Swal.fire({
+          title: '<h2 class="text-3xl">Order Success</h2>',
+          html: `
+            <div>
+              <img src="/images/success.png" alt="" class="mx-auto w-40" />
+              <p class="mt-4 text-center">Your order has been placed successfully</p>
+              <p class="text-center text-sm text-neutral-content/90">Your order id: #${res?.data?.data?._id}</p>
+        
+              <div class="mt-4 flex justify-center gap-3">
+                <a href="/shops" class="primary_btn flex items-center gap-2 text-sm">
+                  Continue Shopping <i class="fa fa-arrow-right text-xs"></i>
+                </a>
+              </div>
+            </div>
+          `,
+          showConfirmButton: false,
+          customClass: {
+            popup: "sweetalert-custom-popup",
+          },
+          willClose: () => {
+            navigate("/shops");
+          },
+        });
         dispatch(clearCart());
         form.reset();
-        navigate(
-          `/order/success?orderId=${res?.data?.data?._id}&user=${number}`,
-        );
       } else {
         toast.error("Something Wrong");
         console.log(res);

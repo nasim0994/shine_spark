@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { Link, useParams } from "react-router-dom";
 import { useGetAllProductsQuery } from "../../Redux/product/productApi";
@@ -10,9 +10,7 @@ import PriceRangeSlider from "../../components/PriceRange/PriceRange";
 import MobileCategoriesSidebar from "../../components/MobileCategoriesSidebar/MobileCategoriesSidebar";
 
 export default function Shop() {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  window.scrollTo(0, 0);
 
   const queryParams = new URLSearchParams(location.search);
   let search = queryParams.get("search");

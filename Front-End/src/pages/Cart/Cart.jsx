@@ -7,9 +7,13 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { FaArrowRight } from "react-icons/fa6";
 import { clearCart } from "../../Redux/cart/cartSlice";
+import { useEffect } from "react";
 
 export default function Cart() {
-  window.scroll(0, 0);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const carts = useSelector((state) => state.cart.carts);
   const dispatch = useDispatch();
 

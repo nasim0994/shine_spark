@@ -2,40 +2,47 @@ import { FaEye } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { useGetMyOrdersQuery } from "../../../Redux/order/orderApi";
+import moment from "moment";
 
 export default function Orders() {
   const { loggedUser } = useSelector((state) => state.user);
   const userId = loggedUser?.data?._id;
 
   const { data, isLoading, isError } = useGetMyOrdersQuery(userId);
+  const orders = data?.data;
 
   let content = null;
   if (isLoading) {
     content = <p>Loading...</p>;
   }
+
   if (!isLoading && isError) {
-    content = <p className="text-red-500 mt-5">Order get failed</p>;
+    content = <p className="mt-5 text-red-500">Order get failed</p>;
   }
   if (!isLoading && !isError) {
-    content = data?.data?.map((order) => (
+    content = orders?.map((order) => (
       <tr key={order?._id}>
-        <td className="py-2 px-4">
+        <td>
           <div className="w-max">
             <Link to={`/account/orders/${order?._id}`}>
               <span className="text-primary">#{order?._id}</span>
             </Link>
             <p className="text-xs text-neutral/70">
-              Placed on {order?.createdAt}
+              Placed on: {moment(order?.createdAt).format("Do MMMM YYYY")}
             </p>
           </div>
         </td>
 
-        <td className="py-2 px-4">
-          <div className="flex flex-col gap-1">{order?.products?.length}</div>
-        </td>
+        <td>{order?.products?.length}</td>
 
-        <td className="py-2 px-4 text-sm">{order?.status}</td>
-        <td className="">
+        <td>{order?.totalPrice}TK</td>
+
+        <td
+          className={`text-sm ${order?.status == "pending" ? "text-yellow-500" : order?.status == "shipped" ? "text-blue-500" : order?.status == "delivered" ? "text-primary" : "text-red-500"}`}
+        >
+          {order?.status}
+        </td>
+        <td>
           <Link to={`/account/orders/${order?._id}`}>
             <FaEye />
           </Link>
@@ -46,7 +53,7 @@ export default function Orders() {
 
   return (
     <div>
-      <div className="border-b pb-1 mb-3">
+      <div className="mb-3 border-b pb-1">
         <h3>All Orders</h3>
       </div>
 
@@ -55,7 +62,8 @@ export default function Orders() {
           <thead>
             <tr>
               <th className="px-4">Order Id</th>
-              <th className="px-4">Total items</th>
+              <th className="px-4">Total Items</th>
+              <th className="px-4">Total Price</th>
               <th className="px-4"> Status</th>
               <th className="px-4"> Action</th>
             </tr>

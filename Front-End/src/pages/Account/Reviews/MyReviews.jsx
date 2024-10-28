@@ -24,12 +24,12 @@ export default function MyReviews() {
   const [deleteReview] = useDeleteReviewMutation();
 
   const pages = Math.ceil(
-    parseInt(data?.meta?.total) / parseInt(data?.meta?.limit)
+    parseInt(data?.meta?.total) / parseInt(data?.meta?.limit),
   );
 
   const handleReviewDelete = async (reviewId) => {
     const confirm = window.confirm(
-      "Are you sure you want to delete this review?"
+      "Are you sure you want to delete this review?",
     );
     if (!confirm) return;
 
@@ -40,22 +40,22 @@ export default function MyReviews() {
     Swal.fire("", "Review deleted successfully", "success");
   };
 
-   // Edit Review
-   const [editedReview, setEditedReview] = useState({});
-   const handleReviewEdit = (review) => {
-     setEditedReview(review);
-     setEditModal(true);
-   };
+  // Edit Review
+  const [editedReview, setEditedReview] = useState({});
+  const handleReviewEdit = (review) => {
+    setEditedReview(review);
+    setEditModal(true);
+  };
 
   return (
     <div>
-      <div className="border-b pb-1 mb-3">
+      <div className="mb-3 border-b pb-1">
         <h3>All Reviews</h3>
       </div>
 
       <div className="flex flex-col gap-2">
         {data?.data?.map((review) => (
-          <div key={review?._id} className="border-b p-3 relative">
+          <div key={review?._id} className="relative border-b p-3">
             <div className="flex items-center gap-5">
               <img
                 src={
@@ -66,12 +66,12 @@ export default function MyReviews() {
                       }`
                 }
                 alt=""
-                className="w-9 h-9 rounded-full"
+                className="h-9 w-9 rounded-full"
               />
               <div>
                 <div className="flex items-center gap-1">
                   <p>{review?.user?.name}</p>
-                  <p className="text-neutral-content text-sm">
+                  <p className="text-sm text-neutral-content">
                     {review?.createdAt?.split("T")[0]}
                   </p>
                 </div>
@@ -83,23 +83,23 @@ export default function MyReviews() {
               {review?.description}
             </p>
 
-            <div className="absolute top-3 right-3 flex items-center gap-1">
-            <button
-                    onClick={() => handleReviewEdit(review)}
-                    className="text-lg text-neutral-content hover:text-primary duration-200 "
-                  >
-                    <MdEdit />
-                  </button>
+            <div className="absolute right-3 top-3 flex items-center gap-1">
+              <button
+                onClick={() => handleReviewEdit(review)}
+                className="text-lg text-neutral-content duration-200 hover:text-primary"
+              >
+                <MdEdit />
+              </button>
 
-                  <ReviewEditForm
-                    editModal={editModal}
-                    setEditModal={setEditModal}
-                    review={editedReview}
-                  />
+              <ReviewEditForm
+                editModal={editModal}
+                setEditModal={setEditModal}
+                review={editedReview}
+              />
 
               <button
                 onClick={() => handleReviewDelete(review?._id)}
-                className="text-lg text-neutral-content hover:text-primary duration-200 "
+                className="text-lg text-neutral-content duration-200 hover:text-primary"
               >
                 <MdDeleteOutline />
               </button>
@@ -108,13 +108,15 @@ export default function MyReviews() {
         ))}
 
         {/* pagination */}
-        <div className="p-3">
-          <Pagination
-            setCurrentPage={setCurrentPage}
-            currentPage={currentPage}
-            pages={pages}
-          />
-        </div>
+        {pages > 1 && (
+          <div className="p-3">
+            <Pagination
+              setCurrentPage={setCurrentPage}
+              currentPage={currentPage}
+              pages={pages}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

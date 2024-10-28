@@ -15,16 +15,16 @@ export default function AboutUs() {
   return (
     <section className="py-5">
       <div className="container">
-        <div className="grid md:grid-cols-2 gap-6 items-center">
+        <div className="grid items-start gap-6 md:grid-cols-2">
           <div>
             <div className="w-max border-b-2 border-primary">
               <h2 className="text-5xl font-bold">{about?.title}</h2>
             </div>
-            <p className="text-neutral-content mt-2 text-lg">
+            <p className="mt-2 text-lg text-neutral-content">
               {about?.subTitle}
             </p>
 
-            <div className="mt-4 text-neutral-content text-[15px]">
+            <div className="mt-4 text-[15px] text-neutral-content">
               <p>{parcerDescription}</p>
             </div>
           </div>
@@ -33,8 +33,9 @@ export default function AboutUs() {
               src={`${import.meta.env.VITE_BACKEND_URL}/aboutus/${
                 about?.image
               }`}
-              alt=""
-              className="w-[90%] mx-auto"
+              alt={about?.title}
+              className="mx-auto w-[80%] rounded"
+              loading="lazy"
             />
           </div>
         </div>

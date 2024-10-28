@@ -1,8 +1,8 @@
 import JoditEditor from "jodit-react";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { AiFillDelete } from "react-icons/ai";
 import ImageUploading from "react-images-uploading";
-import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 import {
   useCreateAboutMutation,
   useGetAboutQuery,
@@ -15,18 +15,8 @@ export default function About() {
   const { data, isLoading, isError, error } = useGetAboutQuery();
   const [images, setImages] = useState([]);
   const [details, setDetails] = useState("");
-  const [
-    updateAbout,
-    {
-      isLoading: updateLoading,
-      isSuccess: updateSuccess,
-      isError: updateError,
-    },
-  ] = useUpdateAboutMutation();
-  const [
-    createAbout,
-    { isLoading: addLoading, isSuccess: addSuccess, isError: addError },
-  ] = useCreateAboutMutation();
+  const [updateAbout, { isLoading: updateLoading }] = useUpdateAboutMutation();
+  const [createAbout, { isLoading: addLoading }] = useCreateAboutMutation();
 
   let id = data?.data[0]?._id;
 
@@ -48,30 +38,25 @@ export default function About() {
     }
 
     if (data?.data[0] && id) {
-      await updateAbout({ id, formData });
-      // console.log(res);
+      const res = await updateAbout({ id, formData });
+      if (res?.data?.success) {
+        toast.success("About updated successfully");
+        setImages([]);
+      } else {
+        toast.error(res?.data?.message || "Failed to update about");
+        console.log(res);
+      }
     } else {
-      await createAbout(formData);
-      // console.log(res);
+      const res = await createAbout(formData);
+      if (res?.data?.success) {
+        toast.success("About add successfully");
+        setImages([]);
+      } else {
+        toast.error(res?.data?.message || "Failed to update about");
+        console.log(res);
+      }
     }
   };
-
-  useEffect(() => {
-    if (updateSuccess) {
-      Swal.fire("", "Update Success", "success");
-      setImages([]);
-    }
-    if (addSuccess) {
-      Swal.fire("", "Successfully Added", "success");
-      setImages([]);
-    }
-    if (updateError) {
-      Swal.fire("", "Somethin went wrong when updating", "error");
-    }
-    if (addError) {
-      Swal.fire("", "Somethin Wrong when uploading", "error");
-    }
-  }, [updateSuccess, updateError, addError, addSuccess]);
 
   if (isLoading) {
     return <Spinner />;
@@ -83,13 +68,13 @@ export default function About() {
   }
 
   return (
-    <section className="bg-base-100 rounded shadow">
-      <div className="p-4 border-b">
+    <section className="rounded bg-base-100 shadow">
+      <div className="border-b p-4">
         <h3 className="font-medium text-neutral">About</h3>
       </div>
 
       <form onSubmit={handleUpdateAbout} className="p-4">
-        <div className=" bg-base-100 shadhow rounded mb-4 grid sm:grid-cols-2 gap-4 items-start">
+        <div className="shadhow mb-4 grid items-start gap-4 rounded bg-base-100 sm:grid-cols-2">
           <div className="form_group mt-2">
             <p className="text-neutral-content">Title</p>
             <input
@@ -110,7 +95,7 @@ export default function About() {
           </div>
         </div>
 
-        <div className="text-neutral-content grid sm:grid-cols-2 md:grid-cols-3 gap-4 items-start">
+        <div className="grid items-start gap-4 text-neutral-content sm:grid-cols-2 md:grid-cols-3">
           <div className="rounded border">
             <div>
               <p className="border-b p-3">Image</p>
@@ -122,13 +107,13 @@ export default function About() {
                 >
                   {({ onImageUpload, onImageRemove, dragProps }) => (
                     <div
-                      className="border rounded border-dashed p-4"
+                      className="rounded border border-dashed p-4"
                       {...dragProps}
                     >
                       <div className="flex items-center gap-2">
                         <span
                           onClick={onImageUpload}
-                          className="w-max px-4 py-1.5 rounded-2xl text-base-100 bg-primary cursor-pointer text-sm"
+                          className="w-max cursor-pointer rounded-2xl bg-primary px-4 py-1.5 text-sm text-base-100"
                         >
                           Choose Image
                         </span>
@@ -146,7 +131,7 @@ export default function About() {
                             />
                             <div
                               onClick={() => onImageRemove(index)}
-                              className="w-7 h-7 bg-primary rounded-full flex justify-center items-center text-base-100 absolute top-0 right-0 cursor-pointer"
+                              className="absolute right-0 top-0 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-primary text-base-100"
                             >
                               <AiFillDelete />
                             </div>
@@ -163,14 +148,14 @@ export default function About() {
                       data?.data[0]?.image
                     }`}
                     alt=""
-                    className="w-32 mt-4"
+                    className="mt-4 w-32"
                   />
                 )}
               </div>
             </div>
           </div>
 
-          <div className="md:col-span-2 border rounded">
+          <div className="rounded border md:col-span-2">
             <p className="border-b p-3">Description</p>
 
             <div className="p-4">

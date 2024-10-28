@@ -13,20 +13,29 @@ const productSchema = {
     type: Number,
     required: true,
   },
-  size: {
-    type: String,
-  },
-  color: {
+  sku: {
     type: String,
   },
 };
 
 const OrderSchema = new mongoose.Schema(
   {
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
+    user: {
+      id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+      name: {
+        type: String,
+        required: true,
+      },
+      email: {
+        type: String,
+      },
+      phone: {
+        type: String,
+        required: true,
+      },
     },
     shippingInfo: {
       address: {
@@ -57,7 +66,7 @@ const OrderSchema = new mongoose.Schema(
     products: [productSchema],
     status: {
       type: String,
-      enum: ["pending", "shipped", "delivered"],
+      enum: ["pending", "shipped", "delivered", "cancelled"],
       default: "pending",
     },
     isPaid: {

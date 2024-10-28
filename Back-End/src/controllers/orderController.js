@@ -1,6 +1,5 @@
 const Order = require("../models/orderModel");
 const Product = require("../models/productModel");
-const User = require("../models/userModel");
 const { calculatePagination } = require("../utils/calculatePagination");
 const { pick } = require("../utils/pick");
 
@@ -9,22 +8,6 @@ exports.addOrder = async (req, res) => {
 
   try {
     let data = req?.body;
-    const { userId, shippingInfo } = data;
-
-    if (!userId) {
-      const userExists = await User.findOne({ phone: shippingInfo?.phone });
-
-      if (!userExists) {
-        const user = await User.create({
-          ...shippingInfo,
-          password: "12345678",
-        });
-
-        data.userId = user?._id;
-      } else {
-        data.userId = userExists?._id;
-      }
-    }
 
     const orders = await Order.find({});
 
@@ -51,81 +34,21 @@ exports.addOrder = async (req, res) => {
       invoiceNumber,
     };
 
-    const result = await Order.create(orderData);
+    // Update stock for each product in the order
+    for (const product of orderData?.products) {
+      const { productId, quantity, skuId } = product;
 
-    result?.products?.forEach(async (product) => {
-      const { productId, quantity, color, size } = product;
-
-      const selectedProduct = await Product.findOne({
-        _id: productId,
-      });
-
-      if (color && size) {
-        const selectedVariant = selectedProduct?.variants?.find(
-          (variant) => variant.color === color && variant.size === size
-        );
-
-        const updatedQuantity = selectedVariant?.quantity - quantity;
-
-        await Product.findByIdAndUpdate(
-          productId,
-          {
-            $set: {
-              variants: [
-                ...selectedProduct?.variants?.map((variant) => {
-                  if (variant.color === color && variant.size === size) {
-                    return {
-                      ...variant,
-                      quantity: updatedQuantity,
-                    };
-                  }
-                  return variant;
-                }),
-              ],
-            },
-          },
-          { new: true }
-        );
-      } else if (color) {
-        const selectedVariant = selectedProduct?.variants?.find(
-          (variant) => variant.color === color
-        );
-
-        const updatedQuantity = selectedVariant?.quantity - quantity;
-
-        await Product.findByIdAndUpdate(
-          productId,
-          {
-            $set: {
-              variants: [
-                ...selectedProduct?.variants?.map((variant) => {
-                  if (variant.color === color) {
-                    return {
-                      ...variant,
-                      quantity: updatedQuantity,
-                    };
-                  }
-                  return variant;
-                }),
-              ],
-            },
-          },
-          { new: true }
-        );
-      } else {
-        const updatedQuantity = selectedProduct?.quantity - quantity;
-
-        await Product.findByIdAndUpdate(
-          productId,
-          {
-            $set: {
-              quantity: updatedQuantity,
-            },
-          },
-          { new: true }
-        );
+      try {
+        await updateStock(productId, quantity, skuId);
+      } catch (error) {
+        return res.json({
+          success: false,
+          message: error.message,
+        });
       }
-    });
+    }
+
+    const result = await Order.create(orderData);
 
     res.status(201).json({
       success: true,
@@ -140,11 +63,50 @@ exports.addOrder = async (req, res) => {
   }
 };
 
+async function updateStock(productId, quantityOrdered, skuId) {
+  try {
+    const product = await Product.findById(productId);
+    if (!product) {
+      throw new Error("Product not found");
+    }
+
+    // Check if enough stock is available
+    if (product?.totalStock < quantityOrdered) {
+      throw new Error("Insufficient stock available");
+    }
+
+    // Update total stock
+    product.totalStock -= quantityOrdered;
+
+    // Update variant stock if the product has variants
+    if (product?.isVariant && product?.variant?.variants?.length > 0) {
+      const selectedVariant = product?.variant?.variants?.find(
+        (variant) => variant?.id === skuId
+      );
+
+      if (selectedVariant) {
+        selectedVariant.stock =
+          parseInt(selectedVariant?.stock, 10) - quantityOrdered;
+
+        product.markModified("variant.variants");
+      } else {
+        throw new Error("Variant not found for the specified sku");
+      }
+    }
+
+    // Save the updated product
+    await product.save();
+  } catch (error) {
+    console.error("Error updating stock:", error);
+    throw error; // or handle the error as needed
+  }
+}
+
 exports.getOrdersByUserId = async (req, res) => {
   const id = req?.params?.id;
 
   try {
-    const orders = await Order.find({ userId: id });
+    const orders = await Order.find({ "user.id": id });
 
     res.status(200).json({
       success: true,
@@ -163,9 +125,15 @@ exports.getOrderById = async (req, res) => {
   const id = req?.params?.id;
 
   try {
-    const order = await Order.findById(id)
-      .populate("userId")
-      .populate("products.productId");
+    const order = await Order.findById(id).populate({
+      path: "products.productId",
+      select: "title thumbnail",
+
+      populate: {
+        path: "category",
+        select: "name",
+      },
+    });
 
     res.status(200).json({
       success: true,
@@ -187,7 +155,7 @@ exports.getAllOrders = async (req, res) => {
 
   try {
     const orders = await Order.find({})
-      .populate("userId")
+      .populate("user.id")
       .populate("products.productId")
       .skip(skip)
       .limit(limit)

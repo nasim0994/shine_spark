@@ -11,7 +11,7 @@ export default function AccountSidebar() {
   const dispatch = useDispatch();
 
   return (
-    <div>
+    <div className="flex min-h-[97vh] flex-col justify-between sm:min-h-[73vh]">
       <div>
         <img
           src={
@@ -27,60 +27,59 @@ export default function AccountSidebar() {
         <h3 className="text-center text-lg font-medium text-neutral-content">
           {loggedUser?.data?.firstName} {loggedUser?.data?.lastName}
         </h3>
+
+        <ul className="mt-8 flex flex-col gap-2">
+          <li>
+            <NavLink to="/account/profile">
+              <span className="flex items-center gap-2 duration-300 hover:text-primary">
+                <FiMonitor className="text-lg" />
+                View Profile
+              </span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/account/wishlist">
+              <span className="flex items-center gap-2 duration-300 hover:text-primary">
+                <AiOutlineHeart className="text-xl" />
+                My Wishlist
+              </span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/account/orders">
+              <span className="flex items-center gap-2 duration-300 hover:text-primary">
+                <IoBagCheckOutline className="text-xl" />
+                My Order List
+              </span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/account/reviews">
+              <span className="flex items-center gap-2 duration-300 hover:text-primary">
+                <IoBagCheckOutline className="text-xl" />
+                My Reviews
+              </span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/account/setting">
+              <span className="flex items-center gap-2 duration-300 hover:text-primary">
+                <AiOutlineSetting className="text-xl" />
+                Setting
+              </span>
+            </NavLink>
+          </li>
+        </ul>
       </div>
 
-      <ul className="mt-8 flex flex-col gap-2">
-        <li>
-          <NavLink to="/account/profile">
-            <span className="flex items-center gap-2 duration-300 hover:text-primary">
-              <FiMonitor className="text-lg" />
-              View Profile
-            </span>
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to="/account/wishlist">
-            <span className="flex items-center gap-2 duration-300 hover:text-primary">
-              <AiOutlineHeart className="text-xl" />
-              My Wishlist
-            </span>
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to="/account/orders">
-            <span className="flex items-center gap-2 duration-300 hover:text-primary">
-              <IoBagCheckOutline className="text-xl" />
-              My Order List
-            </span>
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to="/account/reviews">
-            <span className="flex items-center gap-2 duration-300 hover:text-primary">
-              <IoBagCheckOutline className="text-xl" />
-              My Reviews
-            </span>
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to="/account/setting">
-            <span className="flex items-center gap-2 duration-300 hover:text-primary">
-              <AiOutlineSetting className="text-xl" />
-              Setting
-            </span>
-          </NavLink>
-        </li>
-        <li>
-          <button
-            onClick={() => dispatch(userLogout())}
-            className="text-red-500"
-          >
-            <span className="flex items-center gap-2 duration-300 hover:text-primary">
-              <BiLogOutCircle /> Logout
-            </span>
-          </button>
-        </li>
-      </ul>
+      <button
+        onClick={() => dispatch(userLogout())}
+        className="w-full rounded bg-red-500 px-4 py-2 text-sm text-base-100"
+      >
+        <span className="flex items-center justify-center gap-2">
+          <BiLogOutCircle /> Logout
+        </span>
+      </button>
     </div>
   );
 }

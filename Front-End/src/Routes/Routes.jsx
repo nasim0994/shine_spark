@@ -5,6 +5,8 @@ import MainLayout from "../Layout/MainLayout";
 import Home from "../pages/Home/Home";
 
 import Spinner from "../components/Spinner/Spinner";
+import AboutUs from "../pages/AboutUs/AboutUs";
+import ContactUs from "../pages/ContactUs/ContactUs";
 
 // Main pages
 const Cart = React.lazy(() => import("../pages/Cart/Cart"));
@@ -26,9 +28,6 @@ const Profile = React.lazy(() => import("../pages/Account/Profile/Profile"));
 const Setting = React.lazy(() => import("../pages/Account/Setting/Setting"));
 const Wishlist = React.lazy(() => import("../pages/Account/Wishlist/Wishlist"));
 const Checkout = React.lazy(() => import("../pages/Checkout/Checkout"));
-const OrderSuccess = React.lazy(
-  () => import("../pages/OrderSuccess/OrderSuccess"),
-);
 
 const PaymentResult = React.lazy(
   () => import("../pages/Checkout/PaymentResult"),
@@ -212,6 +211,14 @@ export const routes = createBrowserRouter([
         element: <Home />,
       },
       {
+        path: "/about-us",
+        element: <AboutUs />,
+      },
+      {
+        path: "/contact-us",
+        element: <ContactUs />,
+      },
+      {
         path: "/shops",
         element: (
           <Suspense fallback={<Spinner />}>
@@ -304,14 +311,7 @@ export const routes = createBrowserRouter([
       },
     ],
   },
-  {
-    path: "/order/success",
-    element: (
-      <Suspense fallback={<Spinner />}>
-        <OrderSuccess />
-      </Suspense>
-    ),
-  },
+
   {
     path: "/account",
     element: (

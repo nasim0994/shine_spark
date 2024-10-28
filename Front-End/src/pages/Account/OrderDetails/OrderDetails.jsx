@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import moment from "moment";
 import { useGetOrderByIdQuery } from "../../../Redux/order/orderApi";
 import Spinner from "../../../components/Spinner/Spinner";
 
@@ -15,74 +16,83 @@ const OrderDetailsPage = () => {
   }
 
   if (!isLoading && isError) {
-    content = <p className="text-red-500 mt-5">Order get failed</p>;
+    content = <p className="mt-5 text-red-500">Order get failed</p>;
   }
 
   if (!isLoading && !isError) {
     content = (
       <div className="p-4">
-        <h1 className="font-semibold text-2xl">
+        <h1 className="text-2xl font-semibold">
           Order <span className="text-primary">#{order?._id}</span>
         </h1>
         <p className="text-xs text-neutral/70">
-          Placed on {order?.createdAt.slice(0, 10)}
+          Placed on {moment(order?.createdAt).format("Do MMMM YYYY")}
         </p>
 
-        <div className="flex space-x-4 mt-4">
+        <div className="mt-4 flex space-x-4">
           <div className="w-1/2">
-            <h2 className="font-semibold text-lg">Delivery Address</h2>
-            <p className="text-sm">{order?.userId?.name}</p>
-            <p className="text-sm">{order?.userId?.phone}</p>
-            <p className="text-sm">{order?.userId?.email}</p>
-            <p className="text-sm">{order?.shippingInfo?.street}</p>
-            <p className="text-sm">
-              {order?.shippingInfo?.city}, {order?.shippingInfo?.district}
-            </p>
+            <h2 className="text-lg font-semibold">Delivery Address</h2>
+            <p className="text-sm">{order?.user?.name}</p>
+            <p className="text-sm">{order?.user?.phone}</p>
+            <p className="text-sm">{order?.user?.email}</p>
+            <p className="text-sm">{order?.shippingInfo?.address}</p>
           </div>
           <div className="w-1/2">
-            <h2 className="font-semibold text-lg">Payment Method</h2>
-            <p className="text-sm">Cash on Delivery</p>
-            <p className="text-sm">Subtotal: ৳ {order?.totalPrice}</p>
-            <p className="text-sm">Shipping Fee: ৳ 50</p>
-            <p className="text-sm">Total: ৳ {order?.totalPrice + 50}</p>
-            <p className="text-sm">Payment Status: {order?.status}</p>
-            <p className="text-sm">Payment Method: Cash on Delivery</p>
-            <p className="text-sm">Payment Date: Not paid yet</p>
+            <h2 className="text-lg font-semibold">Payment Method</h2>
+            <p className="text-sm">
+              Subtotal: ৳ {order?.totalPrice - order?.shippingCharge}
+            </p>
+            <p className="text-sm">Shipping Fee: ৳{order?.shippingCharge}</p>
+            <p className="text-sm">Total: ৳ {order?.totalPrice}</p>
+            <p className="text-sm">Payment Method: {order?.paymentMethod}</p>
           </div>
         </div>
-        <div className="flex space-x-4 mt-4">
+        <div className="mt-4 flex space-x-4">
           <div className="w-1/2">
-            <h2 className="font-semibold text-lg">Delivery Method</h2>
+            <h2 className="text-lg font-semibold">Delivery Method</h2>
             <p className="text-sm">Standard Delivery</p>
           </div>
           <div className="w-1/2">
-            <h2 className="font-semibold text-lg">Order Status</h2>
-            <p className="text-sm">{order?.status}</p>
+            <h2 className="text-lg font-semibold">Order Status</h2>
+            <p
+              className={`text-sm ${order?.status == "pending" ? "text-yellow-500" : order?.status == "shipped" ? "text-blue-500" : order?.status == "delivered" ? "text-primary" : "text-red-500"}`}
+            >
+              {order?.status}
+            </p>
           </div>
         </div>
 
         {/* product */}
-        <div className="mx-auto  my-10 shadow-lg p-5 w-[70%]">
+        <div className="my-5 p-5">
           <div className="flex flex-col gap-y-5">
             {products?.map((product) => (
               <div
                 key={product?.productId?._Id}
-                className="flex items-center justify-between gap-4 w-full"
+                className="flex w-full items-center justify-between gap-4"
               >
-                <img
-                  src={`${import.meta.env.VITE_BACKEND_URL}/products/${
-                    product?.productId?.images[0]
-                  }`}
-                  alt="product"
-                  className="w-10 h-10 rounded-full"
-                />
-                <p className="text-base font-semibold">
-                  {product?.productId?.title}
-                </p>
+                <div className="flex items-center gap-2">
+                  <img
+                    src={`${import.meta.env.VITE_BACKEND_URL}/products/${
+                      product?.productId?.thumbnail
+                    }`}
+                    alt="product"
+                    className="h-10 w-10 rounded-full"
+                  />
+                  <div>
+                    <p className="text-base font-semibold">
+                      {product?.productId?.title}
+                    </p>
+                    <p className="text-sm">{product?.sku}</p>
+                  </div>
+                </div>
                 <div>
-                  <p className="text-xs">Brand: {product?.productId?.brand}</p>
+                  {product?.productId?.brand && (
+                    <p className="text-xs">
+                      Brand: {product?.productId?.brand}
+                    </p>
+                  )}
                   <p className="text-xs">
-                    Category: {product?.productId?.category}
+                    Category: {product?.productId?.category?.name}
                   </p>
                 </div>
                 <p className="text-sm font-semibold">
@@ -92,24 +102,15 @@ const OrderDetailsPage = () => {
             ))}
           </div>
 
-          <div className="border-t border-black  mt-10 pt-2">
-            <div className="flex justify-between items-center text-base mb-1">
+          <div className="mt-6 border-t border-black pt-2">
+            <div className="mb-1 flex items-center justify-between text-base">
               <h1>SubTotal</h1>
               <p>
                 ৳<span>{order?.totalPrice}</span>
               </p>
             </div>
 
-            <div className="text-neutral/90">
-              <div className="flex justify-between items-center border-b border-black py-1">
-                <p>Tax</p>
-                <p>
-                  ৳<span> 00</span>
-                </p>
-              </div>
-            </div>
-
-            <div className="flex justify-between items-center mt-2 font-semibold">
+            <div className="mt-2 flex items-center justify-between font-semibold">
               <h1>Grand Total</h1>
               <p>
                 ৳<span> {order?.totalPrice}</span>

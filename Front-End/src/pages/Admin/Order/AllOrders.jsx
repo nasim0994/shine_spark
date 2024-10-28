@@ -76,14 +76,14 @@ export default function AllOrders() {
       <tr key={order?._id}>
         <td>{i + 1}</td>
         <td>
-          <p>#{order?._id}</p>
           <p>INV-{order?.invoiceNumber}</p>
+          <p>#{order?._id}</p>
         </td>
         <td>
-          <p>Name: {order?.shippingInfo?.name}</p>
-          <div className="text-neutral-content text-sm">
-            <p>Phone: {order?.shippingInfo?.phone}</p>
-            <p>city: {order?.shippingInfo?.address}</p>
+          <p>Name: {order?.user?.name}</p>
+          <div className="text-sm text-neutral-content">
+            <p>Phone: {order?.user?.phone}</p>
+            <p>Address: {order?.shippingInfo?.address}</p>
           </div>
         </td>
         <td>{order?.products?.length}</td>

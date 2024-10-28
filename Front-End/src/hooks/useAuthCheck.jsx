@@ -26,6 +26,7 @@ export default async function useAuthCheck() {
               userLoggedIn({
                 token: token,
                 data: data,
+                loading: false,
               }),
             );
           }
@@ -33,6 +34,15 @@ export default async function useAuthCheck() {
         .finally(() => {
           setAuthChecked(true);
         });
+    } else {
+      setAuthChecked(true);
+      dispatch(
+        userLoggedIn({
+          token: "",
+          data: undefined,
+          loading: false,
+        }),
+      );
     }
   }, [dispatch, setAuthChecked, token]);
 

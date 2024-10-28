@@ -6,6 +6,7 @@ import { MdAddCall } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 import { addToCart } from "../../Redux/cart/cartSlice";
 import {
   addToWishlist,
@@ -42,6 +43,7 @@ export default function ProductInfo({ product }) {
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedStock, setSelectedStock] = useState(totalStock);
   const [selectedPrice, setSelectedPrice] = useState(sellingPrice);
+  const [selectedSku, setSelectedSku] = useState();
 
   const [selectedQuantity, setSelectedQuantity] = useState(1);
 
@@ -85,18 +87,11 @@ export default function ProductInfo({ product }) {
     const findVariant = variants?.find((item) => item.sku === sku);
 
     if (findVariant) {
+      setSelectedSku(findVariant.sku);
       setSelectedStock(findVariant.stock);
       setSelectedPrice(findVariant?.sellingPrice);
     }
   }, [selectedSize, selectedColor, variants]);
-
-  console.log(selectedPrice);
-
-  // useEffect(() => {
-  //   if (availableStock < selectedQuantity) {
-  //     setSelectedQuantity(1);
-  //   }
-  // }, [selectedQuantity]);
 
   const handelDecrease = () => {
     if (selectedQuantity > 1) {
@@ -115,21 +110,19 @@ export default function ProductInfo({ product }) {
       return Swal.fire("", "Please Select Size", "warning");
     }
 
-    if (variants?.length > 0 && !selectedColor) {
+    if (variants?.length > 0 && colors[0] && !selectedColor) {
       return Swal.fire("", "Please Select Color", "warning");
     }
 
     const cartProduct = {
       _id: product._id,
-      title: title,
-      slug: product.slug,
-      // image: images[0],
       discount: discount,
-      // price: selectedPrice,
+      price: selectedPrice,
+      thumbnail,
+      title,
       quantity: selectedQuantity,
-      size: selectedSize,
-      color: selectedColor,
-      // stock: availableStock,
+      sku: selectedSku,
+      stock: selectedStock,
     };
 
     dispatch(addToCart([cartProduct]));
@@ -141,35 +134,35 @@ export default function ProductInfo({ product }) {
       return Swal.fire("", "Please Select Size", "warning");
     }
 
-    if (variants?.length > 0 && !selectedColor) {
+    if (variants?.length > 0 && colors[0] && !selectedColor) {
       return Swal.fire("", "Please Select Color", "warning");
     }
 
     const cartProduct = {
       _id: product._id,
-      title: title,
-      slug: product.slug,
-      // image: images[0],
       discount: discount,
-      // price: selectedPrice,
+      price: selectedPrice,
+      thumbnail,
+      title,
       quantity: selectedQuantity,
-      size: selectedSize,
-      color: selectedColor,
-      // stock: availableStock,
+      sku: selectedSku,
+      stock: selectedStock,
     };
 
-    const findProduct = carts?.find(
-      (product) =>
-        product._id === cartProduct._id &&
-        product.size === cartProduct.size &&
-        product.color === cartProduct.color,
-    );
+    if (carts?.length > 0) {
+      const findProduct = carts?.find(
+        (p) => p._id === cartProduct._id && selectedSku == p.sku,
+      );
 
-    if (findProduct) {
-      return Swal.fire("", "Product already added to cart", "warning");
+      if (findProduct) {
+        return toast.error("Product already added to cart");
+      } else {
+        dispatch(addToCart([...carts, cartProduct]));
+        toast.success("Item added to cart successfully");
+      }
     } else {
-      dispatch(addToCart([...carts, cartProduct]));
-      Swal.fire("", "Item added to cart successfully", "success");
+      dispatch(addToCart([cartProduct]));
+      toast.success("Item added to cart successfully");
     }
   };
 

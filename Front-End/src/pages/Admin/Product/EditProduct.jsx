@@ -28,23 +28,8 @@ export default function EditProduct() {
   const editor = useRef(null);
   const navigate = useNavigate();
 
-  const { data, isLoading: pLoading } = useGetProductByIdQuery(id);
-  const product = data?.data;
-
   const [categoryId, setCategoryId] = useState("");
   const [subCategoryId, setSubCategoryId] = useState("");
-  const { data: categories } = useGetCategoriesQuery();
-  const { data: category } = useGetCategoryQuery(categoryId);
-  const { data: subCategory } = useGetSubCategoryQuery(subCategoryId);
-  const { data: brands } = useAllBrandsQuery();
-  const { data: color } = useAllColorsQuery();
-  const colorOptions = color?.data?.map((item) => ({
-    label: item?.name,
-    value: item?.code,
-  }));
-
-  const subCategories = category?.data?.subCategories;
-  const subSubCategories = subCategory?.data?.subSubCategories;
 
   const [thumbnail, setThumbnail] = useState([]);
   const [galleries, setGalleries] = useState([]);
@@ -62,11 +47,27 @@ export default function EditProduct() {
   const [purchasePrice, setPurchasePrice] = useState(0);
   const [stock, setStock] = useState(0);
 
-  const [skus, setSkus] = useState([]);
   const [variant, setVariant] = useState(false);
   const [variants, setVariants] = useState([]);
   const [colors, setColors] = useState([]);
   const [sizes, setSizes] = useState([]);
+
+  const { data, isLoading: pLoading } = useGetProductByIdQuery(id);
+  const product = data?.data;
+
+  const { data: categories } = useGetCategoriesQuery();
+  const { data: category } = useGetCategoryQuery(categoryId);
+  const { data: subCategory } = useGetSubCategoryQuery(subCategoryId);
+  const { data: brands } = useAllBrandsQuery();
+  const { data: color } = useAllColorsQuery();
+
+  const colorOptions = color?.data?.map((item) => ({
+    label: item?.name,
+    value: item?.code,
+  }));
+
+  const subCategories = category?.data?.subCategories;
+  const subSubCategories = subCategory?.data?.subSubCategories;
 
   useEffect(() => {
     if (product) {
@@ -116,72 +117,92 @@ export default function EditProduct() {
     setGalleriesUrl(updatedGallery);
   };
 
-  const makeSku = (colors, sizes) => {
-    let sku = [];
+  const makeVariants = (colors, sizes) => {
+    let variants = [];
+    let indexNumber = 1;
 
     if (colors?.length && sizes?.length) {
-      colors.forEach((color) => {
-        sizes.forEach((size) => {
-          sku.push(`${color.label.split(" ").join("")}-${size}`);
+      // If both colors and sizes are provided
+      colors?.forEach((color) => {
+        sizes?.forEach((size) => {
+          variants.push({
+            index: indexNumber++,
+            sku: `${color.label.split(" ").join("")}-${size}`,
+          });
         });
       });
-    } else if (colors.length) {
-      colors.forEach((color) => {
-        sku.push(color.label.split(" ").join(""));
+    } else if (colors?.length) {
+      // If only colors are provided
+      colors?.forEach((color) => {
+        variants.push({
+          index: indexNumber++,
+          sku: color.label.split(" ").join(""),
+        });
       });
-    } else if (sizes.length) {
-      sizes.forEach((size) => {
-        sku.push(size);
+    } else if (sizes?.length) {
+      // If only sizes are provided
+      sizes?.forEach((size) => {
+        variants.push({
+          index: indexNumber++,
+          sku: size,
+        });
       });
     }
 
-    return sku;
+    return variants;
   };
 
   useEffect(() => {
-    const skus = makeSku(colors, sizes);
-    setSkus(skus);
+    if (variant) {
+      const generatedVariants = makeVariants(colors, sizes);
 
-    setVariants((prevVariants) => {
-      const filteredVariants = prevVariants.filter((variant) => {
-        const [color, size] = variant.sku.split("-");
-        const colorExists = colors.some(
-          (selectedColor) => selectedColor.label === color,
-        );
-        const sizeExists = sizes.includes(size);
+      setVariants((prevVariants) => {
+        // Initialize the index number based on the previous variants length
+        let indexNumber = prevVariants?.length + 1;
 
-        return colorExists && (size ? sizeExists : true);
+        // Filter out existing variants based on the current selections
+        const filteredVariants = prevVariants?.filter((variant) => {
+          const [color, size] = variant.sku.split("-");
+          const colorExists = colors.some(
+            (selectedColor) =>
+              selectedColor.label.split(" ").join("") === color,
+          );
+          const sizeExists = sizes.includes(size);
+
+          return colorExists && (size ? sizeExists : true);
+        });
+
+        // Map the generated variants to add additional properties
+        const newVariants = generatedVariants?.map((generatedVariant) => {
+          const existingVariant = filteredVariants?.find(
+            (variant) => variant?.sku === generatedVariant?.sku,
+          );
+
+          return {
+            index: existingVariant ? existingVariant.index : indexNumber++,
+            sku: generatedVariant?.sku,
+            sellingPrice: existingVariant?.sellingPrice ?? "",
+            purchasePrice: existingVariant?.purchasePrice ?? "",
+            stock: existingVariant?.stock ?? "",
+          };
+        });
+
+        return newVariants;
       });
-
-      // Generate new variants based on the selected colors and sizes
-      const newVariants = skus.map((sku) => {
-        const existingVariant = filteredVariants.find(
-          (variant) => variant.sku === sku,
-        );
-
-        return (
-          existingVariant || {
-            sku,
-            sellingPrice: sellingPrice || "",
-            purchasePrice: purchasePrice || "",
-            stock: stock || "",
-          }
-        );
-      });
-
-      return newVariants;
-    });
-  }, [colors, sizes, setVariants, sellingPrice, purchasePrice, stock]);
+    }
+  }, [colors, sizes, variant]);
 
   const handleVariantChange = (e, sku, field) => {
     const value = e.target.value;
+
+    if (value < 0) return toast.warning("Value can't be negative");
 
     setVariants((prevVariants) => {
       const existingVariantIndex = prevVariants.findIndex(
         (variant) => variant.sku === sku,
       );
 
-      if (value === "") {
+      if (value === "000") {
         return prevVariants.filter((variant) => variant.sku !== sku);
       }
 
@@ -293,8 +314,8 @@ export default function EditProduct() {
         Edit Product
       </h3>
 
-      <div className="grid items-start gap-4 p-4 sm:grid-cols-4">
-        <div className="text-neutral-content sm:col-span-3">
+      <div className="grid items-start gap-4 p-4 xl:grid-cols-4">
+        <div className="text-neutral-content xl:col-span-3">
           <div className="rounded border p-4">
             <p className="mb-2 text-sm">Edit Thumbnail</p>
             <ImageUploading
@@ -507,7 +528,7 @@ export default function EditProduct() {
                     name="sellingPrice"
                     onChange={(e) => setSellingPrice(e.target.value)}
                     required
-                    defaultValue={sellingPrice}
+                    value={sellingPrice}
                   />
                 </div>
 
@@ -518,7 +539,7 @@ export default function EditProduct() {
                     name="purchasePrice"
                     onChange={(e) => setPurchasePrice(e.target.value)}
                     required
-                    defaultValue={purchasePrice}
+                    value={purchasePrice}
                   />
                 </div>
 
@@ -528,7 +549,7 @@ export default function EditProduct() {
                     type="number"
                     name="discount"
                     onChange={(e) => setDiscount(e.target.value)}
-                    defaultValue={discount}
+                    value={discount}
                   />
                 </div>
 
@@ -539,7 +560,7 @@ export default function EditProduct() {
                     name="stock"
                     onChange={(e) => setStock(e.target.value)}
                     required
-                    defaultValue={stock}
+                    value={stock}
                     disabled={variant && "disabled"}
                   />
                 </div>
@@ -623,37 +644,47 @@ export default function EditProduct() {
                       </thead>
 
                       <tbody>
-                        {skus.map((sku, i) => (
+                        {variants?.map((variant, i) => (
                           <tr key={i}>
-                            <td className="whitespace-nowrap">{sku}</td>
+                            <td className="whitespace-nowrap">
+                              {variant?.sku}
+                            </td>
                             <td>
                               <input
                                 type="number"
                                 onChange={(e) =>
-                                  handleVariantChange(e, sku, "sellingPrice")
+                                  handleVariantChange(
+                                    e,
+                                    variant?.sku,
+                                    "sellingPrice",
+                                  )
                                 }
                                 required
-                                defaultValue={sellingPrice}
+                                defaultValue={variant?.sellingPrice}
                               />
                             </td>
                             <td>
                               <input
                                 type="number"
                                 onChange={(e) =>
-                                  handleVariantChange(e, sku, "purchasePrice")
+                                  handleVariantChange(
+                                    e,
+                                    variant?.sku,
+                                    "purchasePrice",
+                                  )
                                 }
                                 required
-                                defaultValue={purchasePrice}
+                                defaultValue={variant?.purchasePrice}
                               />
                             </td>
                             <td>
                               <input
                                 type="number"
                                 onChange={(e) =>
-                                  handleVariantChange(e, sku, "stock")
+                                  handleVariantChange(e, variant?.sku, "stock")
                                 }
                                 required
-                                defaultValue={stock}
+                                defaultValue={variant?.stock}
                               />
                             </td>
                           </tr>
@@ -712,6 +743,7 @@ export default function EditProduct() {
           </div>
         </div>
 
+        {/* preview */}
         <div className="sticky top-2 hidden rounded border xl:block">
           <div className="relative h-60 overflow-hidden">
             {thumbnail?.length > 0 ? (

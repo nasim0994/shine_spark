@@ -22,12 +22,11 @@ exports.registerUser = async (req, res) => {
 };
 
 exports.loginUser = async (req, res) => {
-  try {
-    const { phone, password } = req.body;
-    // console.log(phone, password);
+  const { phone, password } = req.body;
 
+  try {
     // 2. Load User
-    const user = await User.findOne({ phone: phone });
+    const user = await User.findOne({ phone });
 
     if (!user) {
       return res.json({

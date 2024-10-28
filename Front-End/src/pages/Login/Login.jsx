@@ -1,7 +1,7 @@
 import { AiFillEye, AiFillEyeInvisible, AiFillUnlock } from "react-icons/ai";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { MdOutlinePhoneAndroid } from "react-icons/md";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ButtonSpinner from "../../components/ButtonSpinner/ButtonSpinner";
 import { useSelector } from "react-redux";
 import { useLoginMutation } from "../../Redux/user/authApi";
@@ -12,7 +12,8 @@ export default function Login() {
   window.scroll(0, 0);
   const [showPassword, setShowPassword] = useState(false);
   const { loggedUser } = useSelector((state) => state.user);
-  const [login, { isLoading, isError, error, isSuccess }] = useLoginMutation();
+  const [login, { isLoading }] = useLoginMutation();
+  const [error, setError] = useState(null);
   const { data: logo } = useGetMainLogoQuery();
 
   const navigate = useNavigate();
@@ -25,6 +26,7 @@ export default function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError(null);
 
     const form = e.target;
     const phone = form.phone.value;
@@ -35,14 +37,19 @@ export default function Login() {
       password,
     };
 
-    await login(loginInfo);
-  };
+    const res = await login(loginInfo);
+    console.log(res);
 
-  useEffect(() => {
-    if (isSuccess) {
-      toast.success("Login Success");
+    if (res?.data?.success) {
+      toast.success(res?.data?.message || "Logged in successfully");
+    } else {
+      toast.error(
+        res?.data?.message || "Something went wrong please try again",
+      );
+      setError(res?.data?.message);
+      console.log(res);
     }
-  }, [isSuccess]);
+  };
 
   return (
     <div className="flex min-h-[70vh] items-center justify-center py-6">
@@ -106,9 +113,7 @@ export default function Login() {
                 </div>
               </div>
 
-              {isError && (
-                <p className="text-sm text-red-500">{error?.data?.error}</p>
-              )}
+              {error && <p className="text-sm text-red-500">{error}</p>}
 
               <div className="mt-3 flex w-full flex-col border-opacity-50">
                 <button

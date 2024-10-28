@@ -304,20 +304,6 @@ exports.updateProduct = async (req, res) => {
       product.variant = JSON.parse(variant);
     }
 
-    if (galleriesUrl && isExit?.galleries) {
-      const deletedImages = isExit?.galleries?.filter(
-        (gallery) => !galleriesUrl?.includes(gallery?.url)
-      );
-
-      deletedImages?.forEach((image) => {
-        fs.unlink(`./uploads/products/${image?.url}`, (err) => {
-          if (err) {
-            console.error(err);
-          }
-        });
-      });
-    }
-
     let newImages = [];
 
     if (galleries?.length > 0) {
@@ -370,6 +356,30 @@ exports.updateProduct = async (req, res) => {
       success: true,
       message: "Product updated successfully",
     });
+
+    if (galleriesUrl && isExit?.galleries) {
+      const deletedImages = isExit?.galleries?.filter(
+        (gallery) => !galleriesUrl?.includes(gallery?.url)
+      );
+
+      deletedImages?.forEach((image) => {
+        fs.unlink(`./uploads/products/${image?.url}`, (err) => {
+          if (err) {
+            console.error(err);
+          }
+        });
+      });
+    }
+
+    if (!galleriesUrl && isExit?.galleries?.length > 0) {
+      isExit?.galleries?.forEach((image) => {
+        fs.unlink(`./uploads/products/${image?.url}`, (err) => {
+          if (err) {
+            console.error(err);
+          }
+        });
+      });
+    }
 
     // delete previous thumbnail image
     if (thumbnail) {

@@ -100,21 +100,8 @@ export default function ProductList() {
             </label>
           )}
         </td>
-        <td>
-          $
-          {product?.variants?.length
-            ? product?.variants[0]?.sellingPrice
-            : product?.sellingPrice}
-        </td>
-        <td>
-          {product?.variants?.length > 0
-            ? product?.variants?.reduce(
-                (quantity, item) =>
-                  parseInt(quantity) + parseInt(item.quantity),
-                0,
-              )
-            : product?.quantity}
-        </td>
+        <td>{product?.sellingPrice}TK</td>
+        <td>{product?.totalStock}</td>
         <td>
           <div className="flex items-center gap-2">
             <Link
@@ -154,7 +141,7 @@ export default function ProductList() {
                 <th>Product name</th>
                 <th>Category</th>
                 <th>Featured</th>
-                <th>Price</th>
+                <th>Base Price</th>
                 <th>Total Stock</th>
                 <th>Action</th>
               </tr>

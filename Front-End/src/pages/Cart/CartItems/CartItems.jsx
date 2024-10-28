@@ -6,11 +6,11 @@ export default function CartItems({ carts }) {
       <table className="w-full">
         <thead>
           <tr>
-            <th className="px-6 w-[60%]">Product</th>
-            <th className="px-6 w-[10%]">Price</th>
-            <th className="px-6 w-[10%]">QUANTITY</th>
-            <th className="px-6 w-[10%]">Total</th>
-            <th className="px-6 w-[10%]">Action</th>
+            <th className="w-[60%] px-6">Product</th>
+            <th className="w-[10%] px-6">Price</th>
+            <th className="w-[10%] px-6">QUANTITY</th>
+            <th className="w-[10%] px-6">Total</th>
+            <th className="w-[10%] px-6">Action</th>
           </tr>
         </thead>
         <tbody>

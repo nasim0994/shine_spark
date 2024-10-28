@@ -1,151 +1,11 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Rating from "../Rating/Rating";
-import { FaCartPlus } from "react-icons/fa";
-import { useEffect, useState } from "react";
-import { IoBagCheckOutline } from "react-icons/io5";
-import { FiMinusCircle, FiPlusCircle } from "react-icons/fi";
-import { addToCart } from "../../Redux/cart/cartSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { ImCross } from "react-icons/im";
 
 export default function ProductCard({ product, discount: flashDiscount = 0 }) {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [modal, setModal] = useState(false);
-  const {
-    slug,
-    thumbnail,
-    title,
-    sellingPrice,
-    discount,
-    rating,
-    reviewer,
-    category,
-    subCategory,
-    subSubCategory,
-    totalStock,
-  } = product;
+  const { slug, thumbnail, title, sellingPrice, discount, rating, reviewer } =
+    product;
 
   const newDiscount = parseInt(flashDiscount) + discount;
-
-  const carts = useSelector((state) => state.cart.carts);
-
-  const [selectedColor, setSelectedColor] = useState("");
-  const [selectedSize, setSelectedSize] = useState("");
-
-  const [colors, setColors] = useState([]);
-  const [sizes, setSizes] = useState([]);
-
-  const [selectedPrice, setSelectedPrice] = useState(sellingPrice);
-  const [availableStock, setAvailableStock] = useState(totalStock);
-  const [selectedQuantity, setSelectedQuantity] = useState(1);
-
-  // useEffect(() => {
-  //   const findVariant = variants?.find(
-  //     (variant) =>
-  //       variant.color === selectedColor && variant.size === selectedSize,
-  //   );
-
-  //   if (findVariant) {
-  //     setAvailableStock(findVariant?.quantity);
-  //     setSelectedPrice(findVariant?.sellingPrice);
-  //   } else {
-  //     setAvailableStock(totakStock);
-  //     setSelectedPrice(price);
-  //   }
-  // }, [selectedSize, selectedColor, totakStock, price, variants]);
-
-  const handelColorSelect = (clr) => {
-    if (selectedColor === clr.color) {
-      setSelectedColor("");
-    } else {
-      setSelectedColor(clr.color);
-    }
-  };
-
-  const handelSelectSize = (size) => {
-    if (selectedSize === size) {
-      setSelectedSize("");
-    } else {
-      setSelectedSize(size);
-    }
-  };
-
-  const handelDecrease = () => {
-    if (selectedQuantity > 1) {
-      setSelectedQuantity(selectedQuantity - 1);
-    }
-  };
-
-  const handelIncrease = () => {
-    if (availableStock > selectedQuantity) {
-      setSelectedQuantity(selectedQuantity + 1);
-    }
-  };
-
-  // const handleBuyNow = () => {
-  //   if (variants?.length > 0 && sizes[0] && !selectedSize) {
-  //     return Swal.fire("", "Please Select Size", "warning");
-  //   }
-
-  //   if (variants?.length > 0 && !selectedColor) {
-  //     return Swal.fire("", "Please Select Color", "warning");
-  //   }
-
-  //   const cartProduct = {
-  //     _id: product._id,
-  //     title: title,
-  //     slug: product.slug,
-  //     image: images[0],
-  //     discount: newDiscount,
-  //     price: selectedPrice,
-  //     quantity: selectedQuantity,
-  //     size: selectedSize,
-  //     color: selectedColor,
-  //     stock: availableStock,
-  //   };
-
-  //   dispatch(addToCart([cartProduct]));
-  //   navigate("/checkout");
-  // };
-
-  // const handelAddToCart = () => {
-  //   if (variants?.length > 0 && sizes[0] && !selectedSize) {
-  //     return Swal.fire("", "Please Select Size", "warning");
-  //   }
-
-  //   if (variants?.length > 0 && !selectedColor) {
-  //     return Swal.fire("", "Please Select Color", "warning");
-  //   }
-
-  //   const cartProduct = {
-  //     _id: product._id,
-  //     title: title,
-  //     slug: product.slug,
-  //     image: images[0],
-  //     discount: newDiscount,
-  //     price: selectedPrice,
-  //     quantity: selectedQuantity,
-  //     size: selectedSize,
-  //     color: selectedColor,
-  //     stock: availableStock,
-  //   };
-
-  //   const findProduct = carts?.find(
-  //     (product) =>
-  //       product._id === cartProduct._id &&
-  //       product.size === cartProduct.size &&
-  //       product.color === cartProduct.color,
-  //   );
-
-  //   if (findProduct) {
-  //     return Swal.fire("", "Product already added to cart", "warning");
-  //   } else {
-  //     dispatch(addToCart([...carts, cartProduct]));
-  //     setModal(false);
-  //     Swal.fire("", "Item added to cart successfully", "success");
-  //   }
-  // };
 
   return (
     <>
@@ -192,43 +52,16 @@ export default function ProductCard({ product, discount: flashDiscount = 0 }) {
                   ({reviewer ? reviewer : 0})
                 </p>
               </div>
+
+              <div className="mt-2">
+                <Link
+                  to={`/product/${slug}?discount=${newDiscount}`}
+                  className="block bg-primary py-1.5 text-center text-sm text-base-100"
+                >
+                  But Now
+                </Link>
+              </div>
             </div>
-
-            {/* <div className="grid grid-cols-2 gap-2 p-2">
-                {variants?.length ? (
-                  <button
-                    onClick={() => setModal(true)}
-                    className="rounded bg-primary/20 py-1.5 text-sm text-primary duration-300 hover:bg-primary hover:text-base-100"
-                  >
-                    Buy Now
-                  </button>
-                ) : (
-                  <button
-                    onClick={handleBuyNow}
-                    className="rounded bg-primary/20 py-1.5 text-sm text-primary duration-300 hover:bg-primary hover:text-base-100"
-                  >
-                    Buy Now
-                  </button>
-                )}
-
-                {variants?.length ? (
-                  <button
-                    onClick={() => setModal(true)}
-                    className="flex items-center justify-center gap-2 rounded bg-gray-200 py-1.5 text-sm duration-300 hover:bg-gray-500 hover:text-base-100"
-                  >
-                    <span className="hidden sm:block">Add to Cart</span>
-                    <FaCartPlus className="sm:hidden" />
-                  </button>
-                ) : (
-                  <button
-                    onClick={handelAddToCart}
-                    className="flex items-center justify-center gap-2 rounded bg-gray-200 py-1.5 text-sm duration-300 hover:bg-gray-500 hover:text-base-100"
-                  >
-                    <span className="hidden sm:block">Add to Cart</span>
-                    <FaCartPlus className="sm:hidden" />
-                  </button>
-                )}
-              </div> */}
           </div>
         </div>
       </div>

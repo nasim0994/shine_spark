@@ -74,35 +74,71 @@ export default function AddProduct() {
   const [colors, setColors] = useState([]);
   const [sizes, setSizes] = useState([]);
 
-  const [skus, setSkus] = useState([]);
+  // const [skus, setSkus] = useState([]);
 
-  const makeSku = (colors, sizes) => {
-    let sku = [];
+  // const makeSku = (colors, sizes) => {
+  //   let sku = [];
+
+  //   if (colors?.length && sizes?.length) {
+  //     colors.forEach((color) => {
+  //       sizes.forEach((size) => {
+  //         sku.push(`${color.label.split(" ").join("")}-${size}`);
+  //       });
+  //     });
+  //   } else if (colors.length) {
+  //     colors.forEach((color) => {
+  //       sku.push(color.label.split(" ").join(""));
+  //     });
+  //   } else if (sizes.length) {
+  //     sizes.forEach((size) => {
+  //       sku.push(size);
+  //     });
+  //   }
+
+  //   return sku;
+  // };
+
+  const makeVariants = (colors, sizes) => {
+    let variants = [];
+    let indexNumber = 1;
 
     if (colors?.length && sizes?.length) {
-      colors.forEach((color) => {
-        sizes.forEach((size) => {
-          sku.push(`${color.label.split(" ").join("")}-${size}`);
+      // If both colors and sizes are provided
+      colors?.forEach((color) => {
+        sizes?.forEach((size) => {
+          variants.push({
+            index: indexNumber++,
+            sku: `${color.label.split(" ").join("")}-${size}`,
+          });
         });
       });
-    } else if (colors.length) {
-      colors.forEach((color) => {
-        sku.push(color.label.split(" ").join(""));
+    } else if (colors?.length) {
+      // If only colors are provided
+      colors?.forEach((color) => {
+        variants.push({
+          index: indexNumber++,
+          sku: color.label.split(" ").join(""),
+        });
       });
-    } else if (sizes.length) {
-      sizes.forEach((size) => {
-        sku.push(size);
+    } else if (sizes?.length) {
+      // If only sizes are provided
+      sizes?.forEach((size) => {
+        variants.push({
+          index: indexNumber++,
+          sku: size,
+        });
       });
     }
 
-    return sku;
+    return variants;
   };
 
   useEffect(() => {
-    const skus = makeSku(colors, sizes);
-    setSkus(skus);
+    // Generate new variants based on the selected colors and sizes
+    const generatedVariants = makeVariants(colors, sizes);
 
     setVariants((prevVariants) => {
+      // Filter out existing variants based on the current selections
       const filteredVariants = prevVariants.filter((variant) => {
         const [color, size] = variant.sku.split("-");
         const colorExists = colors.some(
@@ -113,15 +149,15 @@ export default function AddProduct() {
         return colorExists && (size ? sizeExists : true);
       });
 
-      // Generate new variants based on the selected colors and sizes
-      const newVariants = skus.map((sku) => {
+      // Map the generated variants to add additional properties
+      const newVariants = generatedVariants.map((generatedVariant) => {
         const existingVariant = filteredVariants.find(
-          (variant) => variant.sku === sku,
+          (variant) => variant.sku === generatedVariant.sku,
         );
 
         return (
           existingVariant || {
-            sku,
+            ...generatedVariant,
             sellingPrice: sellingPrice || "",
             purchasePrice: purchasePrice || "",
             stock: stock || "",
@@ -131,7 +167,42 @@ export default function AddProduct() {
 
       return newVariants;
     });
-  }, [colors, sizes, setVariants, sellingPrice, purchasePrice, stock]);
+  }, [colors, sizes, sellingPrice, purchasePrice, stock]);
+
+  // useEffect(() => {
+  //   const skus = makeSku(colors, sizes);
+  //   setSkus(skus);
+
+  //   setVariants((prevVariants) => {
+  //     const filteredVariants = prevVariants.filter((variant) => {
+  //       const [color, size] = variant.sku.split("-");
+  //       const colorExists = colors.some(
+  //         (selectedColor) => selectedColor.label === color,
+  //       );
+  //       const sizeExists = sizes.includes(size);
+
+  //       return colorExists && (size ? sizeExists : true);
+  //     });
+
+  //     // Generate new variants based on the selected colors and sizes
+  //     const newVariants = skus.map((sku) => {
+  //       const existingVariant = filteredVariants.find(
+  //         (variant) => variant.sku === sku,
+  //       );
+
+  //       return (
+  //         existingVariant || {
+  //           sku,
+  //           sellingPrice: sellingPrice || "",
+  //           purchasePrice: purchasePrice || "",
+  //           stock: stock || "",
+  //         }
+  //       );
+  //     });
+
+  //     return newVariants;
+  //   });
+  // }, [colors, sizes, setVariants, sellingPrice, purchasePrice, stock]);
 
   const handleVariantChange = (e, sku, field) => {
     const value = e.target.value;
@@ -141,7 +212,7 @@ export default function AddProduct() {
         (variant) => variant.sku === sku,
       );
 
-      if (value === "") {
+      if (value === "000") {
         return prevVariants.filter((variant) => variant.sku !== sku);
       }
 
@@ -250,8 +321,8 @@ export default function AddProduct() {
         Add Product
       </h3>
 
-      <div className="grid items-start gap-4 p-4 sm:grid-cols-4">
-        <div className="text-neutral-content sm:col-span-3">
+      <div className="grid items-start gap-4 p-4 xl:grid-cols-4">
+        <div className="text-neutral-content xl:col-span-3">
           <div className="rounded border p-4">
             <p className="mb-2 text-sm">Add Thumbnail </p>
             <ImageUploading
@@ -543,37 +614,47 @@ export default function AddProduct() {
                       </thead>
 
                       <tbody>
-                        {skus.map((sku, i) => (
+                        {variants?.map((variant, i) => (
                           <tr key={i}>
-                            <td className="whitespace-nowrap">{sku}</td>
+                            <td className="whitespace-nowrap">
+                              {variant?.sku}
+                            </td>
                             <td>
                               <input
                                 type="number"
                                 onChange={(e) =>
-                                  handleVariantChange(e, sku, "sellingPrice")
+                                  handleVariantChange(
+                                    e,
+                                    variant?.sku,
+                                    "sellingPrice",
+                                  )
                                 }
                                 required
-                                defaultValue={sellingPrice}
+                                defaultValue={variant?.sellingPrice}
                               />
                             </td>
                             <td>
                               <input
                                 type="number"
                                 onChange={(e) =>
-                                  handleVariantChange(e, sku, "purchasePrice")
+                                  handleVariantChange(
+                                    e,
+                                    variant?.sku,
+                                    "purchasePrice",
+                                  )
                                 }
                                 required
-                                defaultValue={purchasePrice}
+                                defaultValue={variant?.purchasePrice}
                               />
                             </td>
                             <td>
                               <input
                                 type="number"
                                 onChange={(e) =>
-                                  handleVariantChange(e, sku, "stock")
+                                  handleVariantChange(e, variant?.sku, "stock")
                                 }
                                 required
-                                defaultValue={stock}
+                                defaultValue={variant?.stock}
                               />
                             </td>
                           </tr>

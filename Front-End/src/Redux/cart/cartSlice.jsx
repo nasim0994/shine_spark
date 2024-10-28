@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 
 const cartValue = {
   carts: [],
@@ -21,24 +22,40 @@ export const cartSlice = createSlice({
 
       localStorage.setItem("cartState", JSON.stringify(state));
     },
+
     removeFromCart: (state, action) => {
-      const { _id, color, size } = action.payload;
-      state.carts = state.carts.filter(
-        (item) => item._id !== _id || item.color !== color || item.size !== size
-      );
+      const { id, sku } = action.payload;
+
+      const index = state.carts.findIndex((item) => {
+        if (sku) {
+          return item._id === id && item.sku == sku;
+        }
+        return item._id === id;
+      });
+
+      state.carts.splice(index, 1);
 
       localStorage.setItem("cartState", JSON.stringify(state));
+
+      toast.success("Item removed from cart");
     },
+
     clearCart: (state) => {
       state.carts = [];
 
       localStorage.setItem("cartState", JSON.stringify(state));
+      toast.success("Item removed from cart");
     },
+
     changeQuantity: (state, action) => {
-      const { _id, color, size, quantity } = action.payload;
-      const cartItem = state.carts.find(
-        (item) => item._id === _id && item.color === color && item.size === size
-      );
+      const { id, sku, quantity } = action.payload;
+
+      const cartItem = state.carts.find((item) => {
+        if (sku) {
+          return item._id === id && item.sku == sku;
+        }
+        return item._id === id;
+      });
 
       cartItem.quantity = quantity;
 

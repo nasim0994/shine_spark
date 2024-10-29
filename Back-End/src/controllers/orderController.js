@@ -127,7 +127,7 @@ exports.getOrderById = async (req, res) => {
   try {
     const order = await Order.findById(id).populate({
       path: "products.productId",
-      select: "title thumbnail",
+      select: "title thumbnail sellingPrice isVariant variant.variants",
 
       populate: {
         path: "category",
@@ -150,7 +150,6 @@ exports.getOrderById = async (req, res) => {
 
 exports.getAllOrders = async (req, res) => {
   const paginationOptions = pick(req.query, ["page", "limit"]);
-
   const { page, limit, skip } = calculatePagination(paginationOptions);
 
   try {
@@ -236,6 +235,147 @@ exports.getOrderByTransactionId = async (req, res) => {
       success: true,
       message: "Order fetched successfully",
       data: order,
+    });
+  } catch (error) {
+    res.json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// Report
+exports.getProductWaysReport = async (req, res) => {
+  const paginationOptions = pick(req.query, ["page", "limit"]);
+  const { page, limit, skip } = calculatePagination(paginationOptions);
+
+  try {
+    const report = await Order.aggregate([
+      { $unwind: "$products" },
+      {
+        $lookup: {
+          from: "products",
+          localField: "products.productId",
+          foreignField: "_id",
+          as: "productDetails",
+        },
+      },
+      { $unwind: "$productDetails" },
+      {
+        $addFields: {
+          discountedPrice: {
+            $subtract: [
+              { $toDouble: "$products.price" },
+              {
+                $multiply: [
+                  { $toDouble: "$products.price" },
+                  { $divide: [{ $toDouble: "$products.discount" }, 100] },
+                ],
+              },
+            ],
+          },
+        },
+      },
+      {
+        $group: {
+          _id: "$products.productId",
+          totalQuantity: { $sum: { $toDouble: "$products.quantity" } },
+          totalSalePrice: {
+            $sum: {
+              $multiply: [
+                { $toDouble: "$discountedPrice" },
+                { $toDouble: "$products.quantity" },
+              ],
+            },
+          },
+          title: { $first: "$productDetails.title" },
+          thumbnail: { $first: "$productDetails.thumbnail" },
+          isVariant: { $first: "$productDetails.isVariant" },
+          totalStock: { $first: "$productDetails.totalStock" },
+          discount: { $first: { $toDouble: "$productDetails.discount" } },
+          skuList: {
+            $push: {
+              sku: "$products.sku",
+              orderedQuantity: { $toDouble: "$products.quantity" },
+              sellingPrice: { $toDouble: "$products.price" },
+              purchasePrice: {
+                $cond: {
+                  if: { $eq: ["$productDetails.isVariant", true] },
+                  then: {
+                    $arrayElemAt: [
+                      {
+                        $filter: {
+                          input: "$productDetails.variant.variants",
+                          as: "variant",
+                          cond: { $eq: ["$$variant.sku", "$products.sku"] },
+                        },
+                      },
+                      0,
+                    ],
+                  },
+                  else: { $toDouble: "$productDetails.purchasePrice" },
+                },
+              },
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          title: 1,
+          thumbnail: 1,
+          totalQuantity: 1,
+          totalSalePrice: 1,
+          totalStock: 1,
+          skuList: {
+            $map: {
+              input: "$skuList",
+              as: "skuItem",
+              in: {
+                sku: "$$skuItem.sku",
+                orderedQuantity: "$$skuItem.orderedQuantity",
+                sellingPrice: "$$skuItem.sellingPrice",
+                purchasePrice: {
+                  $cond: {
+                    if: { $eq: ["$isVariant", true] },
+                    then: {
+                      $toDouble: "$$skuItem.purchasePrice.purchasePrice",
+                    },
+                    else: { $toDouble: "$$skuItem.purchasePrice" },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      { $skip: skip },
+      { $limit: limit },
+    ]);
+
+    const totalCountResult = await Order.aggregate([
+      { $unwind: "$products" },
+      {
+        $group: {
+          _id: "$products.productId",
+        },
+      },
+      { $count: "total" },
+    ]);
+
+    const total = totalCountResult.length > 0 ? totalCountResult[0].total : 0;
+    const pages = Math.ceil(total / limit);
+
+    res.status(200).json({
+      success: true,
+      message: "Product ways report fetched successfully",
+      meta: {
+        total,
+        pages,
+        page,
+        limit,
+      },
+      data: report,
     });
   } catch (error) {
     res.json({

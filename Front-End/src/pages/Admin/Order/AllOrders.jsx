@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { GrView } from "react-icons/gr";
@@ -38,29 +37,6 @@ export default function AllOrders() {
       }
     } catch (error) {
       toast.error(error?.data?.error);
-    }
-  };
-
-  const statusHandler = async (id, status) => {
-    const isConfirm = window.confirm("Do you want to update status?");
-
-    if (status === "pending") {
-      status = "shipped";
-    } else if (status === "shipped") {
-      status = "delivered";
-    } else {
-      status = "pending";
-    }
-
-    if (isConfirm) {
-      try {
-        const result = await statusUpdate({ id, status });
-        if (result?.data?.success) {
-          toast.success(result?.data?.message);
-        }
-      } catch (error) {
-        toast.error(error?.data?.error);
-      }
     }
   };
 
@@ -146,7 +122,7 @@ export default function AllOrders() {
 
   return (
     <div className="relative flex flex-col justify-between overflow-x-auto pb-4 shadow-lg">
-      <table className="dashboard_table">
+      <table>
         <thead>
           <tr>
             <th>SL</th>

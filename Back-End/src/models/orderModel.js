@@ -16,6 +16,10 @@ const productSchema = {
   sku: {
     type: String,
   },
+  price: {
+    type: Number,
+    required: true,
+  },
 };
 
 const OrderSchema = new mongoose.Schema(

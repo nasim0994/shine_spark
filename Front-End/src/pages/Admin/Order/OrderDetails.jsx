@@ -1,5 +1,7 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import moment from "moment";
+import { FaPrint } from "react-icons/fa";
 import {
   useGetOrderByIdQuery,
   useStatusUpdateMutation,
@@ -10,177 +12,213 @@ export default function OrderDetails() {
   const params = useParams();
   const id = params.id;
 
-  const { data, isLoading, isError, error } = useGetOrderByIdQuery(id);
+  const { data, isLoading } = useGetOrderByIdQuery(id);
+  const order = data?.data;
+  const products = data?.data?.products;
 
   const [statusUpdate, { isLoading: statusLoading }] =
     useStatusUpdateMutation();
 
-  const order = data?.data;
-  const products = data?.data?.products;
+  if (isLoading) return <Spinner />;
 
-  const statusHandler = async (id, status) => {
-    const isConfirm = window.confirm("Do you want to update status?");
+  return (
+    <secction>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <Link
+          to="/admin/order/all-orders"
+          className="primary_btn w-max text-xs"
+        >
+          Go Back
+        </Link>
 
-    if (status === "pending") {
-      status = "shipped";
-    } else if (status === "shipped") {
-      status = "delivered";
-    } else {
-      status = "pending";
-    }
+        <div>
+          <h1 className="text-xs text-primary">order/order-details</h1>
+          <p>Order: #{order?._id}</p>
+        </div>
+      </div>
 
-    if (isConfirm) {
-      try {
-        const result = await statusUpdate({ id, status });
-        if (result?.data?.success) {
-          toast.success(result?.data?.message);
-        }
-      } catch (error) {
-        toast.error(error?.data?.error);
-      }
-    }
-  };
+      <div className="mt-4 rounded-md border bg-base-100 p-4">
+        <div className="flex flex-col items-start justify-between gap-3 sm:flex-row">
+          <div>
+            <h2 className="text-xl">Invoice INV-{order?.invoiceNumber}</h2>
+            <p className="mt-1 w-max rounded bg-green-100 px-2 py-1 text-[11px] text-primary">
+              {order?.status}
+            </p>
+            <div className="gap-2 sm:flex">
+              <p className="mt-1 w-max rounded bg-primary/10 px-2 py-1 text-[11px] text-primary">
+                Placed On:{" "}
+                {moment(order?.createdAt).format("Do MMMM YYYY hh:mm a")}
+              </p>
+              <p className="mt-1 w-max rounded bg-primary/10 px-2 py-1 text-[11px] text-primary">
+                Updated:{" "}
+                {moment(order?.updatedAt).format("Do MMMM YYYY hh:mm a")}
+              </p>
+            </div>
+          </div>
 
-  let content = null;
-  if (isLoading) {
-    return (content = <Spinner />);
-  }
-  if (!isLoading && isError) {
-    content = <p>{error.error}</p>;
-  }
-
-  if (!isLoading && !isError) {
-    content = (
-      <div>
-        <div className="flex justify-end">
-          {statusLoading ? (
-            <p>Loading...</p>
-          ) : (
-            <button
-              onClick={() => statusHandler(order?._id, order?.status)}
-              disabled={order?.status === "delivered"}
-              className="mb-4 rounded bg-gray-700 px-6 py-2 text-sm text-base-100 duration-300 hover:bg-primary"
+          <div className="flex items-center gap-2">
+            <Link
+              to={`/admin/order/print/${order?._id}`}
+              target="_blank"
+              className="flex items-center gap-2 rounded border border-gray-400 px-2 py-1 text-sm text-neutral-content duration-200 hover:text-neutral"
             >
-              {order?.status === "pending" ? (
-                <span className="">{order?.status}</span>
-              ) : order?.status === "shipped" ? (
-                <span className="">{order?.status}</span>
-              ) : (
-                <span className="">{order?.status}</span>
-              )}
-            </button>
-          )}
-        </div>
-        <div className="rounded-md border p-4">
-          <p className="text-lg">Order Details:</p>
-          <p>
-            Invoice ID: <span className="text-primary">#{order?._id}</span>
-          </p>
-          <p>
-            Invoice Number:{" "}
-            <span className="text-primary">INV-{order?.invoiceNumber}</span>
-          </p>
-        </div>
+              <FaPrint className="text-neutral" /> Print
+            </Link>
 
-        <div className="mt-4 rounded-md border p-4">
-          <p className="text-lg">Shipping Details:</p>
-          <div className="mt-1 text-[15px]">
-            <p>{order?.shippingInfo?.name}</p>
-            <p>{order?.shippingInfo?.phone}</p>
-            <p>
-              {order?.shippingInfo?.email
-                ? order?.shippingInfo?.email
-                : order?.userId?.email}
-            </p>
-            <p>
-              City: {order?.shippingInfo?.city}{" "}
-              {order?.shippingInfo?.area && "," + order?.shippingInfo?.area}
-            </p>
-            <p>Address: {order?.shippingInfo?.street}</p>
-            {order?.shippingInfo?.note && (
-              <p className="text-sm">({order?.shippingInfo?.note})</p>
+            {statusLoading ? (
+              "Loading..."
+            ) : (
+              <select
+                value={order?.status}
+                onChange={async (e) => {
+                  const res = await statusUpdate({
+                    id: order?._id,
+                    status: e.target.value,
+                  });
+                  if (res?.data?.success) {
+                    toast.success("Status updated");
+                  } else {
+                    toast.error("Something went wrong");
+                  }
+                }}
+                className={`cursor-pointer rounded border bg-transparent p-1 text-xs ${
+                  order?.status == "pending" &&
+                  "border-yellow-500 text-yellow-500"
+                } ${
+                  order?.status == "shipped" && "border-blue-400 text-blue-400"
+                } ${
+                  order?.status == "delivered" &&
+                  "border-green-400 text-green-400"
+                } ${
+                  order?.status == "cancelled" && "border-red-400 text-red-400"
+                }`}
+              >
+                <option value="pending">Pending</option>
+                <option value="shipped">Shipped</option>
+                <option value="delivered">Delivered</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
             )}
           </div>
         </div>
+      </div>
 
-        <div className="mt-4 rounded-md border p-4">
-          <p className="text-lg">Products</p>
-          <div>
-            {products?.map((product) => {
-              let price = product?.productId?.sellingPrice;
-              let discount = product?.discount;
+      <div className="mt-4 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+        <div className="rounded-md border bg-base-100 p-2">
+          <h2 className="text-lg font-medium">Customer Info</h2>
 
-              console.log(price);
-              console.log(product);
+          <div className="mt-3 flex flex-col gap-1 text-[15px] text-neutral">
+            <p>Name: {order?.user?.name}</p>
+            <p>Email: {order?.userId?.email}</p>
+            <p>Phone: {order?.user?.phone}</p>
+            <p>Payment: {order?.paymentMethod}</p>
+          </div>
+        </div>
 
-              if (
-                product?.productId?.variants &&
-                product?.productId?.variants?.length > 0
-              ) {
-                product?.productId?.variants?.map((variant) => {
-                  if (
-                    variant?.size === product?.size &&
-                    variant?.color === product?.color
-                  ) {
-                    price = variant?.sellingPrice;
-                  }
-                });
-              }
+        <div className="rounded-md border bg-base-100 p-2">
+          <h2 className="text-lg font-medium">Shipping Address</h2>
 
-              return (
-                <div key={product?._id}>
-                  <div className="mb-4 rounded border-b p-2">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <img
-                          src={`${import.meta.env.VITE_BACKEND_URL}/products/${
-                            product?.productId?.images[0]
-                          }`}
-                          alt=""
-                          className="h-9 w-9 rounded-full"
-                        />
-                        <div>
-                          <p>
-                            {product?.productId?.title} * {product?.quantity}
-                          </p>
-                          <p className="text-sm">
-                            {product?.size} - {product?.color}
-                          </p>
-                        </div>
-                      </div>
+          <div className="mt-3 flex flex-col gap-1 text-[15px] text-neutral">
+            <p>{order?.shippingInfo?.address}</p>
+          </div>
+        </div>
 
-                      <div className="flex items-center gap-2">
-                        <p className="font-medium text-primary">
-                          ৳
-                          {price * product?.quantity -
-                            (price * product?.quantity * discount) / 100}
-                        </p>
-                        {product?.discount > 0 && (
-                          <del className="text-xs text-neutral/70">
-                            ৳{price * product?.quantity}
-                          </del>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+        <div className="rounded-md border bg-base-100 p-2">
+          <h2 className="text-lg font-medium">Shipping Note</h2>
 
-            <div className="mb-3 flex items-center justify-between border-b pb-3 text-sm">
-              <p>Delivery Charge</p>
-              <p>{order?.shippingCharge} tk</p>
-            </div>
-
-            <div className="flex items-center justify-between font-semibold">
-              <p>Total Payable</p>
-              <p>{order?.totalPrice} tk</p>
-            </div>
+          <div className="mt-3 flex flex-col gap-1 text-[15px] text-neutral">
+            <p>{order?.shippingInfo?.note}</p>
           </div>
         </div>
       </div>
-    );
-  }
 
-  return <>{content}</>;
+      <div className="mt-4 rounded-md border bg-base-100 p-4">
+        <h2 className="text-lg">Ordered Items</h2>
+
+        <div className="relative mt-2 overflow-x-auto rounded-md border">
+          <table>
+            <thead>
+              <tr>
+                <th>SL</th>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>SKU</th>
+                <th>Discount</th>
+                <th>Price</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {products?.map((product, i) => {
+                const sku = product?.sku;
+                const variants = product?.productId?.variant?.variants;
+
+                const variant = variants?.find((v) => v.sku == sku);
+                const price = product?.isVariant
+                  ? variant?.sellingPrice
+                  : product?.productId?.sellingPrice;
+                const discountPrice = parseInt(
+                  price - (price * product?.discount) / 100,
+                );
+
+                const totalPrice = product?.quantity * discountPrice;
+
+                return (
+                  <tr key={order?._id}>
+                    <td>{i + 1}</td>
+                    <td>
+                      <div className="flex items-center gap-2">
+                        <img
+                          src={`${import.meta.env.VITE_BACKEND_URL}/products/${
+                            product?.productId?.thumbnail
+                          }`}
+                          alt={product?.productId?.title}
+                          className="h-9 w-9 rounded-full"
+                          loading="lazy"
+                        />
+
+                        <p>{product?.productId?.title}</p>
+                      </div>
+                    </td>
+                    <td>{product?.quantity}</td>
+                    <td>{product?.sku}</td>
+                    <td>{product?.discount}%</td>
+                    <td>
+                      <p>
+                        {discountPrice}
+                        TK <del className="text-sm text-red-500">{price}TK</del>
+                      </p>
+                    </td>
+                    <td>{totalPrice}TK</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colSpan={6} className="text-end">
+                  SubTotal
+                </td>
+                <td>{order?.totalPrice - order?.shippingCharge}TK</td>
+              </tr>
+
+              <tr>
+                <td colSpan={6} className="text-end">
+                  Shipping Charge
+                </td>
+                <td>{order?.shippingCharge}TK</td>
+              </tr>
+
+              <tr>
+                <th colSpan={6} className="text-end">
+                  Total
+                </th>
+                <th>{order?.totalPrice}TK</th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </secction>
+  );
 }

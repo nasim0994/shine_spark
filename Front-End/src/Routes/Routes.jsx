@@ -7,6 +7,8 @@ import Home from "../pages/Home/Home";
 import Spinner from "../components/Spinner/Spinner";
 import AboutUs from "../pages/AboutUs/AboutUs";
 import ContactUs from "../pages/ContactUs/ContactUs";
+import Invoice from "../pages/Admin/Order/Invoice";
+import ProductWays from "../pages/Admin/Report/SalesReport/ProductWays";
 
 // Main pages
 const Cart = React.lazy(() => import("../pages/Cart/Cart"));
@@ -313,6 +315,15 @@ export const routes = createBrowserRouter([
   },
 
   {
+    path: "/admin/order/print/:id",
+    element: (
+      <Suspense fallback={<Spinner />}>
+        <Invoice />
+      </Suspense>
+    ),
+  },
+
+  {
     path: "/account",
     element: (
       <Suspense fallback={<Spinner />}>
@@ -554,6 +565,12 @@ export const routes = createBrowserRouter([
       {
         path: "/admin/front-end/contact-us",
         element: <Contact />,
+      },
+
+      // ----Report
+      {
+        path: "/admin/report/sales/product-ways",
+        element: <ProductWays />,
       },
 
       //----------SEO Setting

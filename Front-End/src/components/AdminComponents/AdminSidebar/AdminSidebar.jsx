@@ -14,6 +14,7 @@ import { VscPreview } from "react-icons/vsc";
 import { IoMdSettings } from "react-icons/io";
 import { MdFlashOn } from "react-icons/md";
 import { CiSearch } from "react-icons/ci";
+import { TbReportMoney } from "react-icons/tb";
 
 const adminSidebarItems = [
   {
@@ -153,6 +154,21 @@ const adminSidebarItems = [
       {
         title: "Contact Us",
         path: "/admin/front-end/contact-us",
+      },
+    ],
+  },
+  {
+    icon: <TbReportMoney />,
+    title: "Reports",
+    subMenu: [
+      {
+        title: "sell Report",
+        subSubMenu: [
+          {
+            title: "Product Ways",
+            path: "/admin/report/sales/product-ways",
+          },
+        ],
       },
     ],
   },

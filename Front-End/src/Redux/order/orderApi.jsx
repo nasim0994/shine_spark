@@ -60,6 +60,15 @@ export const orderApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["order"],
     }),
+
+    // report
+    getReportProductWay: builder.query({
+      query: (query) => ({
+        url: `/order/report/product-ways`,
+        params: query,
+      }),
+      providesTags: ["order"],
+    }),
   }),
 });
 
@@ -72,4 +81,6 @@ export const {
   useStatusUpdateMutation,
   useInitSslPaymentMutation,
   useGetOrderByTransactionIdQuery,
+
+  useGetReportProductWayQuery,
 } = orderApi;

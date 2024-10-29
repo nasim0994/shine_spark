@@ -67,6 +67,7 @@ export default function Checkout() {
         discount: product?.discount,
         quantity: product.quantity,
         sku: product.sku,
+        price: product.price,
       }),
     );
 
@@ -92,16 +93,16 @@ export default function Checkout() {
 
       if (res?.data?.success) {
         Swal.fire({
-          title: '<h2 class="text-3xl">Order Success</h2>',
+          title: '<h2 className="text-3xl">Order Success</h2>',
           html: `
             <div>
-              <img src="/images/success.png" alt="" class="mx-auto w-40" />
-              <p class="mt-4 text-center">Your order has been placed successfully</p>
-              <p class="text-center text-sm text-neutral-content/90">Your order id: #${res?.data?.data?._id}</p>
-        
-              <div class="mt-4 flex justify-center gap-3">
-                <a href="/shops" class="primary_btn flex items-center gap-2 text-sm">
-                  Continue Shopping <i class="fa fa-arrow-right text-xs"></i>
+              <img src="/images/success.png" alt="success" className="mx-auto w-40" />
+              <p className="mt-4 text-center">Your order has been placed successfully</p>
+              <p className="text-center text-sm text-neutral-content/90">Your order id: #${res?.data?.data?._id}</p>
+
+              <div className="mt-4 flex justify-center gap-3">
+                <a href="/shops" className="primary_btn flex items-center gap-2 text-sm">
+                  Continue Shopping
                 </a>
               </div>
             </div>

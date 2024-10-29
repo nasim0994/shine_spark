@@ -9,7 +9,7 @@ import { useAllUsersQuery } from "../../../Redux/user/userApi";
 import { useGetAllAdminsQuery } from "../../../Redux/admin/adminApi";
 import { FaBoxOpen, FaUsers, FaUserShield, FaCartPlus } from "react-icons/fa";
 import { GrView } from "react-icons/gr";
-import { FaMoneyBillTrendUp } from "react-icons/fa6";
+import { FaMoneyBillTransfer, FaMoneyBillTrendUp } from "react-icons/fa6";
 import { SiBrandfolder } from "react-icons/si";
 import { MdOutlineCategory } from "react-icons/md";
 
@@ -22,6 +22,20 @@ export default function Dashboard() {
   const { data: subCategory } = useGetSubCategoriesQuery();
   const { data: subSubCategory } = useGetSubSubCategoriesQuery();
   const { data: brand } = useAllBrandsQuery();
+
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0);
+
+  const endOfDay = new Date();
+  endOfDay.setHours(23, 59, 59, 999);
+
+  const todayTotal = orders?.data?.reduce((acc, order) => {
+    const orderDate = new Date(order.createdAt);
+    if (orderDate >= startOfDay && orderDate <= endOfDay) {
+      return acc + order.totalPrice;
+    }
+    return acc;
+  }, 0);
 
   return (
     <section>
@@ -128,6 +142,19 @@ export default function Dashboard() {
         <p>Sales Report</p>
 
         <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
+          <div className="flex items-center justify-between rounded-lg border p-4">
+            <div>
+              <p className="font-dinMedium text-neutral">Today Sales</p>
+              <div className="flex items-end gap-1">
+                <h3 className="font-bold text-green-600">{todayTotal}</h3>
+                <small>tk</small>
+              </div>
+            </div>
+            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-green-600 text-base-100">
+              <FaMoneyBillTransfer className="text-xl" />
+            </div>
+          </div>
+
           <div className="flex items-center justify-between rounded-lg border p-4">
             <div>
               <p className="font-dinMedium text-neutral">Total Sales</p>

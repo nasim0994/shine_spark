@@ -33,6 +33,9 @@ export default function AllOrders() {
         const result = await deleteOrder(id);
         if (result?.data?.success) {
           toast.success(result?.data?.message);
+        } else {
+          toast.error(result?.data?.message || "Something went wrong");
+          console.log(result);
         }
       }
     } catch (error) {

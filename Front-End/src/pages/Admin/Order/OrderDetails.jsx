@@ -1,20 +1,45 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import moment from "moment";
 import { FaPrint } from "react-icons/fa";
 import {
+  useDeleteOrderMutation,
   useGetOrderByIdQuery,
   useStatusUpdateMutation,
 } from "../../../Redux/order/orderApi";
 import Spinner from "../../../components/Spinner/Spinner";
+import { IoMdArrowBack } from "react-icons/io";
 
 export default function OrderDetails() {
   const params = useParams();
   const id = params.id;
+  const navigate = useNavigate();
 
   const { data, isLoading } = useGetOrderByIdQuery(id);
   const order = data?.data;
   const products = data?.data?.products;
+
+  const [deleteOrder] = useDeleteOrderMutation();
+
+  const deleteOrderHandler = async (id) => {
+    const isConfirm = window.confirm("Do you want to delete this order?");
+
+    try {
+      if (isConfirm) {
+        const result = await deleteOrder(id);
+        if (result?.data?.success) {
+          toast.success(result?.data?.message);
+          navigate("/admin/order/all-orders");
+        } else {
+          toast.error(result?.data?.message || "Something went wrong");
+          console.log(result);
+        }
+      }
+    } catch (error) {
+      toast.error(error?.data?.error);
+      console.log(error);
+    }
+  };
 
   const [statusUpdate, { isLoading: statusLoading }] =
     useStatusUpdateMutation();
@@ -23,18 +48,27 @@ export default function OrderDetails() {
 
   return (
     <secction>
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-        <Link
-          to="/admin/order/all-orders"
-          className="primary_btn w-max text-xs"
-        >
-          Go Back
-        </Link>
+      <div className="flex items-start justify-between">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <Link
+            to="/admin/order/all-orders"
+            className="primary_btn flex w-max items-center gap-2 text-xs"
+          >
+            <IoMdArrowBack /> Go Back
+          </Link>
 
-        <div>
-          <h1 className="text-xs text-primary">order/order-details</h1>
-          <p>Order: #{order?._id}</p>
+          <div>
+            <h1 className="text-xs text-primary">order/order-details</h1>
+            <p>Order: #{order?._id}</p>
+          </div>
         </div>
+
+        <button
+          onClick={() => deleteOrderHandler(order?._id)}
+          className="whitespace-nowrap rounded bg-red-500 px-4 py-2 text-sm text-base-100"
+        >
+          Delete order
+        </button>
       </div>
 
       <div className="mt-4 rounded-md border bg-base-100 p-4">

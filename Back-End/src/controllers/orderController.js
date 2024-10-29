@@ -158,7 +158,8 @@ exports.getAllOrders = async (req, res) => {
       .populate("products.productId")
       .skip(skip)
       .limit(limit)
-      .lean();
+      .lean()
+      .sort({ createdAt: -1 });
 
     const total = await Order.countDocuments({});
     const pages = Math.ceil(total / limit);

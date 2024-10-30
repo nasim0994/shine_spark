@@ -139,12 +139,12 @@ export default function Footer() {
           </span>
 
           <ul className="flex items-center gap-2">
-            {contact?.data?.socials?.map((social, i) => (
+            {contact?.data[0]?.socials?.map((social, i) => (
               <Link
                 key={i}
                 to={social?.url}
                 target="_blank"
-                className="text-base"
+                className="text-2xl text-neutral-content duration-300 hover:text-primary"
               >
                 {React.createElement(FaIcons[social?.icon])}
               </Link>

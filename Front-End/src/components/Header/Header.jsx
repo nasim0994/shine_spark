@@ -65,7 +65,7 @@ export default function Header() {
                         }`
                   }
                   alt="logo"
-                  className="w-32 sm:w-44 md:w-60"
+                  className="w-32 sm:w-44 lg:w-48"
                 />
               </Link>
             </div>

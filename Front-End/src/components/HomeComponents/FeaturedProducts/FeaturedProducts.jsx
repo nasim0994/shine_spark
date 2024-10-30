@@ -12,6 +12,8 @@ export default function FeaturedProducts() {
   const { data, isLoading, isError, error } =
     useGetFeaturedProductsQuery(query);
 
+  const products = data?.data;
+
   let content = null;
   if (isLoading) {
     content = <ProductCards />;
@@ -19,11 +21,13 @@ export default function FeaturedProducts() {
   if (!isLoading && isError) {
     content = <p>{error.error}</p>;
   }
-  if (!isLoading && !isError && data?.data?.length > 0) {
-    content = data?.data?.map((product) => (
+  if (!isLoading && !isError && products?.length > 0) {
+    content = products?.map((product) => (
       <ProductCard key={product?._id} product={product} />
     ));
   }
+
+  if (products?.length === 0) return;
 
   return (
     <section className="mt-8">

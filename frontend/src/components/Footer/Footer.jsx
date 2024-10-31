@@ -39,8 +39,9 @@ export default function Footer() {
                           logo?.data[0]?.logo
                         }`
                   }
-                  className="w-36"
+                  className="w-48"
                   alt="Logo"
+                  loading="lazy"
                 />
               </Link>
             </div>

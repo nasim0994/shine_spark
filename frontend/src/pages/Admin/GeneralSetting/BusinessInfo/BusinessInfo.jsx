@@ -36,14 +36,12 @@ export default function BusinessInfo() {
     const companyName = form.name.value;
     const companyStartYear = form.startYear.value;
     const companyType = form.type.value;
-    const bio = form.bio.value;
     const tagline = form.tagline.value;
 
     const data = {
       companyName,
       companyStartYear,
       companyType,
-      bio,
       tagline,
     };
 
@@ -59,7 +57,7 @@ export default function BusinessInfo() {
       Swal.fire(
         "",
         addError?.data?.error ? addError?.data?.error : "Something went wrong",
-        "error"
+        "error",
       );
       return;
     }
@@ -74,7 +72,7 @@ export default function BusinessInfo() {
         updateError?.data?.error
           ? updateError?.data?.error
           : "Something went wrong",
-        "error"
+        "error",
       );
       return;
     }
@@ -94,17 +92,17 @@ export default function BusinessInfo() {
   ]);
 
   return (
-    <section className="bg-base-100 rounded shadow">
-      <div className="p-4 border-b">
+    <section className="rounded bg-base-100 shadow">
+      <div className="border-b p-4">
         <h3 className="font-medium text-neutral">Business Info</h3>
       </div>
 
       <form
         onSubmit={handleBusinessInfo}
-        className="p-4 text-neutral-content form_group"
+        className="form_group p-4 text-neutral-content"
       >
         {/*  */}
-        <div className="border rounded p-4 grid sm:grid-cols-2 md:grid-cols-3 gap-4 items-start">
+        <div className="grid items-start gap-4 rounded border p-4 sm:grid-cols-2 md:grid-cols-3">
           <div>
             <p className="mb-1">Company Name *</p>
             <input
@@ -135,22 +133,12 @@ export default function BusinessInfo() {
             />
           </div>
 
-          <div>
+          <div className="sm:col-span-2">
             <p className="mb-1">Tagline</p>
             <textarea
               name="tagline"
               rows="2"
               defaultValue={businessInfo?.tagline}
-              required
-            ></textarea>
-          </div>
-
-          <div className="col-span-2">
-            <p className="mb-1">Bio</p>
-            <textarea
-              name="bio"
-              rows="2"
-              defaultValue={businessInfo?.bio}
               required
             ></textarea>
           </div>
@@ -165,8 +153,8 @@ export default function BusinessInfo() {
               {addIsLoading || upIsLoading
                 ? "Loading..."
                 : id
-                ? "Update"
-                : "Add Info"}
+                  ? "Update"
+                  : "Add Info"}
             </button>
           </div>
         </div>

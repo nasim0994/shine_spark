@@ -6,19 +6,28 @@ import ImageUploading from "react-images-uploading";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import Spinner from "../../../components/Spinner/Spinner";
+import { useGetMyOrdersQuery } from "../../../Redux/order/orderApi";
 
 export default function Profile() {
   window.scroll(0, 0);
   const { loggedUser } = useSelector((state) => state.user);
+  const user = loggedUser?.data;
   const [modal, setModal] = useState(false);
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const user = loggedUser?.data;
+  const { data } = useGetMyOrdersQuery(user?._id);
+  const orders = data?.data;
+  const wishlists = useSelector((state) => state.wishlist.wishlists);
+
   if (!user) {
     return <Spinner />;
   }
   const { name, phone, email, city, area, street } = user;
+  const image =
+    !user?.image || user?.image === "" || user?.image === null
+      ? "/images/demo_user.jpg"
+      : `${import.meta.env.VITE_BACKEND_URL}/user/${user?.image}`;
 
   const handleUploadImage = async () => {
     if (images?.length <= 0) {
@@ -73,14 +82,8 @@ export default function Profile() {
         <div className="flex flex-col items-center justify-center rounded-md bg-primary/70 py-4 font-medium text-base-100">
           <div className="update_image_wrap">
             <img
-              src={
-                loggedUser?.data?.image === ""
-                  ? "/images/demo_user.jpg"
-                  : `${import.meta.env.VITE_BACKEND_URL}/user/${
-                      loggedUser?.data?.image
-                    }`
-              }
-              alt=""
+              src={image}
+              alt="user"
               className="h-full w-full rounded-full"
             />
 
@@ -164,11 +167,11 @@ export default function Profile() {
         <div className="col-span-2 grid grid-cols-2 items-center gap-4 py-5 text-center">
           <div className="border-r border-neutral/50">
             <h1 className="font-medium">Total Order</h1>
-            <p className="font-medium">0</p>
+            <p className="font-medium">{orders?.length}</p>
           </div>
           <div>
             <h1 className="font-medium">Total Wishlist</h1>
-            <p className="font-medium">0</p>
+            <p className="font-medium">{wishlists?.length}</p>
           </div>
         </div>
       </div>

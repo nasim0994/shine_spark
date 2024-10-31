@@ -201,3 +201,52 @@ exports.deleteAnUser = async (req, res) => {
     });
   }
 };
+
+exports.updatePassword = async (req, res) => {
+  try {
+    const data = req?.body;
+    const id = req?.params?.id;
+
+    const isExit = await User.findById(id);
+    if (!isExit)
+      return res.json({
+        success: false,
+        message: "User Not Found",
+      });
+
+    const isMatch = await bcrypt.compare(
+      data?.currentPassword,
+      isExit?.password
+    );
+
+    if (!isMatch) {
+      return res.json({
+        success: false,
+        message: "Current password does not match",
+      });
+    }
+
+    const hash = await bcrypt.hash(data?.password, 10);
+    data.password = hash;
+
+    const result = await User.findByIdAndUpdate(id, data, { new: true });
+
+    if (!result) {
+      return res.json({
+        success: false,
+        message: "Something went wrong",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Password update success",
+      data: result,
+    });
+  } catch (error) {
+    res.json({
+      success: false,
+      message: error?.message,
+    });
+  }
+};

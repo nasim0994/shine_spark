@@ -11,6 +11,7 @@ const {
   updateImage,
   updateInfo,
   deleteAnUser,
+  updatePassword,
 } = require("../controllers/userController");
 
 const storage = multer.diskStorage({
@@ -21,21 +22,17 @@ const storage = multer.diskStorage({
     cb(null, `${Date.now()}-${file.originalname}`);
   },
 });
-const upload = multer({ storage: storage });
+const upload = multer({ storage: storage }).single("image");
 
-router.post("/register", registerUser); //user info save database
-router.post("/login", loginUser); //user login
-router.get("/me", verifyToken, getMe); //get logged user
-router.get("/allUsers", verifyAdmin, getAllUsers); //get all users
-router.get("/allCustomers", verifyAdmin, getAllCustomers); //get all customers
+router.post("/register", registerUser);
+router.post("/login", loginUser);
+router.get("/me", verifyToken, getMe);
+router.get("/allUsers", verifyAdmin, getAllUsers);
+router.get("/allCustomers", verifyAdmin, getAllCustomers);
 
-router.put(
-  "/updateImage/:id",
-  verifyToken,
-  upload.single("image"),
-  updateImage
-);
+router.put("/updateImage/:id", verifyToken, upload, updateImage);
 router.put("/update/info/:id", verifyToken, updateInfo);
+router.patch("/update/password/:id", verifyToken, updatePassword);
 router.delete("/delete/:id", verifyAdmin, deleteAnUser);
 
 module.exports = router;

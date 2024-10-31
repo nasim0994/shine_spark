@@ -13,9 +13,6 @@ const BusinessInfoSchema = new mongoose.Schema(
     companyType: {
       type: String,
     },
-    bio: {
-      type: String,
-    },
     tagline: {
       type: String,
     },

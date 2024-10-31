@@ -38,7 +38,6 @@ export default function Login() {
     };
 
     const res = await login(loginInfo);
-    console.log(res);
 
     if (res?.data?.success) {
       toast.success(res?.data?.message || "Logged in successfully");

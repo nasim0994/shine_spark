@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { MdKeyboardArrowRight } from "react-icons/md";
+import { CiNoWaitingSign } from "react-icons/ci";
+
 import { Link, useParams } from "react-router-dom";
 import { useGetAllProductsQuery } from "../../Redux/product/productApi";
 
@@ -53,8 +55,14 @@ export default function Shop() {
       <ProductCard key={product._id} product={product} />
     ));
   }
+
   if (!isLoading && !isError && data?.data?.length == 0) {
-    content = <div className="p-4 text-red-500">No Product available</div>;
+    content = (
+      <div className="col-span-4 flex h-[70vh] w-full flex-col items-center justify-center gap-2 p-4 text-red-500">
+        <CiNoWaitingSign className="text-xl" />
+        No Product available
+      </div>
+    );
   }
 
   return (

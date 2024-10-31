@@ -1,8 +1,10 @@
 import { AiOutlineHeart, AiOutlineSetting } from "react-icons/ai";
 import { FiMonitor } from "react-icons/fi";
-import { IoBagCheckOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { BiLogOutCircle } from "react-icons/bi";
+import { BsHandbag } from "react-icons/bs";
+import { TbBasketStar } from "react-icons/tb";
+
 import { NavLink } from "react-router-dom";
 import { userLogout } from "../../Redux/user/userSlice";
 
@@ -10,18 +12,19 @@ export default function AccountSidebar() {
   const { loggedUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
+  const image =
+    !loggedUser?.data?.image ||
+    loggedUser?.data?.image === "" ||
+    loggedUser?.data?.image === null
+      ? "/images/demo_user.jpg"
+      : `${import.meta.env.VITE_BACKEND_URL}/user/${loggedUser?.data?.image}`;
+
   return (
     <div className="flex min-h-[97vh] flex-col justify-between sm:min-h-[73vh]">
       <div>
         <img
-          src={
-            loggedUser?.data?.image === ""
-              ? "/images/demo_user.jpg"
-              : `${import.meta.env.VITE_BACKEND_URL}/user/${
-                  loggedUser?.data?.image
-                }`
-          }
-          alt="logo"
+          src={image}
+          alt="user"
           className="mx-auto h-28 w-28 rounded-full border"
         />
         <h3 className="text-center text-lg font-medium text-neutral-content">
@@ -48,7 +51,7 @@ export default function AccountSidebar() {
           <li>
             <NavLink to="/account/orders">
               <span className="flex items-center gap-2 duration-300 hover:text-primary">
-                <IoBagCheckOutline className="text-xl" />
+                <BsHandbag className="text-xl" />
                 My Order List
               </span>
             </NavLink>
@@ -56,7 +59,7 @@ export default function AccountSidebar() {
           <li>
             <NavLink to="/account/reviews">
               <span className="flex items-center gap-2 duration-300 hover:text-primary">
-                <IoBagCheckOutline className="text-xl" />
+                <TbBasketStar className="text-xl" />
                 My Reviews
               </span>
             </NavLink>

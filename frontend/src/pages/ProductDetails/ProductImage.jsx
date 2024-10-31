@@ -2,6 +2,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { Autoplay, Navigation } from "swiper/modules";
 import { useEffect, useState } from "react";
+import InnerImageZoom from "react-inner-image-zoom";
+import "react-inner-image-zoom/lib/InnerImageZoom/styles.min.css";
 
 export default function ProductImage({ thumbnail, galleries, discount }) {
   const [showImage, setShowImage] = useState(thumbnail);
@@ -12,9 +14,17 @@ export default function ProductImage({ thumbnail, galleries, discount }) {
   return (
     <div>
       <div className="relative">
-        <img
+        {/* <img
           src={`${import.meta.env.VITE_BACKEND_URL}/products/${showImage}`}
           alt="thumbnail"
+          className="h-[350px] w-full rounded"
+          loading="lazy"
+        /> */}
+
+        <InnerImageZoom
+          src={`${import.meta.env.VITE_BACKEND_URL}/products/${showImage}`}
+          zoomSrc={`${import.meta.env.VITE_BACKEND_URL}/products/${showImage}`}
+          zoomType="hover"
           className="h-[350px] w-full rounded"
           loading="lazy"
         />

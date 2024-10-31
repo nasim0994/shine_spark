@@ -18,10 +18,9 @@ export default function MainHeader() {
   const carts = useSelector((state) => state.cart.carts);
   const { loggedUser } = useSelector((state) => state.user);
   const { data: logo } = useGetMainLogoQuery();
-
   const [searchSidebar, setSearchSidebar] = useState(false);
-
   const [profileDropdown, setProfileDropdown] = useState(false);
+
   useEffect(() => {
     window.addEventListener("click", (e) => {
       if (
@@ -32,6 +31,13 @@ export default function MainHeader() {
       }
     });
   }, []);
+
+  const image =
+    !loggedUser?.data?.image ||
+    loggedUser?.data?.image === "" ||
+    loggedUser?.data?.image === null
+      ? "/images/demo_user.jpg"
+      : `${import.meta.env.VITE_BACKEND_URL}/user/${loggedUser?.data?.image}`;
 
   return (
     <header className="sticky top-0 z-40 border-b bg-[#ffffffcc] py-2 text-neutral backdrop-blur-[10px]">
@@ -110,15 +116,8 @@ export default function MainHeader() {
                   className="profileDropdownBtn"
                 >
                   <img
-                    src={
-                      loggedUser?.data?.image === "" ||
-                      loggedUser?.data?.image === null
-                        ? "/images/demo_user.jpg"
-                        : `${import.meta.env.VITE_BACKEND_URL}/user/${
-                            loggedUser?.data?.image
-                          }`
-                    }
-                    alt=""
+                    src={image}
+                    alt="user"
                     className="h-7 w-7 rounded-full border border-base-100"
                   />
                 </button>
@@ -128,15 +127,8 @@ export default function MainHeader() {
                     <li className="user_info border-b px-2 py-1">
                       <div className="flex items-center gap-2">
                         <img
-                          src={
-                            loggedUser?.data?.image === "" ||
-                            loggedUser?.data?.image === null
-                              ? "/images/demo_user.jpg"
-                              : `${import.meta.env.VITE_BACKEND_URL}/user/${
-                                  loggedUser?.data?.image
-                                }`
-                          }
-                          alt=""
+                          src={image}
+                          alt="user"
                           className="h-9 w-9 rounded-full border border-base-100"
                         />
                         <div>
@@ -144,7 +136,7 @@ export default function MainHeader() {
                             {loggedUser?.data?.name}
                           </h1>
                           <p className="text-sm text-neutral-content">
-                            {loggedUser?.data?.email}
+                            {loggedUser?.data?.phone}
                           </p>
                         </div>
                       </div>
@@ -196,7 +188,7 @@ export default function MainHeader() {
                     <li>
                       <button
                         onClick={() => dispatch(userLogout())}
-                        className="flex w-full items-center gap-1 border-t px-3 py-1.5 text-primary duration-200 hover:bg-gray-200"
+                        className="flex w-full items-center gap-1 border-t px-3 py-1.5 text-red-500 duration-200 hover:bg-gray-200"
                       >
                         <BiLogOutCircle className="text-base" />
                         Logout

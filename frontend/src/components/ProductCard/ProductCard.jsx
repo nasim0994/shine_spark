@@ -1,74 +1,78 @@
 import { Link } from "react-router-dom";
 import Rating from "../Rating/Rating";
 
-const ProductCard = ({ product }) => {
-  const {
-    slug,
-    images,
-    title,
-    sellingPrice,
-    discount,
-    variants,
-    rating,
-    reviewer,
-  } = product;
+export default function ProductCard({ product, discount: flashDiscount = 0 }) {
+  const { slug, thumbnail, title, sellingPrice, discount, rating, reviewer } =
+    product;
+
+  const newDiscount = parseInt(flashDiscount) + discount;
 
   return (
-    <div className="mt-2 hover:shadow-lg rounded overflow-hidden duration-300 border sm:border-0 product_card">
-      <Link to={`/product/${slug}`}>
-        <div className="overflow-hidden relative h-44 sm:h-56">
-          <img
-            src={`${import.meta.env.VITE_BACKEND_URL}/products/${images[0]}`}
-            alt=""
-            className="w-full h-full product_img"
-          />
-          {/* Discount */}
-          {discount > 0 && (
-            <div className="absolute top-1 text-base-100 right-0 bg-red-600 w-max rounded-l-full px-2 py-px">
-              <p>{discount}%</p>
+    <>
+      <div className="product_card">
+        <div className="flex h-full flex-col justify-between rounded shadow">
+          <Link
+            onClick={() => {
+              sessionStorage.setItem("discount", newDiscount);
+            }}
+            to={`/product/${slug}`}
+          >
+            <div className="relative h-56 overflow-hidden sm:h-60">
+              <img
+                src={`${import.meta.env.VITE_BACKEND_URL}/products/${thumbnail}`}
+                alt={title}
+                className="product_img h-full w-full rounded"
+                loading="lazy"
+              />
+
+              {newDiscount > 0 && (
+                <div className="absolute right-0 top-1 w-max rounded-l-full bg-red-600 px-2 py-px text-base-100">
+                  <p>{newDiscount}%</p>
+                </div>
+              )}
             </div>
-          )}
-        </div>
 
-        <div className="p-2">
-          <h1 className="font-medium mb-1 text-sm sm:text-[15px] h-14 min-[410px]:h-10">
-            {title.length > 30 ? `${title.slice(0, 30)}...` : title}
-          </h1>
-          <div className="flex items-center gap-2">
-            <p className="text-primary text-sm sm:text-lg">
-              ৳
-              {variants?.length > 0
-                ? parseInt(
-                    variants[0]?.sellingPrice -
-                      (variants[0]?.sellingPrice * discount) / 100
-                  )
-                : parseInt(sellingPrice - (sellingPrice * discount) / 100)}
-            </p>
-            {discount > 0 && (
-              <del className="text-neutral/70 text-xs sm:text-sm">
-                ৳
-                {variants?.length > 0
-                  ? parseInt((variants[0]?.sellingPrice * discount) / 100)
-                  : parseInt((sellingPrice * discount) / 100)}
-              </del>
-            )}
-          </div>
-          <div className="flex gap-1 items-center text-sm mt-1">
-            <Rating rating={rating || 0} />
-            <p className="text-xs text-neutral-content">
-              ({reviewer ? reviewer : 0})
-            </p>
-          </div>
-        </div>
+            <h1 className="title p-2 text-sm font-medium sm:text-base">
+              {title.length > 25 ? `${title.slice(0, 25)}...` : title}
+            </h1>
+          </Link>
 
-        <div className="p-2">
-          <button className="bg-primary text-base-100 w-full text-sm py-1.5">
-            Buy Now
-          </button>
+          <div>
+            <div className="p-2 pt-0">
+              <div className="flex items-center gap-2">
+                <p className="text-sm text-primary sm:text-lg">
+                  ৳{parseInt(sellingPrice - (sellingPrice * newDiscount) / 100)}
+                </p>
+
+                {newDiscount > 0 && (
+                  <del className="text-xs text-red-400 sm:text-sm">
+                    ৳{parseInt(sellingPrice)}
+                  </del>
+                )}
+              </div>
+
+              <div className="flex items-center gap-1 text-sm">
+                <Rating rating={rating || 0} />
+                <p className="text-xs text-neutral-content">
+                  ({reviewer ? reviewer : 0})
+                </p>
+              </div>
+
+              <div className="mt-2">
+                <Link
+                  onClick={() => {
+                    sessionStorage.setItem("discount", newDiscount);
+                  }}
+                  to={`/product/${slug}`}
+                  className="block bg-primary py-1.5 text-center text-sm text-base-100"
+                >
+                  But Now
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
-      </Link>
-    </div>
+      </div>
+    </>
   );
-};
-
-export default ProductCard;
+}

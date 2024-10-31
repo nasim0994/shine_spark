@@ -13,7 +13,7 @@ export default function MobileMenuSidebar({ mobileMenu, setMobileMenu }) {
       ></button>
       <div className={`menu_wrap ${mobileMenu && "menu_wrap_show"} text-sm`}>
         <div className="m-2">
-          <SearchBox />
+          <SearchBox setMobileMenu={setMobileMenu} />
         </div>
 
         <div className="mt-4 grid grid-cols-2 border-b pb-1">

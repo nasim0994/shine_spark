@@ -2,7 +2,7 @@ import { useState } from "react";
 import { BsSearch } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 
-export default function SearchBox({ setSearch }) {
+export default function SearchBox({ setSearch, setMobileMenu }) {
   const navigate = useNavigate();
   const [searchText, setSearchText] = useState("");
 
@@ -16,6 +16,10 @@ export default function SearchBox({ setSearch }) {
       }
     } else {
       navigate(`/shops`);
+    }
+
+    if (setMobileMenu) {
+      setMobileMenu(false);
     }
   };
 

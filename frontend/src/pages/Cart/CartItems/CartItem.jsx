@@ -47,10 +47,11 @@ export default function CartItem({ product }) {
             src={`${import.meta.env.VITE_BACKEND_URL}/products/${thumbnail}`}
             alt={title}
             className="h-10 w-10 rounded-lg"
+            loading="lazy"
           />
           <Link to={`/product/${slug}`} className="leading-4">
             <h3 className="text-neutral">
-              {title.length > 30 ? `${title.slice(0, 30)}...` : title}
+              {title.length > 50 ? `${title.slice(0, 50)}...` : title}
             </h3>
             <p className="text-neutral-content">{sku}</p>
           </Link>

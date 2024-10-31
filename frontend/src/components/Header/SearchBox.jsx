@@ -12,7 +12,7 @@ export default function SearchBox() {
       .then((res) => res.json())
       .then((data) => {
         const product = data?.data?.filter((product) =>
-          product.title.toLowerCase().includes(searchText.toLowerCase())
+          product.title.toLowerCase().includes(searchText.toLowerCase()),
         );
         setProducts(product);
       });
@@ -37,33 +37,34 @@ export default function SearchBox() {
         onChange={(e) => setSearchText(e.target.value)}
         onClick={() => setSearchDropdown(true)}
         placeholder="search Product..."
-        className="searchInput border w-full px-3 py-1.5 outline-none"
+        className="searchInput w-full border px-3 py-1.5 outline-none"
       />
-      <div className="searchIcon px-3 md:text-lg text-base-100 bg-primary flex justify-center items-center rounded-r">
+      <div className="searchIcon flex items-center justify-center rounded-r bg-primary px-3 text-base-100 md:text-lg">
         <BsSearch />
       </div>
 
       {searchDropdown && (
-        <div className="searchDropdown absolute w-full bg-base-100 p-4 shadow-lg max-h-96 overflow-y-auto top-full">
+        <div className="searchDropdown absolute top-full max-h-96 w-full overflow-y-auto bg-base-100 p-4 shadow-lg">
           <ul>
             {products?.map((product) => (
               <li
+                key={product?._id}
                 onClick={() => {
                   setSearchDropdown(false);
                   setSearchText("");
                 }}
-                className="hover:bg-gray-100 p-1"
+                className="p-1 hover:bg-gray-100"
               >
                 <Link
                   to={`/product/${product?.slug}`}
-                  className="flex gap-2 items-center"
+                  className="flex items-center gap-2"
                 >
                   <img
                     src={`${import.meta.env.VITE_BACKEND_URL}/products/${
                       product?.images[0]
                     }`}
                     alt=""
-                    className="w-10 h-10 sm:w-12 sm:h-12"
+                    className="h-10 w-10 sm:h-12 sm:w-12"
                   />
                   <h6 className="text-sm sm:text-base">{product?.title}</h6>
                 </Link>

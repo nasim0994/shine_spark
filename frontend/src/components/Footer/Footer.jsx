@@ -1,6 +1,6 @@
-import { AiFillInstagram } from "react-icons/ai";
-import { BsFacebook, BsYoutube } from "react-icons/bs";
-import { IoLogoWhatsapp } from "react-icons/io";
+import React from "react";
+import * as FaIcons from "react-icons/fa";
+
 import { Link } from "react-router-dom";
 import { useGetCategoriesQuery } from "../../Redux/category/categoryApi";
 import { useGetContactQuery } from "../../Redux/contact/contactApi";
@@ -89,13 +89,8 @@ export default function Footer() {
               </li>
 
               <li className="mb-2">
-                <Link to="/" className="hover:underline">
-                  Privacy Policy
-                </Link>
-              </li>
-              <li className="mb-2">
-                <Link to="/" className="hover:underline">
-                  Terms & Conditions
+                <Link to="/contact-us" className="hover:underline">
+                  Contact Us
                 </Link>
               </li>
             </ul>
@@ -134,30 +129,17 @@ export default function Footer() {
               eManager
             </Link>
           </span>
-          <ul className="mt-3 flex items-center gap-2 text-neutral-content sm:mt-0">
-            <li>
-              <Link to={contact?.data[0]?.facebookLink} target="_blank">
-                <BsFacebook className="text-lg duration-300 hover:-mt-2" />
-              </Link>
-            </li>
-            <li>
+          <ul className="flex items-center gap-2">
+            {contact?.data[0]?.socials?.map((social, i) => (
               <Link
-                to={`https://wa.me/${contact?.data[0]?.whatsapp}`}
+                key={i}
+                to={social?.url}
                 target="_blank"
+                className="text-xl text-neutral duration-300 hover:text-primary"
               >
-                <IoLogoWhatsapp className="text-xl duration-300 hover:-mt-2" />
+                {React.createElement(FaIcons[social?.icon])}
               </Link>
-            </li>
-            <li>
-              <Link to={contact?.data[0]?.instagramLink} target="_blank">
-                <AiFillInstagram className="text-xl duration-300 hover:-mt-2" />
-              </Link>
-            </li>
-            <li>
-              <Link to="">
-                <BsYoutube className="text-xl duration-300 hover:-mt-2" />
-              </Link>
-            </li>
+            ))}
           </ul>
         </div>
       </div>

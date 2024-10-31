@@ -3,11 +3,11 @@ import { FiMenu } from "react-icons/fi";
 
 export default function Menu() {
   return (
-    <div className="text-sm bg-base-100 hidden md:block">
+    <div className="hidden bg-base-100 text-sm md:block">
       <div className="container">
-        <div className="flex justify-between items-center">
-          <div className="sm:w-[267.5px] flex justify-between items-center bg-primary px-2 py-2.5 text-base-100">
-            <div className="flex gap-2 items-center">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between bg-primary px-2 py-2.5 text-base-100 sm:w-[267.5px]">
+            <div className="flex items-center gap-2">
               <FiMenu className="text-xl" />
               <h6>BROWSE CATEGORIES</h6>
             </div>
@@ -18,7 +18,7 @@ export default function Menu() {
               <li>
                 <NavLink
                   to="/"
-                  className="block px-3 hover:text-primary duration-200"
+                  className="block px-3 duration-200 hover:text-primary"
                 >
                   Home
                 </NavLink>
@@ -26,7 +26,7 @@ export default function Menu() {
               <li>
                 <NavLink
                   to="/shops"
-                  className="block px-3 hover:text-primary duration-200"
+                  className="block px-3 duration-200 hover:text-primary"
                 >
                   Shop
                 </NavLink>
@@ -34,9 +34,17 @@ export default function Menu() {
               <li>
                 <NavLink
                   to="/about-us"
-                  className="block px-3 hover:text-primary duration-200"
+                  className="block px-3 duration-200 hover:text-primary"
                 >
                   About Us
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/contact-us"
+                  className="block px-3 duration-200 hover:text-primary"
+                >
+                  Contact Us
                 </NavLink>
               </li>
             </ul>

@@ -162,14 +162,36 @@ export default function EditProduct() {
 
         // Filter out existing variants based on the current selections
         const filteredVariants = prevVariants?.filter((variant) => {
-          const [color, size] = variant.sku.split("-");
-          const colorExists = colors.some(
-            (selectedColor) =>
-              selectedColor.label.split(" ").join("") === color,
-          );
-          const sizeExists = sizes.includes(size);
+          const skuParts = variant.sku.split("-");
+          let color = "";
+          let size = "";
 
-          return colorExists && (size ? sizeExists : true);
+          // Assign based on how many parts are in sku
+          if (skuParts.length === 2) {
+            [color, size] = skuParts; // both color and size present
+          } else if (colors.length && skuParts.length === 1) {
+            color = skuParts[0]; // only color present
+          } else if (sizes.length && skuParts.length === 1) {
+            size = skuParts[0]; // only size present
+          }
+
+          const colorExists = color
+            ? colors.some(
+                (selectedColor) =>
+                  selectedColor.label.replace(/\s+/g, "") === color,
+              )
+            : true;
+          const sizeExists = size ? sizes.includes(size) : true;
+
+          return colorExists && sizeExists;
+
+          // const colorExists = colors.some(
+          //   (selectedColor) =>
+          //     selectedColor.label.split(" ").join("") === color,
+          // );
+          // const sizeExists = sizes.includes(size);
+
+          // return colorExists && (size ? sizeExists : true);
         });
 
         // Map the generated variants to add additional properties
@@ -245,7 +267,10 @@ export default function EditProduct() {
 
     const totalStock =
       variant && variants?.length > 0
-        ? variants?.reduce((acc, curr) => acc + parseInt(curr?.stock), 0)
+        ? variants?.reduce(
+            (acc, curr) => parseInt(acc) + parseInt(curr?.stock),
+            0,
+          )
         : stock;
 
     const formData = new FormData();

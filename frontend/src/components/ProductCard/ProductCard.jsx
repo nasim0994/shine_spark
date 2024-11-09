@@ -17,7 +17,7 @@ export default function ProductCard({ product, discount: flashDiscount = 0 }) {
             }}
             to={`/product/${slug}`}
           >
-            <div className="relative h-56 overflow-hidden sm:h-60">
+            <div className="relative h-52 overflow-hidden sm:h-60">
               <img
                 src={`${import.meta.env.VITE_BACKEND_URL}/products/${thumbnail}`}
                 alt={title}

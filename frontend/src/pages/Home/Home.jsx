@@ -10,18 +10,21 @@ import Menu from "../../components/HomeComponents/Menu/Menu";
 import MobileCategories from "../../components/HomeComponents/MobileCategories/MobileCategories";
 import PopularProducts from "../../components/HomeComponents/PopularProducts/PopularProducts";
 import Services from "../../components/HomeComponents/Services/Services";
+import usePageView from "../../hooks/usePageView";
 
 export default function Home() {
   window.scroll(0, 0);
+  usePageView("Home");
+
   return (
     <>
       <Menu />
       <Hero />
+      <ChooseByCategory />
       <MobileCategories />
       <ShopBannerCom />
       <FlashSale />
       <FeaturedProducts />
-      <ChooseByCategory />
       <CampaignBanner />
       <ChooseByBrand />
       <PopularProducts />

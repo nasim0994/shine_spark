@@ -46,6 +46,22 @@ export default function ProductInfo({ product }) {
 
   const [selectedQuantity, setSelectedQuantity] = useState(1);
 
+  const handelDecrease = () => {
+    if (selectedQuantity > 1) {
+      setSelectedQuantity(selectedQuantity - 1);
+    } else {
+      toast.error("Minimum quantity is 1");
+    }
+  };
+
+  const handelIncrease = () => {
+    if (selectedStock > selectedQuantity) {
+      setSelectedQuantity(selectedQuantity + 1);
+    } else {
+      toast.error("Maximum quantity reached");
+    }
+  };
+
   const handelSelectSize = (size) => {
     if (selectedSize === size) {
       setSelectedSize("");
@@ -91,18 +107,6 @@ export default function ProductInfo({ product }) {
       setSelectedPrice(findVariant?.sellingPrice);
     }
   }, [selectedSize, selectedColor, variants]);
-
-  const handelDecrease = () => {
-    if (selectedQuantity > 1) {
-      setSelectedQuantity(selectedQuantity - 1);
-    }
-  };
-
-  const handelIncrease = () => {
-    if (selectedStock > selectedQuantity) {
-      setSelectedQuantity(selectedQuantity + 1);
-    }
-  };
 
   const handleBuyNow = () => {
     if (variants?.length > 0 && sizes[0] && !selectedSize) {
@@ -163,6 +167,28 @@ export default function ProductInfo({ product }) {
       dispatch(addToCart([cartProduct]));
       toast.success("Item added to cart successfully");
     }
+
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: "add_to_cart",
+      ecommerce: {
+        currencyCode: "BDT",
+        add: {
+          products: [
+            {
+              item_id: product._id,
+              item_name: product.title,
+              price: selectedPrice,
+              discount: discount,
+              brand: brand,
+              category: category?.name,
+              variant: selectedSku,
+              quantity: selectedQuantity || 0,
+            },
+          ],
+        },
+      },
+    });
   };
 
   const handelAddToWishlist = (product) => {
@@ -170,10 +196,51 @@ export default function ProductInfo({ product }) {
 
     if (findProduct) {
       dispatch(removeFromWishlist(product));
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: "remove_to_wishlist",
+        ecommerce: {
+          currencyCode: "BDT",
+          add: {
+            products: [
+              {
+                item_id: product._id,
+                item_name: product.title,
+                price: selectedPrice,
+                discount: discount,
+                brand: brand,
+                category: category?.name,
+                variant: selectedSku,
+              },
+            ],
+          },
+        },
+      });
       return Swal.fire("", "Product removed from wishlist", "warning");
     } else {
       dispatch(addToWishlist([...wishlists, product]));
       Swal.fire("", "Product added to wishlist successfully", "success");
+
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: "add_to_wishlist",
+        ecommerce: {
+          currencyCode: "BDT",
+          add: {
+            products: [
+              {
+                item_id: product._id,
+                item_name: product.title,
+                price: selectedPrice,
+                discount: discount,
+                brand: brand,
+                category: category?.name,
+                variant: selectedSku,
+              },
+            ],
+          },
+        },
+      });
     }
   };
 

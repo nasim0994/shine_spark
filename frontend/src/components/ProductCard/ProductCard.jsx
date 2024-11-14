@@ -33,7 +33,7 @@ export default function ProductCard({ product, discount: flashDiscount = 0 }) {
             </div>
 
             <h1 className="title p-2 text-sm font-medium sm:text-base">
-              {title.length > 25 ? `${title.slice(0, 25)}...` : title}
+              {title.length > 45 ? `${title.slice(0, 45)}...` : title}
             </h1>
           </Link>
 
@@ -64,7 +64,7 @@ export default function ProductCard({ product, discount: flashDiscount = 0 }) {
                     sessionStorage.setItem("discount", newDiscount);
                   }}
                   to={`/product/${slug}`}
-                  className="block bg-primary py-1.5 text-center text-sm text-base-100"
+                  className="block rounded bg-primary py-1.5 text-center text-sm text-base-100"
                 >
                   But Now
                 </Link>

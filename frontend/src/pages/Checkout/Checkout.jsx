@@ -8,15 +8,51 @@ import { useAddOrderMutation } from "../../Redux/order/orderApi";
 import ButtonSpinner from "../../components/ButtonSpinner/ButtonSpinner";
 import { useApplyCouponMutation } from "../../Redux/coupon/couponApi";
 import { useGetShippingConfigQuery } from "../../Redux/shippingConfigApi";
+import usePageView from "../../hooks/usePageView";
 
 export default function Checkout() {
-  useEffect(() => {
-    window.scroll(0, 0);
-  }, []);
+  usePageView("Checkout");
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const carts = useSelector((state) => state.cart.carts);
+
+  useEffect(() => {
+    window.scroll(0, 0);
+
+    if (carts?.length === 0) {
+      navigate("/shops");
+    }
+
+    // Push addToCart event to the Data Layer
+    if (carts?.length > 0) {
+      const totalPrice = carts?.reduce(
+        (price, item) => price + item.quantity * item.price,
+        0,
+      );
+
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: "begin_checkout",
+        customer: {},
+        ecommerce: {
+          currency: "BDT",
+          value: totalPrice,
+          items: [
+            carts?.map((product) => ({
+              item_id: product?._id,
+              item_name: product?.title,
+              price:
+                product?.price -
+                (product?.price * parseInt(product?.discount)) / 100,
+              quantity: product?.quantity,
+              item_discount: parseInt(product?.discount),
+            })),
+          ],
+        },
+      });
+    }
+  }, [carts, navigate]);
 
   const [addOrder, { isLoading }] = useAddOrderMutation();
 
@@ -92,6 +128,36 @@ export default function Checkout() {
       const res = await addOrder(order);
 
       if (res?.data?.success) {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+          event: "purchase",
+          customer: {
+            name: name,
+            phone_number: number,
+            email: email,
+            address: address,
+            country: "Bangladesh",
+          },
+          ecommerce: {
+            currency: "BDT",
+            value: grandTotal,
+            shipping: shipping,
+            transaction_id: res?.data?.data?._id,
+
+            items: [
+              carts?.map((product) => ({
+                item_id: product?._id,
+                item_name: product?.title,
+                price:
+                  product?.price -
+                  (product?.price * parseInt(product?.discount)) / 100,
+                quantity: product?.quantity,
+                item_discount: parseInt(product?.discount),
+              })),
+            ],
+          },
+        });
+
         Swal.fire({
           title: '<h2 className="text-3xl">Order Success</h2>',
           html: `

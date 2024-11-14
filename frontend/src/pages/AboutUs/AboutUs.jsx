@@ -1,9 +1,11 @@
 import { useGetAboutQuery } from "../../Redux/about/aboutApi";
 import Spinner from "../../components/Spinner/Spinner";
 import parcer from "html-react-parser";
+import usePageView from "../../hooks/usePageView";
 
 export default function AboutUs() {
   window.scroll(0, 0);
+  usePageView("About Us");
   const { data, isLoading } = useGetAboutQuery();
   const about = data?.data[0];
   const parcerDescription = about?.description && parcer(about?.description);

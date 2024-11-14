@@ -7,9 +7,11 @@ import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import Spinner from "../../../components/Spinner/Spinner";
 import { useGetMyOrdersQuery } from "../../../Redux/order/orderApi";
+import usePageView from "../../../hooks/usePageView";
 
 export default function Profile() {
   window.scroll(0, 0);
+  usePageView("Profile");
   const { loggedUser } = useSelector((state) => state.user);
   const user = loggedUser?.data;
   const [modal, setModal] = useState(false);

@@ -10,8 +10,10 @@ import ProductCards from "../../components/Skeleton/ProductCards/ProductCards";
 import Pagination from "../../components/Pagination/Pagination";
 import PriceRangeSlider from "../../components/PriceRange/PriceRange";
 import MobileCategoriesSidebar from "../../components/MobileCategoriesSidebar/MobileCategoriesSidebar";
+import usePageView from "../../hooks/usePageView";
 
 export default function Shop() {
+  usePageView("Shop");
   window.scrollTo(0, 0);
 
   const queryParams = new URLSearchParams(location.search);

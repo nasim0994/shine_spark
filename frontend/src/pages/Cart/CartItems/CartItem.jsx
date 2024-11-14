@@ -1,13 +1,12 @@
 import { MdOutlineDelete } from "react-icons/md";
 import { FiMinusCircle, FiPlusCircle } from "react-icons/fi";
 import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import { changeQuantity, removeFromCart } from "../../../Redux/cart/cartSlice";
 
 export default function CartItem({ product }) {
   const dispatch = useDispatch();
-  const { _id, slug, thumbnail, title, discount, price, quantity, sku, stock } =
+  const { _id, thumbnail, title, discount, price, quantity, sku, stock } =
     product;
 
   const discountPrice = parseInt(price - (price * discount) / 100);
@@ -49,12 +48,12 @@ export default function CartItem({ product }) {
             className="h-10 w-10 rounded-lg"
             loading="lazy"
           />
-          <Link to={`/product/${slug}`} className="leading-4">
+          <div className="leading-4">
             <h3 className="text-neutral">
               {title.length > 50 ? `${title.slice(0, 50)}...` : title}
             </h3>
             <p className="text-neutral-content">{sku}</p>
-          </Link>
+          </div>
         </div>
       </td>
 

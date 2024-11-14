@@ -1,8 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { removeFromWishlist } from "../../../Redux/wishlist/wishlistSlice";
+import usePageView from "../../../hooks/usePageView";
 
 export default function Wishlist() {
+  usePageView("Wishlist");
   const wishlists = useSelector((state) => state.wishlist.wishlists);
   const dispatch = useDispatch();
 

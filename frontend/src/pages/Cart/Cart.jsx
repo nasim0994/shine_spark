@@ -8,12 +8,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { FaArrowRight } from "react-icons/fa6";
 import { clearCart } from "../../Redux/cart/cartSlice";
 import { useEffect } from "react";
+import usePageView from "../../hooks/usePageView";
 
 export default function Cart() {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
+  usePageView("Cart");
+  const { loggedUser } = useSelector((state) => state.user);
   const carts = useSelector((state) => state.cart.carts);
   const dispatch = useDispatch();
 
@@ -23,6 +22,47 @@ export default function Cart() {
       item.quantity * parseInt(item.price - (item.price * item.discount) / 100),
     0,
   );
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+
+    if (carts?.length > 0) {
+      const user = loggedUser?.data;
+      let custom = {};
+
+      if (user) {
+        custom = {
+          name: user?.name,
+          phone_number: user?.phone,
+          email: user?.email,
+          address: user?.address,
+          country: "Bangladesh",
+        };
+      }
+
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: "cart_view",
+        custom,
+        ecommerce: {
+          currency: "BDT",
+          value: total,
+
+          items: [
+            carts?.map((product) => ({
+              item_id: product?._id,
+              item_name: product?.title,
+              price:
+                product?.price -
+                (product?.price * parseInt(product?.discount)) / 100,
+              quantity: product?.quantity,
+              item_discount: parseInt(product?.discount),
+            })),
+          ],
+        },
+      });
+    }
+  }, [carts, loggedUser, total]);
 
   return (
     <div className="min-h-[60vh] py-5">

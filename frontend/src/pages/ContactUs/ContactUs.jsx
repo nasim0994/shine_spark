@@ -4,8 +4,10 @@ import { useGetContactQuery } from "../../Redux/contact/contactApi";
 import { FaPhone, FaWhatsapp } from "react-icons/fa6";
 import { MdOutlineMail, MdOutlineLocationOn } from "react-icons/md";
 import { Link } from "react-router-dom";
+import usePageView from "../../hooks/usePageView";
 
 export default function ContactUs() {
+  usePageView("Contact Us");
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);

@@ -267,7 +267,7 @@ export default function AddProduct() {
 
     formData.append("title", title);
     formData.append("category", categoryId);
-    if (subSubCategoryId) formData.append("subCategory", subSubCategoryId);
+    if (subCategoryId) formData.append("subCategory", subCategoryId);
     if (subSubCategoryId) formData.append("subSubCategory", subSubCategoryId);
     if (brand) formData.append("brand", brand);
 

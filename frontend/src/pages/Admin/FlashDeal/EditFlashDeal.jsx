@@ -15,8 +15,6 @@ export default function EditFlashDeal() {
 
   const [selectedProducts, setSelectedProducts] = useState([]);
 
-  console.log(selectedProducts);
-
   useEffect(() => {
     if (deal?.data?.flashProducts?.length > 0) {
       setSelectedProducts(

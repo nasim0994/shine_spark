@@ -66,7 +66,7 @@ export default function ProductCard({ product, discount: flashDiscount = 0 }) {
                   to={`/product/${slug}`}
                   className="block rounded bg-primary py-1.5 text-center text-sm text-base-100"
                 >
-                  But Now
+                  Buy Now
                 </Link>
               </div>
             </div>

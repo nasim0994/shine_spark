@@ -43,7 +43,9 @@ exports.insert = async (req, res) => {
 
 exports.get = async (req, res) => {
   try {
-    const subCategories = await SubCategory.find({}).populate("category");
+    const subCategories = await SubCategory.find({}).populate(
+      "category subSubCategories"
+    );
     res.status(200).json({
       success: true,
       data: subCategories,
@@ -59,7 +61,9 @@ exports.get = async (req, res) => {
 
 exports.getById = async (req, res) => {
   try {
-    const subCategory = await SubCategory.findById(req.params.id);
+    const subCategory = await SubCategory.findById(req.params.id).populate(
+      "category subSubCategories"
+    );
 
     if (!subCategory) {
       return res.json({

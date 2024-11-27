@@ -74,7 +74,11 @@ exports.getById = async (req, res) => {
   try {
     const category = await Model.findById(req.params.id).populate({
       path: "subCategories",
-      select: "name slug",
+      select: "name slug subSubCategories",
+      populate: {
+        path: "subSubCategories",
+        select: "name slug",
+      },
     });
 
     if (!category) {

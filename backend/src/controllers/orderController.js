@@ -188,7 +188,7 @@ exports.getTodaysOrders = async (req, res) => {
   const paginationOptions = pick(req.query, ["page", "limit"]);
   const { page, limit, skip } = calculatePagination(paginationOptions);
 
-  const today = new Date("2024-10-31");
+  const today = new Date();
 
   const start = new Date(today.setHours(0, 0, 0, 0));
   const end = new Date(today.setHours(23, 59, 59, 999));

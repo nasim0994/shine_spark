@@ -71,7 +71,16 @@ const adminSidebarItems = [
   {
     icon: <BiSolidShoppingBags />,
     title: "Orders",
-    path: "/admin/order/all-orders",
+    subMenu: [
+      {
+        title: "All Orders",
+        path: "/admin/order/all-orders",
+      },
+      {
+        title: "Today's Orders",
+        path: "/admin/order/todays-orders",
+      },
+    ],
   },
   {
     icon: <MdFlashOn />,

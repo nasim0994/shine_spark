@@ -183,6 +183,66 @@ exports.getAllOrders = async (req, res) => {
   }
 };
 
+// Get today's orders
+exports.getTodaysOrders = async (req, res) => {
+  const paginationOptions = pick(req.query, ["page", "limit"]);
+  const { page, limit, skip } = calculatePagination(paginationOptions);
+
+  const today = new Date();
+
+  const start = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate()
+  );
+  const end = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate() + 1
+  );
+
+  try {
+    const orders = await Order.find({
+      createdAt: {
+        $gte: start,
+        $lt: end,
+      },
+    })
+      .populate("user.id")
+      .populate("products.productId")
+      .skip(skip)
+      .limit(limit)
+      .lean()
+      .sort({ createdAt: -1 });
+
+    const total = await Order.countDocuments({
+      createdAt: {
+        $gte: start,
+        $lt: end,
+      },
+    });
+
+    const pages = Math.ceil(total / limit);
+
+    res.status(200).json({
+      success: true,
+      message: "Today's orders fetched successfully",
+      meta: {
+        total,
+        pages,
+        page,
+        limit,
+      },
+      data: orders,
+    });
+  } catch (error) {
+    res.json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 exports.deleteOrderById = async (req, res) => {
   const id = req?.params?.id;
 

@@ -60,7 +60,7 @@
 }
 
 .admin_siderbar .dropdown_show {
-  max-height: 300px;
+  max-height: max-content;
   transition: all 0.3s ease;
 }
 

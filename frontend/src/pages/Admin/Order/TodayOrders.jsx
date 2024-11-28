@@ -5,20 +5,20 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
   useDeleteOrderMutation,
-  useGetAllOrdersQuery,
+  useGetTodayOrdersQuery,
   useStatusUpdateMutation,
 } from "../../../Redux/order/orderApi";
 import Spinner from "../../../components/Spinner/Spinner";
 import Pagination from "../../../components/Pagination/Pagination";
 import moment from "moment";
 
-export default function AllOrders() {
+export default function TodaysOrders() {
   const query = {};
   const [currentPage, setCurrentPage] = useState(1);
   query["page"] = currentPage;
   query["limit"] = 10;
 
-  const { data, isLoading, isError, error } = useGetAllOrdersQuery({
+  const { data, isLoading, isError, error } = useGetTodayOrdersQuery({
     ...query,
   });
 
@@ -143,7 +143,7 @@ export default function AllOrders() {
   return (
     <section>
       <div className="mb-2 rounded bg-base-100 p-3">
-        <h2 className="text-xl text-neutral">All Orders</h2>
+        <h2 className="text-xl text-neutral">Today&apos;s Orders</h2>
       </div>
       <div className="relative flex flex-col justify-between overflow-x-auto pb-4 shadow-lg">
         <table>

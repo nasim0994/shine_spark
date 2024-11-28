@@ -7,12 +7,14 @@ const {
   updateStatus,
   getOrderByTransactionId,
   getProductWaysReport,
+  getTodaysOrders,
 } = require("../controllers/orderController");
 
 const router = require("express").Router();
 
 router.post("/post-order", addOrder);
 router.get("/all-orders", getAllOrders);
+router.get("/todays", getTodaysOrders);
 router.get("/report/product-ways", getProductWaysReport);
 
 router.get("/:id", getOrderById);

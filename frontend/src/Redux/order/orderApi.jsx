@@ -17,6 +17,14 @@ export const orderApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["order"],
     }),
+    getTodayOrders: builder.query({
+      query: (query) => ({
+        url: "/order/todays",
+        method: "GET",
+        params: query,
+      }),
+      providesTags: ["order"],
+    }),
     getOrderById: builder.query({
       query: (id) => ({
         url: `order/${id}`,
@@ -81,6 +89,7 @@ export const {
   useStatusUpdateMutation,
   useInitSslPaymentMutation,
   useGetOrderByTransactionIdQuery,
+  useGetTodayOrdersQuery,
 
   useGetReportProductWayQuery,
 } = orderApi;

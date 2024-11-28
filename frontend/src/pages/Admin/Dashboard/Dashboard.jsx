@@ -12,10 +12,11 @@ import { GrView } from "react-icons/gr";
 import { FaMoneyBillTransfer, FaMoneyBillTrendUp } from "react-icons/fa6";
 import { SiBrandfolder } from "react-icons/si";
 import { MdOutlineCategory } from "react-icons/md";
+import moment from "moment";
 
 export default function Dashboard() {
   const { data: products } = useGetAllProductsQuery();
-  const { data: orders } = useGetAllOrdersQuery();
+  const { data: orders } = useGetAllOrdersQuery({ limit: 10 });
   const { data: users } = useAllUsersQuery();
   const { data: admin } = useGetAllAdminsQuery();
   const { data: category } = useGetCategoriesQuery();
@@ -188,17 +189,37 @@ export default function Dashboard() {
           <table className="dashboard_table">
             <thead>
               <tr>
+                <th>SL</th>
                 <th>Order Id</th>
-                <th>Total Products</th>
+                <th>Date</th>
+                <th>Products</th>
                 <th>Status</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              {orders?.data?.map((order) => (
+              {orders?.data?.map((order, i) => (
                 <tr key={order?._id}>
-                  <td>{order?._id}</td>
-                  <td>{order?.products?.length}</td>
+                  <td>{i + 1}</td>
+                  <td>
+                    <p>INV-{order?.invoiceNumber}</p>
+                    <p>#{order?._id}</p>
+                  </td>
+                  <td>{moment(order?.createdAt).format("DD MMM YYYY")}</td>
+                  <td>
+                    <div className="flex -space-x-4 rtl:space-x-reverse">
+                      {order?.products?.map((product) => (
+                        <img
+                          key={product?._id}
+                          className="h-8 w-8 rounded-full border-2 border-white"
+                          src={`${import.meta.env.VITE_BACKEND_URL}/products/${
+                            product?.productId?.thumbnail
+                          }`}
+                          alt={product?.productId?.title}
+                        />
+                      ))}
+                    </div>
+                  </td>
                   <td>
                     <div
                       className={`w-max border text-xs ${

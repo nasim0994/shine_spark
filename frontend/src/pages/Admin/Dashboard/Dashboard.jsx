@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import { useAllBrandsQuery } from "../../../Redux/brand/brandApi";
 import { useGetCategoriesQuery } from "../../../Redux/category/categoryApi";
-import { useGetAllOrdersQuery } from "../../../Redux/order/orderApi";
+import {
+  useGetAllOrdersQuery,
+  useGetTodayOrdersQuery,
+} from "../../../Redux/order/orderApi";
 import { useGetAllProductsQuery } from "../../../Redux/product/productApi";
 import { useGetSubCategoriesQuery } from "../../../Redux/subCategory/subCategoryApi";
 import { useGetSubSubCategoriesQuery } from "../../../Redux/subSubCategory/subSubCategoryApi";
@@ -17,6 +20,7 @@ import moment from "moment";
 export default function Dashboard() {
   const { data: products } = useGetAllProductsQuery();
   const { data: orders } = useGetAllOrdersQuery({ limit: 10 });
+  const { data: tOrders } = useGetTodayOrdersQuery({ limit: 1 });
   const { data: users } = useAllUsersQuery();
   const { data: admin } = useGetAllAdminsQuery();
   const { data: category } = useGetCategoriesQuery();
@@ -54,8 +58,19 @@ export default function Dashboard() {
 
         <div className="flex items-center justify-between rounded-lg bg-base-100 p-4 shadow">
           <div>
+            <p className="font-dinMedium text-neutral">Today Orders</p>
+            <h3 className="font-bold text-green-600">{tOrders?.meta?.total}</h3>
+          </div>
+
+          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-green-600 text-base-100">
+            <FaCartPlus className="text-xl" />
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between rounded-lg bg-base-100 p-4 shadow">
+          <div>
             <p className="font-dinMedium text-neutral">Total Orders</p>
-            <h3 className="font-bold text-red-600">{orders?.data?.length}</h3>
+            <h3 className="font-bold text-red-600">{orders?.meta?.total}</h3>
           </div>
 
           <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-red-600 text-base-100">

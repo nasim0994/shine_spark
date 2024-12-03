@@ -20,13 +20,15 @@ import moment from "moment";
 export default function Dashboard() {
   const { data: products } = useGetAllProductsQuery();
   const { data: orders } = useGetAllOrdersQuery({ limit: 10 });
-  const { data: tOrders } = useGetTodayOrdersQuery({ limit: 1 });
+  const { data: tOrders } = useGetTodayOrdersQuery({ limit: 10 });
   const { data: users } = useAllUsersQuery();
   const { data: admin } = useGetAllAdminsQuery();
   const { data: category } = useGetCategoriesQuery();
   const { data: subCategory } = useGetSubCategoriesQuery();
   const { data: subSubCategory } = useGetSubSubCategoriesQuery();
   const { data: brand } = useAllBrandsQuery();
+
+  console.log(tOrders);
 
   const startOfDay = new Date();
   startOfDay.setHours(0, 0, 0, 0);

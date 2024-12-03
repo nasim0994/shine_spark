@@ -218,7 +218,7 @@ exports.getTodaysOrders = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "Today's orders fetched successfully",
+      message: "Today's orders get success",
       meta: {
         total,
         pages,

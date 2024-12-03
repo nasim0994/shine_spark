@@ -216,8 +216,9 @@ exports.getTodaysOrders = async (req, res) => {
       .populate("products.productId")
       .skip(skip)
       .limit(limit)
-      .lean()
       .sort({ createdAt: -1 });
+
+    // .lean()
 
     const totalSaleAggregation = await Order.aggregate([
       {
@@ -238,7 +239,7 @@ exports.getTodaysOrders = async (req, res) => {
     const total = await Order.countDocuments({
       createdAt: {
         $gte: start,
-        $lt: end,
+        $lte: end,
       },
     });
 

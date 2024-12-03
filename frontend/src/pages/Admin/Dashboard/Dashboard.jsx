@@ -20,7 +20,7 @@ import moment from "moment";
 export default function Dashboard() {
   const { data: products } = useGetAllProductsQuery();
   const { data: orders } = useGetAllOrdersQuery({ limit: 10 });
-  const { data: tOrders } = useGetTodayOrdersQuery({ limit: 10 });
+  const { data: tOrders } = useGetTodayOrdersQuery({ limit: 1 });
   const { data: users } = useAllUsersQuery();
   const { data: admin } = useGetAllAdminsQuery();
   const { data: category } = useGetCategoriesQuery();
@@ -28,21 +28,11 @@ export default function Dashboard() {
   const { data: subSubCategory } = useGetSubSubCategoriesQuery();
   const { data: brand } = useAllBrandsQuery();
 
-  console.log(tOrders);
-
   const startOfDay = new Date();
   startOfDay.setHours(0, 0, 0, 0);
 
   const endOfDay = new Date();
   endOfDay.setHours(23, 59, 59, 999);
-
-  const todayTotal = orders?.data?.reduce((acc, order) => {
-    const orderDate = new Date(order.createdAt);
-    if (orderDate >= startOfDay && orderDate <= endOfDay) {
-      return acc + order.totalPrice;
-    }
-    return acc;
-  }, 0);
 
   return (
     <section>
@@ -164,7 +154,9 @@ export default function Dashboard() {
             <div>
               <p className="font-dinMedium text-neutral">Today Sales</p>
               <div className="flex items-end gap-1">
-                <h3 className="font-bold text-green-600">{todayTotal}</h3>
+                <h3 className="font-bold text-green-600">
+                  {tOrders?.totalSale}
+                </h3>
                 <small>tk</small>
               </div>
             </div>
@@ -177,16 +169,11 @@ export default function Dashboard() {
             <div>
               <p className="font-dinMedium text-neutral">Total Sales</p>
               <div className="flex items-end gap-1">
-                <h3 className="font-bold text-primary">
-                  {orders?.data.reduce(
-                    (total, item) => total + item.totalPrice,
-                    0,
-                  )}
-                </h3>
+                <h3 className="font-bold text-blue-600">{orders?.totalSale}</h3>
                 <small>tk</small>
               </div>
             </div>
-            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary text-base-100">
+            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-blue-600 text-base-100">
               <FaMoneyBillTrendUp className="text-xl" />
             </div>
           </div>

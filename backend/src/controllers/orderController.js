@@ -164,16 +164,28 @@ exports.getAllOrders = async (req, res) => {
     const total = await Order.countDocuments({});
     const pages = Math.ceil(total / limit);
 
+    const totalSaleAggregation = await Order.aggregate([
+      {
+        $group: {
+          _id: null,
+          totalSale: { $sum: "$totalPrice" },
+        },
+      },
+    ]);
+
+    const totalSale = totalSaleAggregation[0]?.totalSale || 0;
+
     res.status(200).json({
       success: true,
       message: "Orders fetched successfully",
-      data: orders,
       meta: {
         total,
         pages,
         page,
         limit,
       },
+      totalSale,
+      data: orders,
     });
   } catch (error) {
     res.json({
@@ -207,6 +219,22 @@ exports.getTodaysOrders = async (req, res) => {
       .lean()
       .sort({ createdAt: -1 });
 
+    const totalSaleAggregation = await Order.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: start, $lte: end },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalSale: { $sum: "$totalPrice" },
+        },
+      },
+    ]);
+
+    const totalSale = totalSaleAggregation[0]?.totalSale || 0;
+
     const total = await Order.countDocuments({
       createdAt: {
         $gte: start,
@@ -225,6 +253,7 @@ exports.getTodaysOrders = async (req, res) => {
         page,
         limit,
       },
+      totalSale,
       data: orders,
     });
   } catch (error) {
@@ -402,7 +431,7 @@ exports.getProductWaysReport = async (req, res) => {
           },
         },
       },
-      { $skip: skip },
+      { $skip: skip || 1 },
       { $limit: limit },
     ]);
 

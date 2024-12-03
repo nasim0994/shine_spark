@@ -11,6 +11,7 @@ export default function ProductWays() {
 
   const { data, isLoading } = useGetReportProductWayQuery({ ...query });
   const products = data?.data;
+
   console.log(data);
 
   if (isLoading) return <Spinner />;
@@ -63,14 +64,16 @@ export default function ProductWays() {
                         </div>
                       </td>
                       <td>{product?.totalQuantity}</td>
-                      <td>{product?.totalSalePrice}TK</td>
+                      <td>
+                        {parseFloat(product?.totalSalePrice).toFixed(2)}TK
+                      </td>
                       <td>{totalPurchasePrice}TK</td>
                       <td
                         className={
                           totalProfit > 0 ? "text-green-500" : "text-red-500"
                         }
                       >
-                        {totalProfit}TK
+                        {parseFloat(totalProfit).toFixed(2)}TK
                       </td>
                       <td>{product?.totalStock}</td>
                     </tr>

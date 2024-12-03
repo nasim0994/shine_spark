@@ -196,155 +196,63 @@ exports.getAllOrders = async (req, res) => {
 };
 
 // Get today's orders
-// exports.getTodaysOrders = async (req, res) => {
-//   const paginationOptions = pick(req.query, ["page", "limit"]);
-//   const { page, limit, skip } = calculatePagination(paginationOptions);
-
-//   const today = new Date();
-
-//   const start = new Date(today.setHours(0, 0, 0, 0));
-//   const end = new Date(today.setHours(23, 59, 59, 999));
-
-//   try {
-//     const orders = await Order.find({
-//       createdAt: {
-//         $gte: start,
-//         $lte: end,
-//       },
-//     })
-//       .populate("user.id")
-//       .populate("products.productId")
-//       .skip(skip)
-//       .limit(limit)
-//       .sort({ createdAt: -1 });
-
-//     // .lean()
-
-//     const totalSaleAggregation = await Order.aggregate([
-//       {
-//         $match: {
-//           createdAt: { $gte: start, $lte: end },
-//         },
-//       },
-//       {
-//         $group: {
-//           _id: null,
-//           totalSale: { $sum: "$totalPrice" },
-//         },
-//       },
-//     ]);
-
-//     const totalSale = totalSaleAggregation[0]?.totalSale || 0;
-
-//     const total = await Order.countDocuments({
-//       createdAt: {
-//         $gte: start,
-//         $lte: end,
-//       },
-//     });
-
-//     const pages = Math.ceil(total / limit);
-
-//     res.status(200).json({
-//       success: true,
-//       message: "Today's orders get success",
-//       meta: {
-//         total,
-//         pages,
-//         page,
-//         limit,
-//       },
-//       totalSale,
-//       data: orders,
-//     });
-//   } catch (error) {
-//     res.json({
-//       success: false,
-//       message: error.message,
-//     });
-//   }
-// };
-
 exports.getTodaysOrders = async (req, res) => {
   const paginationOptions = pick(req.query, ["page", "limit"]);
   const { page, limit, skip } = calculatePagination(paginationOptions);
 
-  const OPage = page || 1;
-  const OLimit = limit || 10;
-
-  // Calculate skip correctly based on page and limit
-  const skipCount = (OPage - 1) * OLimit;
-
   const today = new Date();
+
   const start = new Date(today.setHours(0, 0, 0, 0));
   const end = new Date(today.setHours(23, 59, 59, 999));
 
   try {
-    const result = await Order.aggregate([
+    const orders = await Order.find({
+      createdAt: {
+        $gte: start,
+        $lte: end,
+      },
+    })
+      .populate("user.id")
+      .populate("products.productId")
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    // .lean()
+
+    const totalSaleAggregation = await Order.aggregate([
       {
         $match: {
           createdAt: { $gte: start, $lte: end },
         },
       },
       {
-        $lookup: {
-          from: "users",
-          localField: "user.id",
-          foreignField: "_id",
-          as: "userDetails",
-        },
-      },
-      {
-        $lookup: {
-          from: "products",
-          localField: "products.productId",
-          foreignField: "_id",
-          as: "productDetails",
-        },
-      },
-      {
-        $addFields: {
-          user: { $arrayElemAt: ["$userDetails", 0] },
-          "products.productDetails": "$productDetails",
-        },
-      },
-      {
-        $unset: ["userDetails", "productDetails"],
-      },
-      {
-        $facet: {
-          orders: [
-            { $sort: { createdAt: -1 } },
-            { $skip: skipCount }, // Correct skip value
-            { $limit: OLimit }, // Limit the number of results
-          ],
-          totalSale: [
-            {
-              $group: {
-                _id: null,
-                totalSale: { $sum: "$totalPrice" },
-              },
-            },
-          ],
-          totalCount: [{ $count: "count" }],
+        $group: {
+          _id: null,
+          totalSale: { $sum: "$totalPrice" },
         },
       },
     ]);
 
-    const orders = result[0]?.orders || [];
-    const totalSale = result[0]?.totalSale[0]?.totalSale || 0;
-    const totalCount = result[0]?.totalCount[0]?.count || 0;
+    const totalSale = totalSaleAggregation[0]?.totalSale || 0;
 
-    const pages = Math.ceil(totalCount / OLimit);
+    const total = await Order.countDocuments({
+      createdAt: {
+        $gte: start,
+        $lte: end,
+      },
+    });
+
+    const pages = Math.ceil(total / limit);
 
     res.status(200).json({
       success: true,
-      message: "Today's orders fetched successfully",
+      message: "Today's orders get success",
       meta: {
-        total: totalCount,
+        total,
         pages,
-        page: OPage,
-        limit: OLimit,
+        page,
+        limit,
       },
       totalSale,
       data: orders,
@@ -353,7 +261,6 @@ exports.getTodaysOrders = async (req, res) => {
     res.json({
       success: false,
       message: error.message,
-      error,
     });
   }
 };

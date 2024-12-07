@@ -2,8 +2,10 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { Autoplay, Navigation } from "swiper/modules";
 import { useEffect, useState } from "react";
-import InnerImageZoom from "react-inner-image-zoom";
-import "react-inner-image-zoom/lib/InnerImageZoom/styles.min.css";
+// import InnerImageZoom from "react-inner-image-zoom";
+// import "react-inner-image-zoom/lib/InnerImageZoom/styles.min.css";
+
+import ImageZoom from "react-image-zoom";
 
 export default function ProductImage({ thumbnail, galleries, discount }) {
   const [showImage, setShowImage] = useState(thumbnail);
@@ -11,23 +13,32 @@ export default function ProductImage({ thumbnail, galleries, discount }) {
     setShowImage(thumbnail);
   }, [thumbnail]);
 
+  const zoomProps = {
+    width: 400,
+    height: 400,
+    zoomWidth: 500,
+    img: `${import.meta.env.VITE_BACKEND_URL}/products/${showImage}`,
+  };
+
   return (
     <div>
-      <div className="relative">
+      <div className="relative z-10">
         {/* <img
           src={`${import.meta.env.VITE_BACKEND_URL}/products/${showImage}`}
           alt="thumbnail"
-          className="h-[350px] w-full rounded"
+          className="h-[350px] w-full rounded object-cover"
           loading="lazy"
         /> */}
-
+        {/* 
         <InnerImageZoom
           src={`${import.meta.env.VITE_BACKEND_URL}/products/${showImage}`}
           zoomSrc={`${import.meta.env.VITE_BACKEND_URL}/products/${showImage}`}
           zoomType="hover"
           className="h-[350px] w-full rounded"
           loading="lazy"
-        />
+        /> */}
+
+        <ImageZoom {...zoomProps} />
 
         {/* Discount */}
         {discount > 0 && (

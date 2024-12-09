@@ -1,3 +1,4 @@
+import { AiOutlineClose } from "react-icons/ai";
 import { useEffect, useState } from "react";
 import { FaOpencart } from "react-icons/fa";
 import { FiHeart, FiMinusCircle, FiPlusCircle } from "react-icons/fi";
@@ -18,6 +19,8 @@ import ProductImage from "./ProductImage";
 export default function ProductInfo({ product }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [sizechartModal, setSizeChartModal] = useState(false);
+
   const carts = useSelector((state) => state.cart.carts);
   const wishlists = useSelector((state) => state.wishlist.wishlists);
 
@@ -390,7 +393,7 @@ export default function ProductInfo({ product }) {
         <div className="mt-6 grid grid-cols-2 items-center gap-2 sm:grid-cols-3">
           <button
             onClick={handleBuyNow}
-            className="flex scale-[.97] items-center justify-center gap-1 rounded bg-primary px-2 py-1.5 text-base-100 duration-300 hover:scale-[1]"
+            className="flex scale-[.97] items-center justify-center gap-2 rounded bg-green-600 px-2 py-1.5 text-base-100 duration-300 hover:scale-[1]"
           >
             <IoBagCheckOutline />
             Buy Now
@@ -398,7 +401,7 @@ export default function ProductInfo({ product }) {
 
           <button
             onClick={handelAddToCart}
-            className="flex scale-[.97] items-center justify-center gap-1 rounded bg-accent px-2 py-1.5 text-base-100 duration-300 hover:scale-[1]"
+            className="flex scale-[.97] items-center justify-center gap-2 rounded bg-accent px-2 py-1.5 text-base-100 duration-300 hover:scale-[1]"
           >
             <FaOpencart />
             Add To Cart
@@ -406,11 +409,52 @@ export default function ProductInfo({ product }) {
 
           <Link
             to=""
-            className="flex scale-[.97] items-center justify-center gap-1 rounded bg-secondary px-2 py-1.5 text-base-100 duration-300 hover:scale-[1]"
+            className="flex scale-[.97] items-center justify-center gap-2 rounded bg-secondary px-2 py-1.5 text-base-100 duration-300 hover:scale-[1]"
           >
             <MdAddCall />
             Call Now
           </Link>
+
+          {product?.sizechart && (
+            <>
+              <button
+                onClick={() => setSizeChartModal(true)}
+                className="flex scale-[.97] items-center justify-center gap-2 rounded bg-blue-500 px-2 py-1.5 text-base-100 duration-300 hover:scale-[1]"
+              >
+                <img
+                  src="/images/size-chart-icon-1.svg"
+                  alt="sizechart"
+                  className="w-5"
+                />
+                Size Chart
+              </button>
+
+              <>
+                <button
+                  onClick={() => setSizeChartModal(false)}
+                  className={`modal_overlay ${sizechartModal && "modal_overlay_show"}`}
+                ></button>
+                <div
+                  className={`modal w-[95%] p-4 sm:w-[600px] ${sizechartModal && "modal_show"}`}
+                >
+                  <div className="mb-3 flex items-center justify-between border-b p-2">
+                    <h2 className="text-xl">{product?.title} Size Chart</h2>
+                    <button onClick={() => setSizeChartModal(false)}>
+                      <AiOutlineClose />
+                    </button>
+                  </div>
+
+                  <div className="max-h-[70vh] overflow-y-auto">
+                    <img
+                      src={`${import.meta.env.VITE_BACKEND_URL}/products/${product?.sizechart}`}
+                      alt="sizechart"
+                      className="w-full"
+                    />
+                  </div>
+                </div>
+              </>
+            </>
+          )}
         </div>
       </div>
     </div>

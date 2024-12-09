@@ -25,6 +25,8 @@ export default function ProductList() {
     ...query,
   });
 
+  console.log(data);
+
   const [deleteProduct] = useDeleteProductMutation();
 
   const handleDeleteProduct = async (id) => {

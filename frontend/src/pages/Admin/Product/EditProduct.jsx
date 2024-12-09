@@ -34,6 +34,7 @@ export default function EditProduct() {
   const [thumbnail, setThumbnail] = useState([]);
   const [galleries, setGalleries] = useState([]);
   const [galleriesUrl, setGalleriesUrl] = useState([]);
+  const [sizechart, setSizechart] = useState([]);
 
   const [title, setTitle] = useState("");
   const [subSubCategoryId, setSubSubCategoryId] = useState("");
@@ -276,6 +277,7 @@ export default function EditProduct() {
     const formData = new FormData();
 
     formData.append("thumbnail", thumbnail[0]?.file);
+    if (sizechart?.length > 0) formData.append("sizechart", sizechart[0]?.file);
 
     if (galleries?.length > 0)
       galleries.forEach((gallery) => formData.append("gallery", gallery.file));
@@ -612,112 +614,172 @@ export default function EditProduct() {
               </div>
 
               {variant && (
-                <div className="mt-2 rounded border p-3">
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <div>
-                      <p className="text-sm">Colors</p>
+                <>
+                  {" "}
+                  <div className="mt-2 rounded border p-3">
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div>
+                        <p className="text-sm">Colors</p>
 
-                      <Select
-                        defaultValue={colors}
-                        onChange={setColors}
-                        options={colorOptions}
-                        isMulti={true}
-                        classNamePrefix="custom-select"
-                        getOptionLabel={(option) => (
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              cursor: "pointer",
-                            }}
-                          >
+                        <Select
+                          defaultValue={colors}
+                          onChange={setColors}
+                          options={colorOptions}
+                          isMulti={true}
+                          classNamePrefix="custom-select"
+                          getOptionLabel={(option) => (
                             <div
                               style={{
-                                width: 13,
-                                height: 13,
-                                backgroundColor: option.value,
-                                marginRight: 6,
-                                borderRadius: "50%",
+                                display: "flex",
+                                alignItems: "center",
+                                cursor: "pointer",
                               }}
-                            ></div>
-                            <span>{option.label}</span>
-                          </div>
-                        )}
-                        getOptionValue={(option) => option.value}
-                      />
+                            >
+                              <div
+                                style={{
+                                  width: 13,
+                                  height: 13,
+                                  backgroundColor: option.value,
+                                  marginRight: 6,
+                                  borderRadius: "50%",
+                                }}
+                              ></div>
+                              <span>{option.label}</span>
+                            </div>
+                          )}
+                          getOptionValue={(option) => option.value}
+                        />
+                      </div>
+
+                      <div>
+                        <p className="text-sm">Sizes</p>
+                        <TagsInput
+                          value={sizes}
+                          onChange={(tags) => setSizes(tags)}
+                          onlyUnique
+                        />
+                      </div>
                     </div>
 
-                    <div>
-                      <p className="text-sm">Sizes</p>
-                      <TagsInput
-                        value={sizes}
-                        onChange={(tags) => setSizes(tags)}
-                        onlyUnique
-                      />
-                    </div>
-                  </div>
-
-                  <div className="relative mt-3 overflow-x-auto">
-                    <table className="border_table">
-                      <thead>
-                        <tr>
-                          <th>SKU</th>
-                          <th>Selling Price</th>
-                          <th>Purchase Price</th>
-                          <th>Stock</th>
-                        </tr>
-                      </thead>
-
-                      <tbody>
-                        {variants?.map((variant, i) => (
-                          <tr key={i}>
-                            <td className="whitespace-nowrap">
-                              {variant?.sku}
-                            </td>
-                            <td>
-                              <input
-                                type="number"
-                                onChange={(e) =>
-                                  handleVariantChange(
-                                    e,
-                                    variant?.sku,
-                                    "sellingPrice",
-                                  )
-                                }
-                                required
-                                defaultValue={variant?.sellingPrice}
-                              />
-                            </td>
-                            <td>
-                              <input
-                                type="number"
-                                onChange={(e) =>
-                                  handleVariantChange(
-                                    e,
-                                    variant?.sku,
-                                    "purchasePrice",
-                                  )
-                                }
-                                required
-                                defaultValue={variant?.purchasePrice}
-                              />
-                            </td>
-                            <td>
-                              <input
-                                type="number"
-                                onChange={(e) =>
-                                  handleVariantChange(e, variant?.sku, "stock")
-                                }
-                                required
-                                defaultValue={variant?.stock}
-                              />
-                            </td>
+                    <div className="relative mt-3 overflow-x-auto">
+                      <table className="border_table">
+                        <thead>
+                          <tr>
+                            <th>SKU</th>
+                            <th>Selling Price</th>
+                            <th>Purchase Price</th>
+                            <th>Stock</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+
+                        <tbody>
+                          {variants?.map((variant, i) => (
+                            <tr key={i}>
+                              <td className="whitespace-nowrap">
+                                {variant?.sku}
+                              </td>
+                              <td>
+                                <input
+                                  type="number"
+                                  onChange={(e) =>
+                                    handleVariantChange(
+                                      e,
+                                      variant?.sku,
+                                      "sellingPrice",
+                                    )
+                                  }
+                                  required
+                                  defaultValue={variant?.sellingPrice}
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  type="number"
+                                  onChange={(e) =>
+                                    handleVariantChange(
+                                      e,
+                                      variant?.sku,
+                                      "purchasePrice",
+                                    )
+                                  }
+                                  required
+                                  defaultValue={variant?.purchasePrice}
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  type="number"
+                                  onChange={(e) =>
+                                    handleVariantChange(
+                                      e,
+                                      variant?.sku,
+                                      "stock",
+                                    )
+                                  }
+                                  required
+                                  defaultValue={variant?.stock}
+                                />
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
-                </div>
+                  {/* sizechart */}
+                  <div className="mt-4 rounded border p-4">
+                    <p className="mb-2 text-sm">Add Sizechart </p>
+                    <ImageUploading
+                      value={thumbnail}
+                      onChange={(img) => setSizechart(img)}
+                      dataURLKey="data_url"
+                    >
+                      {({ onImageUpload, onImageRemove, dragProps }) => (
+                        <div
+                          className="grid gap-4 sm:grid-cols-2"
+                          {...dragProps}
+                        >
+                          <div className="flex flex-col items-center justify-center gap-2 rounded border border-dashed p-3">
+                            <span
+                              onClick={onImageUpload}
+                              className="cursor-pointer rounded-2xl bg-primary px-4 py-1.5 text-sm text-base-100"
+                            >
+                              Choose Image
+                            </span>
+
+                            <p className="text-neutral-content">or Drop here</p>
+                          </div>
+
+                          <div className="grid gap-4 rounded border border-dashed p-3">
+                            {sizechart?.map((img, index) => (
+                              <div key={index} className="image-item relative">
+                                <img
+                                  src={img["data_url"]}
+                                  alt="thumbnail"
+                                  className="h-20 w-full"
+                                />
+                                <div
+                                  onClick={() => onImageRemove(index)}
+                                  className="absolute right-0 top-0 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-primary text-base-100"
+                                >
+                                  <AiFillDelete />
+                                </div>
+                              </div>
+                            ))}
+
+                            {sizechart?.length <= 0 && product?.sizechart && (
+                              <img
+                                src={`${import.meta.env.VITE_BACKEND_URL}/products/${product?.sizechart}`}
+                                alt="sizechart"
+                                className="h-20 w-full"
+                              />
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </ImageUploading>
+                  </div>
+                </>
               )}
             </div>
 

@@ -10,6 +10,7 @@ const { pick } = require("../utils/pick");
 
 exports.addProduct = async (req, res) => {
   const thumbnail = req?.files?.thumbnail[0]?.filename;
+  const sizechart = req?.files?.sizechart && req?.files?.sizechart[0]?.filename;
   const galleries = req.files.gallery ? req.files.gallery : [];
 
   if (!thumbnail) {
@@ -47,6 +48,7 @@ exports.addProduct = async (req, res) => {
     ...req?.body,
     slug: slugify(`${title}-${Date.now()}`),
     thumbnail,
+    sizechart: sizechart || null,
   };
 
   if (variant) {
@@ -78,6 +80,14 @@ exports.addProduct = async (req, res) => {
         console.error(err);
       }
     });
+
+    if (sizechart) {
+      fs.unlink(`./uploads/products/${sizechart}`, (err) => {
+        if (err) {
+          console.error(err);
+        }
+      });
+    }
 
     if (galleries?.length > 0) {
       galleries?.forEach((gallery) => {
@@ -254,11 +264,23 @@ exports.deleteProductById = async (req, res) => {
     // delete thumbnail image
     const thumbnail = product?.thumbnail;
     const fullPath = `./uploads/products/${thumbnail}`;
+
     fs.unlink(fullPath, (err) => {
       if (err) {
         console.error(err);
       }
     });
+
+    // delete sizechart
+    if (product?.sizechart) {
+      const sizechart = product?.sizechart;
+      const sizechartPath = `./uploads/products/${sizechart}`;
+      fs.unlink(sizechartPath, (err) => {
+        if (err) {
+          console.error(err);
+        }
+      });
+    }
 
     if (product?.galleries?.length > 0) {
       product?.galleries?.forEach((gallery) => {
@@ -280,6 +302,7 @@ exports.deleteProductById = async (req, res) => {
 exports.updateProduct = async (req, res) => {
   const id = req?.params?.id;
   const thumbnail = req?.files?.thumbnail && req?.files?.thumbnail[0]?.filename;
+  const sizechart = req?.files?.sizechart && req?.files?.sizechart[0]?.filename;
   const galleries = req.files.gallery ? req.files.gallery : [];
 
   const { title, variant, galleriesUrl } = req?.body;
@@ -298,6 +321,7 @@ exports.updateProduct = async (req, res) => {
       ...req?.body,
       slug: slugify(`${title}-${Date.now()}`),
       thumbnail: thumbnail || isExit?.thumbnail,
+      sizechart: sizechart || isExit?.sizechart,
     };
 
     if (variant) {
@@ -390,17 +414,44 @@ exports.updateProduct = async (req, res) => {
         }
       });
     }
+
+    if (sizechart && isExit?.sizechart) {
+      const sizechartPath = `./uploads/products/${isExit?.sizechart}`;
+      fs.unlink(sizechartPath, (err) => {
+        if (err) {
+          console.error(err);
+        }
+      });
+    }
   } catch (error) {
     res.json({
       success: false,
       message: error.message,
     });
 
+    if (sizechart) {
+      fs.unlink(`./uploads/products/${sizechart}`, (err) => {
+        if (err) {
+          console.error(err);
+        }
+      });
+    }
+
     if (thumbnail) {
       fs.unlink(`./uploads/products/${thumbnail}`, (err) => {
         if (err) {
           console.error(err);
         }
+      });
+    }
+
+    if (galleries?.length > 0) {
+      galleries?.map((gallery) => {
+        fs.unlink(`./uploads/products/${gallery?.filename}`, (err) => {
+          if (err) {
+            console.error(err);
+          }
+        });
       });
     }
   }

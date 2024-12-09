@@ -81,6 +81,9 @@ const productSchema = new mongoose.Schema(
     featured: {
       type: Boolean,
     },
+    sizechart: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

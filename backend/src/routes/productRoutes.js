@@ -24,6 +24,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage }).fields([
   { name: "thumbnail", maxCount: 1 },
+  { name: "sizechart", maxCount: 1 },
   { name: "gallery" },
 ]);
 

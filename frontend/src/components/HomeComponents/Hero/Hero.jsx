@@ -1,4 +1,3 @@
-import CategoryLists from "../../CategoryLists/CategoryLists";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { Autoplay, Navigation } from "swiper/modules";
@@ -21,7 +20,7 @@ export default function Hero() {
           <img
             src={`${import.meta.env.VITE_BACKEND_URL}/banner/${banner?.image}`}
             alt="banner"
-            className="h-full w-full rounded"
+            className="h-full w-full"
             loading="lazy"
           />
         </Link>
@@ -31,27 +30,19 @@ export default function Hero() {
 
   return (
     <section>
-      <div className="container">
-        <div className="items-start gap-4 lg:flex">
-          <div className="hidden rounded-b border md:h-[400px] lg:block">
-            <CategoryLists />
-          </div>
-
-          <div className="hero_slider mt-2 h-36 sm:h-52 lg:mt-0 lg:h-[400px]">
-            <Swiper
-              navigation={true}
-              modules={[Navigation, Autoplay]}
-              loop={true}
-              autoplay={{
-                delay: 5000,
-                disableOnInteraction: false,
-              }}
-              className="mySwiper h-full w-full"
-            >
-              {content}
-            </Swiper>
-          </div>
-        </div>
+      <div className="mt-2 h-40 sm:h-60 lg:mt-0 lg:h-[480px]">
+        <Swiper
+          navigation={true}
+          modules={[Navigation, Autoplay]}
+          loop={true}
+          autoplay={{
+            delay: 5000,
+            disableOnInteraction: false,
+          }}
+          className="mySwiper h-full w-full"
+        >
+          {content}
+        </Swiper>
       </div>
     </section>
   );

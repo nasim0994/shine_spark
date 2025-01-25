@@ -1,11 +1,11 @@
-import TopHeader from "./TopHeader";
 import MainHeader from "./MainHeader";
+import Menu from "./Menu/Menu";
 
 const Header = () => {
   return (
     <>
-      <TopHeader />
       <MainHeader />
+      <Menu />
     </>
   );
 };

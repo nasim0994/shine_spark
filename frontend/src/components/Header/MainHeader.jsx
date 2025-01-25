@@ -1,7 +1,8 @@
+import { FaUser } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { AiOutlineHeart } from "react-icons/ai";
 import { BiLogOutCircle } from "react-icons/bi";
-import { FiHeart, FiLogIn, FiMonitor } from "react-icons/fi";
+import { FiMonitor } from "react-icons/fi";
 import { IoBagCheckOutline } from "react-icons/io5";
 import { RiShoppingCartLine } from "react-icons/ri";
 import { RxDashboard } from "react-icons/rx";
@@ -9,16 +10,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { useGetMainLogoQuery } from "../../Redux/logo/logoApi";
 import { userLogout } from "../../Redux/user/userSlice";
-import SearchBox from "./SearchBox";
-import { BsSearch } from "react-icons/bs";
-import SearchSidebar from "./SearchSidebar/SearchSidebar";
 
 export default function MainHeader() {
   const dispatch = useDispatch();
   const carts = useSelector((state) => state.cart.carts);
   const { loggedUser } = useSelector((state) => state.user);
   const { data: logo } = useGetMainLogoQuery();
-  const [searchSidebar, setSearchSidebar] = useState(false);
   const [profileDropdown, setProfileDropdown] = useState(false);
 
   useEffect(() => {
@@ -40,75 +37,10 @@ export default function MainHeader() {
       : `${import.meta.env.VITE_BACKEND_URL}/user/${loggedUser?.data?.image}`;
 
   return (
-    <header className="sticky top-0 z-40 border-b bg-[#ffffffcc] py-2 text-neutral backdrop-blur-[10px]">
+    <header className="sticky top-0 z-40 border-b bg-[#fffbf9] py-2 text-neutral backdrop-blur-[10px]">
       <div className="container">
         <div className="flex items-center justify-between gap-2">
           <div>
-            <Link to="/">
-              <img
-                src={
-                  logo?.data[0]?.logo === ""
-                    ? "/images/logo/logo.png"
-                    : `${import.meta.env.VITE_BACKEND_URL}/logo/${
-                        logo?.data[0]?.logo
-                      }`
-                }
-                alt="logo"
-                className="w-48"
-                loading="lazy"
-              />
-            </Link>
-          </div>
-
-          <div className="sm:hidden">
-            <button
-              onClick={() => setSearchSidebar(!searchSidebar)}
-              className="pr-2"
-            >
-              <BsSearch className="text-lg" />
-            </button>
-
-            <SearchSidebar
-              searchSidebar={searchSidebar}
-              setSearchSidebar={setSearchSidebar}
-            />
-          </div>
-
-          <div className="hidden sm:block sm:w-1/2 xl:w-3/5">
-            <SearchBox />
-          </div>
-
-          <div className="hidden items-center gap-3 sm:flex lg:gap-6">
-            <Link
-              to="/account/wishlist"
-              className="flex items-center gap-1 text-neutral duration-300 hover:text-primary"
-            >
-              <FiHeart className="text-xl lg:text-[17px]" />
-              <h1 className="hidden font-medium lg:block">wishlist</h1>
-            </Link>
-
-            <Link
-              to="/cart"
-              className="flex items-center gap-2 duration-300 hover:text-primary lg:gap-3"
-            >
-              <div className="relative">
-                <RiShoppingCartLine className="text-xl lg:text-2xl" />
-                <div className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs font-bold text-base-100">
-                  <span className="mt-px">{carts?.length || 0}</span>
-                </div>
-              </div>
-              <h1 className="hidden font-medium sm:block">
-                ৳
-                {carts?.reduce(
-                  (price, item) =>
-                    price +
-                    item.quantity *
-                      parseInt(item.price - (item.price * item.discount) / 100),
-                  0,
-                )}
-              </h1>
-            </Link>
-
             {loggedUser?.success ? (
               <div className="relative">
                 <button
@@ -202,10 +134,74 @@ export default function MainHeader() {
                 to="/login"
                 className="flex items-center gap-1.5 text-neutral duration-300 hover:text-primary"
               >
-                <FiLogIn className="text-xl sm:text-[17px]" />
+                <FaUser className="text-xl sm:text-[17px]" />
                 <h1 className="hidden font-medium sm:block">Login</h1>
               </Link>
             )}
+          </div>
+
+          <div>
+            <Link to="/">
+              <img
+                src={
+                  logo?.data[0]?.logo === ""
+                    ? "/images/logo/logo.png"
+                    : `${import.meta.env.VITE_BACKEND_URL}/logo/${
+                        logo?.data[0]?.logo
+                      }`
+                }
+                alt="logo"
+                className="w-40 sm:w-44"
+                loading="lazy"
+              />
+            </Link>
+          </div>
+
+          <div>
+            <Link
+              to="/cart"
+              className="flex items-center gap-1 duration-300 hover:text-primary sm:gap-2"
+            >
+              <i>
+                <RiShoppingCartLine className="text-xl lg:text-2xl" />
+              </i>
+              <div>
+                <p className="flex items-center gap-1">
+                  <span className="hidden sm:block">Cart</span>
+                  <span className="mt-px text-sm">({carts?.length || 0})</span>
+                </p>
+                <p className="-mt-1 hidden text-sm sm:block">
+                  ৳{" "}
+                  {carts?.reduce(
+                    (price, item) =>
+                      price +
+                      item.quantity *
+                        parseInt(
+                          item.price - (item.price * item.discount) / 100,
+                        ),
+                    0,
+                  )}
+                  .00
+                </p>
+              </div>
+              {/* <div className="relative">
+                
+                <p>
+                  <span className="mt-px">{carts?.length || 0}</span>
+                </p>
+              </div>
+
+              <h1 className="hidden font-medium sm:block">
+                ৳
+                {carts?.reduce(
+                  (price, item) =>
+                    price +
+                    item.quantity *
+                      parseInt(item.price - (item.price * item.discount) / 100),
+                  0,
+                )}
+              </h1> */}
+            </Link>
           </div>
         </div>
       </div>

@@ -37,6 +37,8 @@ h2 {
 }
 
 .header_menu a {
+  border-right: 1px dashed #ddd;
+  padding-right: 20px;
   transition: all 0.3s ease;
 }
 
@@ -133,6 +135,28 @@ header nav ul li a:hover {
   .admin_sidebar {
     width: 90% !important;
   }
+
+  .serach_sidebar {
+    width: 90% !important;
+  }
+}
+
+.serach_sidebar {
+  width: 350px;
+  background: #fff;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 99999;
+
+  transform: translateX(-100%);
+  transition: all 0.3s ease;
+}
+
+.serach_sidebar_show {
+  transform: translateX(0%);
 }
 
 /* --------------------------------- */

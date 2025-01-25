@@ -1,62 +1,49 @@
+import { CgSearch } from "react-icons/cg";
 import { NavLink } from "react-router-dom";
-import { FiMenu } from "react-icons/fi";
 import { useGetCategoriesQuery } from "../../../Redux/category/categoryApi";
-import CategoriesSidebar from "./CategoriesSidebar/CategoriesSidebar";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import SearchSidebar from "../SearchSidebar/SearchSidebar";
 
 export default function Menu() {
-  const [categorySidebar, setCategorySidebar] = useState(false);
+  const [searchSidebar, setSearchSidebar] = useState(false);
   const { data } = useGetCategoriesQuery();
   const categories = data?.data;
 
-  useEffect(() => {
-    document.addEventListener("click", (e) => {
-      if (
-        (categorySidebar &&
-          !e.target.closest(".category_sidebar") &&
-          !e.target.closest(".category_btn")) ||
-        e.target.closest(".mobile_categories a")
-      ) {
-        setCategorySidebar(false);
-      }
-    });
-  }, [categorySidebar]);
-
   return (
-    <div className="border-b py-2 text-sm">
+    <div className="border-b py-3 text-sm">
       <div className="container">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="flex items-center justify-between gap-4">
+          <nav className="header_menu">
+            <ul className="flex items-center gap-6">
+              <li>
+                <NavLink to="/"> Home </NavLink>
+              </li>
+              <li>
+                <NavLink to="/shops"> Shops </NavLink>
+              </li>
+              <ol className="hidden items-center gap-8 sm:flex">
+                {categories?.slice(0, 5).map((category) => (
+                  <li key={category?._id}>
+                    <NavLink to="/shops"> {category?.name} </NavLink>
+                  </li>
+                ))}
+              </ol>
+            </ul>
+          </nav>
+
+          <>
             <button
-              onClick={() => setCategorySidebar(!categorySidebar)}
-              className="category_btn flex items-center justify-center gap-2 rounded bg-primary px-2 py-2 text-base-100"
+              onClick={() => setSearchSidebar(!searchSidebar)}
+              className="duration-300 hover:text-primary"
             >
-              <FiMenu className="text-xl" />
-              <h6 className="hidden sm:block">BROWSE CATEGORIES</h6>
+              <CgSearch className="text-xl" />
             </button>
 
-            <CategoriesSidebar
-              categories={categories}
-              categorySidebar={categorySidebar}
+            <SearchSidebar
+              searchSidebar={searchSidebar}
+              setSearchSidebar={setSearchSidebar}
             />
-
-            <nav className="header_menu">
-              <ul className="flex items-center gap-5 font-medium">
-                <li>
-                  <NavLink to="/"> Home </NavLink>
-                </li>
-                <li>
-                  <NavLink to="/shops"> Shops </NavLink>
-                </li>
-                <li>
-                  <NavLink to="/about-us"> About US </NavLink>
-                </li>
-                <li>
-                  <NavLink to="/contact-us"> Contact US </NavLink>
-                </li>
-              </ul>
-            </nav>
-          </div>
+          </>
         </div>
       </div>
     </div>

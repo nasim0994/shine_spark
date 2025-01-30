@@ -33,7 +33,7 @@ export default function RelatedProducts({ category }) {
           </h1>
         </div>
 
-        <div className="mt-3 grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        <div className="mt-3 grid grid-cols-2 gap-2 md:gap-8 md:grid-cols-3 lg:grid-cols-4">
           {content}
         </div>
       </div>

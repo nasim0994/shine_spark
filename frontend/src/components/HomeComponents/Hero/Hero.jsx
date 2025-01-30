@@ -30,7 +30,7 @@ export default function Hero() {
 
   return (
     <section>
-      <div className="mt-2 h-40 sm:h-60 lg:mt-0 lg:h-[480px]">
+      <div className="mt-2 relative h-40 sm:h-60 lg:mt-0 lg:h-[480px]">
         <Swiper
           navigation={true}
           modules={[Navigation, Autoplay]}
@@ -43,6 +43,9 @@ export default function Hero() {
         >
           {content}
         </Swiper>
+        <div className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 text-center z-10">
+          <p className="px-5 py-1.5 bg-white text-black border-b-[2px] border-black uppercase font-normal tracking-wider text-xs md:text-sm" >Made in Bangladesh</p>
+        </div>
       </div>
     </section>
   );

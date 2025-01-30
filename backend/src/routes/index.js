@@ -35,6 +35,10 @@ const businessInfoRoutes = require("./businessInfoRoutes");
 const orderRouter = require("./orderRoutes");
 const paymentRouter = require("./paymentRoute");
 
+
+const privacy = require("./privacyRoute");
+const termcondition = require("./termconditionRoute");
+const returnPolicy = require("./returnPolicyRoute");
 //------------------------------------------------------------------------------
 // use Routes
 //------------------------------------------------------------------------------
@@ -63,6 +67,10 @@ router.use("/campaignBanner", campaignBanner);
 router.use("/coupon", couponRouter);
 router.use("/seo", seoRouter);
 router.use("/shippingConfig", shippingConfigRouter);
+
+router.use("/privacy", privacy);
+router.use("/terms-condition", termcondition);
+router.use("/return-policy", returnPolicy);
 
 //------General
 router.use("/businessInfo", businessInfoRoutes);

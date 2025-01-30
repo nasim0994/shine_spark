@@ -4,7 +4,6 @@ import { useParams } from "react-router-dom";
 import { useGetProductBySlugQuery } from "../../Redux/product/productApi";
 import Spinner from "../../components/Spinner/Spinner";
 import ProductInfo from "./ProductInfo";
-import RightSideInfo from "./RightSideInfo";
 import Reviews from "./Review/Reviews";
 import RelatedProducts from "./RelatedProducts/RelatedProducts";
 import usePageView from "../../hooks/usePageView";
@@ -82,13 +81,9 @@ export default function ProductDetails() {
   if (!isLoading) {
     content = (
       <div>
-        <div className="mt-4 overflow-hidden lg:flex">
-          <div className="text-neutral lg:w-[75%]">
+        <div className="mt-4 w-full overflow-hidden lg:flex">
+          <div className="text-neutral">
             <ProductInfo product={data?.data} />
-          </div>
-
-          <div className="bg-stone-50 p-4 text-sm lg:w-[25%]">
-            <RightSideInfo service={data?.data?.service} />
           </div>
         </div>
 

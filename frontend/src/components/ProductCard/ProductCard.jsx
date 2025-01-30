@@ -17,11 +17,11 @@ export default function ProductCard({ product, discount: flashDiscount = 0 }) {
             }}
             to={`/product/${slug}`}
           >
-            <div className="relative h-52 overflow-hidden sm:h-60">
+            <div className="relative h-40 overflow-hidden sm:h-[280px]">
               <img
                 src={`${import.meta.env.VITE_BACKEND_URL}/products/${thumbnail}`}
                 alt={title}
-                className="product_img h-full w-full rounded"
+                className="product_img h-full w-full object-cover rounded"
                 loading="lazy"
               />
 

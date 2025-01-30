@@ -48,7 +48,7 @@ export default function ProductsSection({ category }) {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 mt-2">
+          <div className="mt-2 grid grid-cols-2 gap-2 md:gap-8 md:grid-cols-3 lg:grid-cols-4">
             {content}
           </div>
         </div>

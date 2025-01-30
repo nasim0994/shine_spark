@@ -21,8 +21,12 @@ export default function MobileCategories() {
   if (categories.length === 0) return null;
 
   return (
-    <section className="mt-2 md:hidden">
+    <section className="mt-10 md:hidden">
       <div className="container">
+        <h1 className="text-center text-[11px] mb-4 font-normal text-neutral">
+          We believe in using only the finest and 100% natural ingredients,
+          making new stuff the old fashioned way.
+        </h1>
         <Swiper
           slidesPerView={1}
           spaceBetween={10}

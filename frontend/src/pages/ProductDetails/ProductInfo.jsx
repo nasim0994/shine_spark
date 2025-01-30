@@ -250,9 +250,9 @@ export default function ProductInfo({ product }) {
   const isWishlist = wishlists?.find((item) => item._id === product._id);
 
   return (
-    <div className="flex flex-col gap-4 lg:flex-row lg:gap-6">
+    <div className="grid gap-4 lg:grid-cols-2 lg:gap-6">
       {/* Image */}
-      <div className="lg:w-[42%]">
+      <div >
         <ProductImage
           discount={discount}
           galleries={galleries}
@@ -261,7 +261,7 @@ export default function ProductInfo({ product }) {
       </div>
 
       {/* Details */}
-      <div className="lg:w-[58%]">
+      <div >
         <div>
           <div className="flex items-center justify-between text-xs text-neutral-content">
             <p className="rounded bg-primary/10 px-2 py-1 text-primary">

@@ -169,6 +169,18 @@ const adminSidebarItems = [
         title: "Contact Us",
         path: "/admin/front-end/contact-us",
       },
+      {
+        title: "Privacy Policy",
+        path: "/admin/front-end/privacy-policy",
+      },
+      {
+        title: "Terms & Conditions",
+        path: "/admin/front-end/terms-conditions",
+      },
+      {
+        title: "Return Policy",
+        path: "/admin/front-end/return-policy",
+      },
     ],
   },
   {

@@ -14,6 +14,12 @@ import CampaignBanners from "../pages/Admin/EcommerceSetting/CampaignBanners/Cam
 import AddCampaignBanner from "../pages/Admin/EcommerceSetting/CampaignBanners/AddCampaignBanner";
 import EditCampaignBanner from "../pages/Admin/EcommerceSetting/CampaignBanners/EditCampaignBanner";
 import TodaysOrders from "../pages/Admin/Order/TodayOrders";
+import AdminPrivacyPolicy from "../pages/Admin/PrivacyPolicy/AdminPrivacyPolicy";
+import AdminTermsCondition from "../pages/Admin/TermsCondition/AdminTermsCondition";
+import AdminReturnPolicy from "../pages/Admin/ReturnPolicy/AdminReturnPolicy";
+import PrivacyPolicy from "../pages/PrivacyPolicy";
+import TermsCondition from "../pages/TermsCondition";
+import ReturnPolicy from "../pages/ReturnPolicy";
 
 // Main pages
 const Cart = React.lazy(() => import("../pages/Cart/Cart"));
@@ -261,6 +267,18 @@ export const routes = createBrowserRouter([
             <Shop />
           </Suspense>
         ),
+      },
+      {
+        path: "/privacy-policy",
+        element: <PrivacyPolicy />,
+      },
+      {
+        path: "/terms-conditions",
+        element: <TermsCondition />,
+      },
+      {
+        path: "/return-policy",
+        element: <ReturnPolicy />,
       },
       {
         path: "/product/:id",
@@ -568,6 +586,19 @@ export const routes = createBrowserRouter([
       {
         path: "/admin/general-setting/business-info",
         element: <BusinessInfo />,
+      },
+
+      {
+        path: "/admin/front-end/privacy-policy",
+        element: <AdminPrivacyPolicy />,
+      },
+      {
+        path: "/admin/front-end/terms-conditions",
+        element: <AdminTermsCondition />,
+      },
+      {
+        path: "/admin/front-end/return-policy",
+        element: <AdminReturnPolicy />,
       },
 
       //--------------Front-End

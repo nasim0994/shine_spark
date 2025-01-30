@@ -38,7 +38,9 @@ export default function ProductImage({ thumbnail, galleries, discount }) {
           loading="lazy"
         /> */}
 
+        <div className="flex justify-center">
         <ImageZoom {...zoomProps} />
+        </div>
 
         {/* Discount */}
         {discount > 0 && (
@@ -73,7 +75,7 @@ export default function ProductImage({ thumbnail, galleries, discount }) {
               <img
                 src={`${import.meta.env.VITE_BACKEND_URL}/products/${img?.url}`}
                 alt={img?.name}
-                className="h-14 w-full cursor-pointer rounded object-cover"
+                className="h-20 w-full cursor-pointer rounded object-cover"
                 loading="lazy"
                 onClick={() => setShowImage(img?.url)}
               />
@@ -84,7 +86,7 @@ export default function ProductImage({ thumbnail, galleries, discount }) {
             <img
               src={`${import.meta.env.VITE_BACKEND_URL}/products/${thumbnail}`}
               alt="thumbnail"
-              className="h-14 w-full cursor-pointer rounded object-cover"
+              className="h-20 w-full cursor-pointer rounded object-cover"
               loading="lazy"
               onClick={() => setShowImage(thumbnail)}
             />

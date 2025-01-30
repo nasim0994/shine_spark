@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 
 export default function Hero() {
   const { data, isLoading, isError } = useGetBannersQuery();
+  const tagLine = data?.data?.[0]?.tag;
 
   let content = null;
 
@@ -30,7 +31,7 @@ export default function Hero() {
 
   return (
     <section>
-      <div className="mt-2 relative h-40 sm:h-60 lg:mt-0 lg:h-[480px]">
+      <div className="relative mt-2 h-40 sm:h-60 lg:mt-0 lg:h-[480px]">
         <Swiper
           navigation={true}
           modules={[Navigation, Autoplay]}
@@ -43,8 +44,10 @@ export default function Hero() {
         >
           {content}
         </Swiper>
-        <div className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 text-center z-10">
-          <p className="px-5 py-1.5 bg-white text-black border-b-[2px] border-black uppercase font-normal tracking-wider text-xs md:text-sm" >Made in Bangladesh</p>
+        <div className="absolute -bottom-5 left-1/2 z-10 -translate-x-1/2 transform text-center">
+          <p className="border-b-[2px] border-black bg-white px-5 py-1.5 text-xs font-normal uppercase tracking-wider text-black md:text-sm">
+            {tagLine}
+          </p>
         </div>
       </div>
     </section>

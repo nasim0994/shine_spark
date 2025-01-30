@@ -20,11 +20,13 @@ export default function EditBanner() {
     e.preventDefault();
     const image = images[0]?.file;
     const link = e.target.link.value;
+    const tag = e.target.tag.value;
     const order = e.target.order.value;
 
     const formData = new FormData();
     if (images?.length > 0) formData.append("image", image);
     formData.append("link", link);
+    formData.append("tag", tag);
     formData.append("order", order);
 
     const res = await editCampaignBanner({ formData, id });
@@ -104,6 +106,22 @@ export default function EditBanner() {
             placeholder="Enter Link"
             className="w-full rounded border px-3 py-2 text-sm outline-none"
             defaultValue={data?.data?.link}
+          />
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <p className="text-neutral-content">
+            Tag Line{" "}
+            <span className="text-sm text-neutral-content">
+              ({" "}It's Require only for first banner.{" "} )
+            </span>{" "}
+          </p>
+          <input
+            type="text"
+            name="tag"
+            placeholder="Enter Tag"
+            defaultValue={data?.data?.tag}
+            className="w-full rounded border px-3 py-2 text-sm outline-none"
           />
         </div>
 

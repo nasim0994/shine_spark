@@ -27,10 +27,12 @@ export default function AddBanner() {
     const form = e.target;
     const link = form.link.value;
     const order = form.order.value;
+    const tag = form.tag.value;
 
     const formData = new FormData();
     formData.append("image", image);
     formData.append("link", link);
+    formData.append("tag", tag);
     formData.append("order", order);
 
     const res = await addBanner(formData);
@@ -98,6 +100,21 @@ export default function AddBanner() {
             type="text"
             name="link"
             placeholder="Enter Link"
+            className="w-full rounded border px-3 py-2 text-sm outline-none"
+          />
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <p className="text-neutral-content">
+            Tag Line{" "}
+            <span className="text-sm text-neutral-content">
+              ({" "}It's Require only for first banner.{" "} )
+            </span>{" "}
+          </p>
+          <input
+            type="text"
+            name="tag"
+            placeholder="Enter Tag"
             className="w-full rounded border px-3 py-2 text-sm outline-none"
           />
         </div>

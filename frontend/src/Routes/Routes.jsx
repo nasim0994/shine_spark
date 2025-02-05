@@ -20,6 +20,10 @@ import AdminReturnPolicy from "../pages/Admin/ReturnPolicy/AdminReturnPolicy";
 import PrivacyPolicy from "../pages/PrivacyPolicy";
 import TermsCondition from "../pages/TermsCondition";
 import ReturnPolicy from "../pages/ReturnPolicy";
+import FAQ from "../pages/FAQ/FAQ";
+import FaqList from "../pages/Admin/Faq/faqList";
+import AddFaq from "../pages/Admin/Faq/addFaq";
+import UpdateFaq from "../pages/Admin/Faq/updateFaq";
 
 // Main pages
 const Cart = React.lazy(() => import("../pages/Cart/Cart"));
@@ -279,6 +283,10 @@ export const routes = createBrowserRouter([
       {
         path: "/return-policy",
         element: <ReturnPolicy />,
+      },
+      {
+        path: "/faq",
+        element: <FAQ />,
       },
       {
         path: "/product/:id",
@@ -617,6 +625,20 @@ export const routes = createBrowserRouter([
       {
         path: "/admin/front-end/contact-us",
         element: <Contact />,
+      },
+
+      // Faq
+      {
+        path: "/admin/front-end/faq/all",
+        element: <FaqList />,
+      },
+      {
+        path: "/admin/front-end/faq/add",
+        element: <AddFaq />,
+      },
+      {
+        path: "/admin/front-end/faq/edit/:id",
+        element: <UpdateFaq />,
       },
 
       // ----Report

@@ -3,9 +3,8 @@ import { useEffect, useState } from "react";
 import { FaOpencart } from "react-icons/fa";
 import { FiHeart, FiMinusCircle, FiPlusCircle } from "react-icons/fi";
 import { IoBagCheckOutline } from "react-icons/io5";
-import { MdAddCall } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import { addToCart } from "../../Redux/cart/cartSlice";
@@ -15,6 +14,7 @@ import {
 } from "../../Redux/wishlist/wishlistSlice";
 import Rating from "../../components/Rating/Rating";
 import ProductImage from "./ProductImage";
+import parcer from "html-react-parser";
 
 export default function ProductInfo({ product }) {
   const navigate = useNavigate();
@@ -37,7 +37,10 @@ export default function ProductInfo({ product }) {
     totalStock,
     galleries,
     variant,
+    description,
   } = product;
+
+  const parcerDescription = description && parcer(description);
 
   const { colors, sizes, variants } = variant || {};
 
@@ -252,7 +255,7 @@ export default function ProductInfo({ product }) {
   return (
     <div className="grid gap-4 lg:grid-cols-2 lg:gap-6">
       {/* Image */}
-      <div >
+      <div>
         <ProductImage
           discount={discount}
           galleries={galleries}
@@ -261,7 +264,7 @@ export default function ProductInfo({ product }) {
       </div>
 
       {/* Details */}
-      <div >
+      <div>
         <div>
           <div className="flex items-center justify-between text-xs text-neutral-content">
             <p className="rounded bg-primary/10 px-2 py-1 text-primary">
@@ -393,7 +396,7 @@ export default function ProductInfo({ product }) {
         <div className="mt-6 grid grid-cols-2 items-center gap-2 sm:grid-cols-3">
           <button
             onClick={handleBuyNow}
-            className="flex scale-[.97] items-center justify-center gap-2 rounded bg-green-600 px-2 py-1.5 text-base-100 duration-300 hover:scale-[1]"
+            className="flex scale-[.97] items-center justify-center gap-2 bg-green-600 p-2 text-base-100 duration-300 hover:scale-[1]"
           >
             <IoBagCheckOutline />
             Buy Now
@@ -401,19 +404,11 @@ export default function ProductInfo({ product }) {
 
           <button
             onClick={handelAddToCart}
-            className="flex scale-[.97] items-center justify-center gap-2 rounded bg-accent px-2 py-1.5 text-base-100 duration-300 hover:scale-[1]"
+            className="flex scale-[.97] items-center justify-center gap-2 bg-accent p-2 text-base-100 duration-300 hover:scale-[1]"
           >
             <FaOpencart />
             Add To Cart
           </button>
-
-          <Link
-            to=""
-            className="flex scale-[.97] items-center justify-center gap-2 rounded bg-secondary px-2 py-1.5 text-base-100 duration-300 hover:scale-[1]"
-          >
-            <MdAddCall />
-            Call Now
-          </Link>
 
           {product?.sizechart && (
             <>
@@ -455,6 +450,12 @@ export default function ProductInfo({ product }) {
               </>
             </>
           )}
+        </div>
+
+        {/* description */}
+        <div className="mt-10 text-sm text-neutral-content">
+          <h2 className="mb-6 uppercase tracking-[4px]">Description</h2>
+          {parcerDescription}
         </div>
       </div>
     </div>

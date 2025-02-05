@@ -21,7 +21,7 @@ export default function Hero() {
           <img
             src={`${import.meta.env.VITE_BACKEND_URL}/banner/${banner?.image}`}
             alt="banner"
-            className="h-full w-full"
+            className="h-full w-full object-cover"
             loading="lazy"
           />
         </Link>
@@ -31,7 +31,7 @@ export default function Hero() {
 
   return (
     <section>
-      <div className="relative mt-2 h-40 sm:h-60 lg:mt-0 lg:h-[480px]">
+      <div className="relative mt-2 h-40 sm:h-60 lg:mt-0 lg:h-[520px]">
         <Swiper
           navigation={true}
           modules={[Navigation, Autoplay]}

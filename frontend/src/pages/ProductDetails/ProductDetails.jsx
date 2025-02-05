@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import parcer from "html-react-parser";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useGetProductBySlugQuery } from "../../Redux/product/productApi";
 import Spinner from "../../components/Spinner/Spinner";
@@ -11,8 +10,6 @@ import usePageView from "../../hooks/usePageView";
 export default function ProductDetails() {
   usePageView("Product Details");
   const params = useParams();
-
-  const [tab, setTab] = useState("description");
   let slug = params?.id;
 
   const { data, isLoading } = useGetProductBySlugQuery(slug);
@@ -71,9 +68,6 @@ export default function ProductDetails() {
     }
   }, [data]);
 
-  const description = data?.data?.description ? data?.data?.description : "";
-  const parcerDescription = parcer(description);
-
   let content = null;
 
   if (isLoading) return (content = <Spinner />);
@@ -81,41 +75,18 @@ export default function ProductDetails() {
   if (!isLoading) {
     content = (
       <div>
-        <div className="mt-4 w-full overflow-hidden lg:flex">
+        <div className="mt-4 w-full">
           <div className="text-neutral">
             <ProductInfo product={data?.data} />
           </div>
         </div>
 
-        {/* Details */}
+        {/* Review */}
         <div className="mt-6">
-          <div className="flex items-center gap-6 border-b">
-            <button
-              onClick={() => setTab("description")}
-              className={`${
-                tab === "description" && "border-b border-primary"
-              } pb-2`}
-            >
-              Description
-            </button>
-            <button
-              onClick={() => setTab("reviews")}
-              className={`${
-                tab === "reviews" && "border-b border-primary"
-              } pb-2`}
-            >
-              Reviews
-            </button>
-          </div>
-
-          <div>
-            {tab === "description" && (
-              <div className="mt-3 pl-2 text-sm text-neutral-content">
-                {parcerDescription}
-              </div>
-            )}
-            {tab === "reviews" && <Reviews product={data?.data} />}
-          </div>
+          <p className="border-b pb-1 text-sm uppercase tracking-[5px] text-neutral">
+            Review
+          </p>
+          <Reviews product={data?.data} />
         </div>
 
         <RelatedProducts category={data?.data?.category} />

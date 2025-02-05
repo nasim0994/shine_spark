@@ -46,7 +46,7 @@ exports.addProduct = async (req, res) => {
 
   let product = {
     ...req?.body,
-    slug: slugify(`${title}-${Date.now()}`),
+    slug: slugify(`${title}`),
     thumbnail,
     sizechart: sizechart || null,
   };
@@ -319,7 +319,7 @@ exports.updateProduct = async (req, res) => {
 
     let product = {
       ...req?.body,
-      slug: slugify(`${title}-${Date.now()}`),
+      slug: slugify(`${title}`),
       thumbnail: thumbnail || isExit?.thumbnail,
       sizechart: sizechart || isExit?.sizechart,
     };

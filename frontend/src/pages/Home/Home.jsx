@@ -8,7 +8,7 @@ import FlashSale from "../../components/HomeComponents/FlashSale/FlashSale";
 import Hero from "../../components/HomeComponents/Hero/Hero";
 import MobileCategories from "../../components/HomeComponents/MobileCategories/MobileCategories";
 import PopularProducts from "../../components/HomeComponents/PopularProducts/PopularProducts";
-import Services from "../../components/HomeComponents/Services/Services";
+// import Services from "../../components/HomeComponents/Services/Services";
 import usePageView from "../../hooks/usePageView";
 
 export default function Home() {
@@ -27,7 +27,7 @@ export default function Home() {
       <ChooseByBrand />
       <PopularProducts />
       <CategoryWaysProducts />
-      <Services />
+      {/* <Services /> */}
     </>
   );
 }

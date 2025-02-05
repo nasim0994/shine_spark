@@ -166,6 +166,10 @@ const adminSidebarItems = [
         path: "/admin/front-end/about-us",
       },
       {
+        title: "FAQ",
+        path: "/admin/front-end/faq/all",
+      },
+      {
         title: "Contact Us",
         path: "/admin/front-end/contact-us",
       },

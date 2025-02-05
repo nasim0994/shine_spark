@@ -40,10 +40,13 @@ export default function Footer() {
             </h2>
             <ul className="flex flex-col gap-2 text-[15px] text-gray-200">
               <li>
-                <Link to="about-us">About Us</Link>
+                <Link to="/about-us">About Us</Link>
               </li>
               <li>
-                <Link to="contact-us">Contact Us</Link>
+                <Link to="/faq">F.A.Q</Link>
+              </li>
+              <li>
+                <Link to="/contact-us">Contact Us</Link>
               </li>
             </ul>
           </div>
@@ -54,13 +57,13 @@ export default function Footer() {
             </h2>
             <ul className="flex flex-col gap-2 text-[15px] text-gray-200">
               <li>
-                <Link to="privacy-policy">Privacy Policy</Link>
+                <Link to="/privacy-policy">Privacy Policy</Link>
               </li>
               <li>
-                <Link to="return-policy">Refund and Return Policy</Link>
+                <Link to="/return-policy">Refund and Return Policy</Link>
               </li>
               <li>
-                <Link to="terms-conditions">Terms and Conditions</Link>
+                <Link to="/terms-conditions">Terms and Conditions</Link>
               </li>
             </ul>
           </div>

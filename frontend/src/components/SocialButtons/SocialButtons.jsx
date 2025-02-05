@@ -7,7 +7,7 @@ export default function SocialButtons() {
   const { data: contact } = useGetContactQuery();
 
   return (
-    <ul className="flex flex-col items-center gap-2">
+    <ul className="flex flex-col items-center gap-1">
       {contact?.data[0]?.socials?.map((social, i) => (
         <Link
           key={i}

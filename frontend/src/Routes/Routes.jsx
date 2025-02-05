@@ -4,26 +4,48 @@ import React, { Suspense } from "react";
 
 import MainLayout from "../Layout/MainLayout";
 import Home from "../pages/Home/Home";
-
 import Spinner from "../components/Spinner/Spinner";
-import AboutUs from "../pages/AboutUs/AboutUs";
-import ContactUs from "../pages/ContactUs/ContactUs";
-import Invoice from "../pages/Admin/Order/Invoice";
-import ProductWays from "../pages/Admin/Report/SalesReport/ProductWays";
-import CampaignBanners from "../pages/Admin/EcommerceSetting/CampaignBanners/CampaignBanners";
-import AddCampaignBanner from "../pages/Admin/EcommerceSetting/CampaignBanners/AddCampaignBanner";
-import EditCampaignBanner from "../pages/Admin/EcommerceSetting/CampaignBanners/EditCampaignBanner";
-import TodaysOrders from "../pages/Admin/Order/TodayOrders";
-import AdminPrivacyPolicy from "../pages/Admin/PrivacyPolicy/AdminPrivacyPolicy";
-import AdminTermsCondition from "../pages/Admin/TermsCondition/AdminTermsCondition";
-import AdminReturnPolicy from "../pages/Admin/ReturnPolicy/AdminReturnPolicy";
-import PrivacyPolicy from "../pages/PrivacyPolicy";
-import TermsCondition from "../pages/TermsCondition";
-import ReturnPolicy from "../pages/ReturnPolicy";
-import FAQ from "../pages/FAQ/FAQ";
-import FaqList from "../pages/Admin/Faq/faqList";
-import AddFaq from "../pages/Admin/Faq/addFaq";
-import UpdateFaq from "../pages/Admin/Faq/updateFaq";
+
+// lazy import
+const AboutUs = React.lazy(() => import("../pages/AboutUs/AboutUs"));
+const ContactUs = React.lazy(() => import("../pages/ContactUs/ContactUs"));
+const Invoice = React.lazy(() => import("../pages/Admin/Order/Invoice"));
+const ProductWays = React.lazy(
+  () => import("../pages/Admin/Report/SalesReport/ProductWays"),
+);
+const CampaignBanners = React.lazy(
+  () =>
+    import("../pages/Admin/EcommerceSetting/CampaignBanners/CampaignBanners"),
+);
+const AddCampaignBanner = React.lazy(
+  () =>
+    import("../pages/Admin/EcommerceSetting/CampaignBanners/AddCampaignBanner"),
+);
+const EditCampaignBanner = React.lazy(
+  () =>
+    import(
+      "../pages/Admin/EcommerceSetting/CampaignBanners/EditCampaignBanner"
+    ),
+);
+const TodaysOrders = React.lazy(
+  () => import("../pages/Admin/Order/TodayOrders"),
+);
+const AdminPrivacyPolicy = React.lazy(
+  () => import("../pages/Admin/PrivacyPolicy/AdminPrivacyPolicy"),
+);
+const AdminTermsCondition = React.lazy(
+  () => import("../pages/Admin/TermsCondition/AdminTermsCondition"),
+);
+const AdminReturnPolicy = React.lazy(
+  () => import("../pages/Admin/ReturnPolicy/AdminReturnPolicy"),
+);
+const PrivacyPolicy = React.lazy(() => import("../pages/PrivacyPolicy"));
+const TermsCondition = React.lazy(() => import("../pages/TermsCondition"));
+const ReturnPolicy = React.lazy(() => import("../pages/ReturnPolicy"));
+const FAQ = React.lazy(() => import("../pages/FAQ/FAQ"));
+const FaqList = React.lazy(() => import("../pages/Admin/Faq/faqList"));
+const AddFaq = React.lazy(() => import("../pages/Admin/Faq/addFaq"));
+const UpdateFaq = React.lazy(() => import("../pages/Admin/Faq/updateFaq"));
 
 // Main pages
 const Cart = React.lazy(() => import("../pages/Cart/Cart"));

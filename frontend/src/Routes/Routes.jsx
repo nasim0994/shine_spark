@@ -248,11 +248,19 @@ export const routes = createBrowserRouter([
       },
       {
         path: "/about-us",
-        element: <AboutUs />,
+        element: (
+          <Suspense fallback={<Spinner />}>
+            <AboutUs />
+          </Suspense>
+        ),
       },
       {
         path: "/contact-us",
-        element: <ContactUs />,
+        element: (
+          <Suspense fallback={<Spinner />}>
+            <ContactUs />
+          </Suspense>
+        ),
       },
       {
         path: "/shops",
@@ -296,19 +304,35 @@ export const routes = createBrowserRouter([
       },
       {
         path: "/privacy-policy",
-        element: <PrivacyPolicy />,
+        element: (
+          <Suspense fallback={<Spinner />}>
+            <PrivacyPolicy />
+          </Suspense>
+        ),
       },
       {
         path: "/terms-conditions",
-        element: <TermsCondition />,
+        element: (
+          <Suspense fallback={<Spinner />}>
+            <TermsCondition />
+          </Suspense>
+        ),
       },
       {
         path: "/return-policy",
-        element: <ReturnPolicy />,
+        element: (
+          <Suspense fallback={<Spinner />}>
+            <ReturnPolicy />
+          </Suspense>
+        ),
       },
       {
         path: "/faq",
-        element: <FAQ />,
+        element: (
+          <Suspense fallback={<Spinner />}>
+            <FAQ />
+          </Suspense>
+        ),
       },
       {
         path: "/product/:id",

@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import usePageView from "../../hooks/usePageView";
 import { useGetFaqQuery } from "../../Redux/faq/faq";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 
 export default function FAQ() {
   usePageView("FAQ");
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const [toggleFAQ, setToggleFAQ] = useState(null);
   const { data } = useGetFaqQuery();
   const faqs = data?.data;

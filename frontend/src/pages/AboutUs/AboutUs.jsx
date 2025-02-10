@@ -10,14 +10,12 @@ export default function AboutUs() {
   const about = data?.data[0];
   const parcerDescription = about?.description && parcer(about?.description);
 
-  if (isLoading) {
-    return <Spinner />;
-  }
+  if (isLoading) return <Spinner />;
 
   return (
     <section className="py-5">
       <div className="container">
-        <div className="grid items-start gap-6 md:grid-cols-2">
+        {/* <div className="grid items-start gap-6 md:grid-cols-2">
           <div>
             <div className="w-max border-b-2 border-primary">
               <h2 className="text-5xl font-bold">{about?.title}</h2>
@@ -40,6 +38,11 @@ export default function AboutUs() {
               loading="lazy"
             />
           </div>
+        </div> */}
+
+        <div className="p-4 shadow-lg lg:mx-auto lg:w-2/3">
+          <h2 className="text-xl font-semibold text-black">{about?.title}</h2>
+          {parcerDescription}
         </div>
       </div>
     </section>

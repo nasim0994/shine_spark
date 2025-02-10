@@ -18,12 +18,12 @@ export default function MobileCategories() {
     );
   }
 
-  if (categories.length === 0) return null;
+  if (categories?.length === 0) return null;
 
   return (
     <section className="mt-10 md:hidden">
       <div className="container">
-        <h1 className="text-center text-[11px] mb-4 font-normal text-neutral">
+        <h1 className="mb-4 text-center text-[11px] font-normal text-neutral">
           We believe in using only the finest and 100% natural ingredients,
           making new stuff the old fashioned way.
         </h1>
@@ -53,7 +53,7 @@ export default function MobileCategories() {
           {categories?.map((category) => (
             <SwiperSlide key={category?._id}>
               <Link
-                to={`shops/${category.slug}`}
+                to={`shops/${category?.slug}`}
                 className="flex h-[90px] items-center justify-center rounded border p-2 text-center shadow"
               >
                 <div>

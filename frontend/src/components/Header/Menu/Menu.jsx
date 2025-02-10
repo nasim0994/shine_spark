@@ -24,7 +24,9 @@ export default function Menu() {
               <ol className="hidden items-center gap-8 sm:flex">
                 {categories?.slice(0, 5).map((category) => (
                   <li key={category?._id}>
-                    <NavLink to="/shops"> {category?.name} </NavLink>
+                    <NavLink to={`/shops/${category?.slug}`}>
+                      {category?.name}
+                    </NavLink>
                   </li>
                 ))}
               </ol>

@@ -55,7 +55,7 @@ export default function MainHeader() {
                 </button>
 
                 {profileDropdown && (
-                  <ul className="absolute right-0 top-[130%] z-50 w-max min-w-[220px] overflow-hidden rounded bg-base-100 text-[15px] text-neutral shadow-lg">
+                  <ul className="absolute left-0 top-[130%] z-50 w-max min-w-[220px] overflow-hidden rounded bg-base-100 text-[15px] text-neutral shadow-lg">
                     <li className="user_info border-b px-2 py-1">
                       <div className="flex items-center gap-2">
                         <img

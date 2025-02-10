@@ -73,10 +73,7 @@ export default function Footer() {
               Find Us
             </h2>
             <ul className="flex flex-col gap-5 text-[15px] text-gray-200">
-              <li>
-                Shop no. 14, 27 SHAPTAK SQUARE, Road No 16, Dhanmondi, Dhaka
-                1205.
-              </li>
+              <li>{contact?.address}</li>
               <li>
                 <ul className="flex items-center gap-2">
                   {contact?.socials?.map((social, i) => (

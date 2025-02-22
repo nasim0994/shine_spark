@@ -1,0 +1,58 @@
+.shop_sidebar {
+  width: 250px;
+  background: var(--base-100);
+  padding: 6px;
+  align-self: self-start;
+}
+
+.shop_content {
+  width: calc(100% - 250px);
+  background: var(--base-100);
+  padding: 6px;
+}
+
+@media only screen and (max-width: 768px) {
+  .shop_sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    height: 100vh;
+    background: var(--base-100);
+
+    transform: translateX(-100%);
+    transition: all 0.3s ease;
+  }
+
+  .shop_sidebar_show {
+    transform: translateX(0);
+  }
+
+  .shop_content {
+    width: 100%;
+  }
+}
+
+.mobile_categories::-webkit-scrollbar {
+  display: none;
+}
+
+.mobile_dropdown,
+.mobile_sub_dropdown {
+  max-height: 0px;
+  overflow: hidden;
+
+  transition: all 0.3s ease;
+}
+
+.mobile_dropdown li {
+  padding-left: 15px;
+}
+
+.mobile_sub_dropdown li {
+  padding-left: 10px;
+}
+
+.dropdown_active {
+  max-height: max-content;
+}

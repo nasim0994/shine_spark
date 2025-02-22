@@ -1,15 +1,11 @@
-import CampaignBanner from "../../components/HomeComponents/Campaign/CampaignBanner/CampaignBanner";
-import ShopBannerCom from "../../components/HomeComponents/Campaign/ShopBannerCom/ShopBannerCom";
-import CategoryWaysProducts from "../../components/HomeComponents/CategoryWaysProducts/CategoryWaysProducts";
-import ChooseByBrand from "../../components/HomeComponents/ChooseByBrand/ChooseByBrand";
-import ChooseByCategory from "../../components/HomeComponents/ChooseByCategory/ChooseByCategory";
-import FeaturedProducts from "../../components/HomeComponents/FeaturedProducts/FeaturedProducts";
-import FlashSale from "../../components/HomeComponents/FlashSale/FlashSale";
-import Hero from "../../components/HomeComponents/Hero/Hero";
-import MobileCategories from "../../components/HomeComponents/MobileCategories/MobileCategories";
-import PopularProducts from "../../components/HomeComponents/PopularProducts/PopularProducts";
-// import Services from "../../components/HomeComponents/Services/Services";
+import Banner from "@/components/modules/home/Banner";
 import usePageView from "../../hooks/usePageView";
+import Categories from "@/components/modules/home/Categories";
+import CampaignBanner1 from "@/components/modules/home/CampaignBanner1";
+import FeatureProducts from "@/components/modules/home/FeatureProducts";
+import CampaignBanner2 from "@/components/modules/home/CampaignBanner2";
+import Products from "@/components/modules/home/Products";
+import CustomerStories from "@/components/modules/home/CustomerStories";
 
 export default function Home() {
   window.scroll(0, 0);
@@ -17,17 +13,13 @@ export default function Home() {
 
   return (
     <>
-      <Hero />
-      <ChooseByCategory />
-      <MobileCategories />
-      <ShopBannerCom />
-      <FlashSale />
-      <FeaturedProducts />
-      <CampaignBanner />
-      <ChooseByBrand />
-      <PopularProducts />
-      <CategoryWaysProducts />
-      {/* <Services /> */}
+      <Banner />
+      <Categories />
+      <FeatureProducts />
+      <CampaignBanner1 />
+      <Products />
+      <CampaignBanner2 />
+      <CustomerStories />
     </>
   );
 }

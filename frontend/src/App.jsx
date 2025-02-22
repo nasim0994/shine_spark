@@ -1,11 +1,11 @@
 import { RouterProvider } from "react-router-dom";
 import { routes } from "./Routes/Routes";
 import useAuthCheck from "./hooks/useAuthCheck";
-import Spinner from "./components/Spinner/Spinner";
 import { Helmet } from "react-helmet";
 import { useGetFaviconQuery } from "./Redux/favicon/faviconApi";
 import { useGetSEOQuery } from "./Redux/seoApi";
 import { useEffect } from "react";
+import Spinner from "./components/shared/Spinner/Spinner";
 
 export default function App() {
   const authChecked = useAuthCheck();
@@ -35,9 +35,7 @@ export default function App() {
     if (seo?.custom?.google_tag_manager) document.head.appendChild(script);
   }, [seo]);
 
-  if (!authChecked) {
-    return <Spinner />;
-  }
+  if (!authChecked) return <Spinner />;
 
   return (
     <>

@@ -75,16 +75,15 @@ body {
 }
 
 .container {
-  max-width: 96% !important;
+  max-width: 93% !important;
   margin: auto;
 }
 
-@media only screen and (min-width: 1300px) {
+@media only screen and (min-width: 1600px) {
   .container {
-    max-width: 1280px !important;
+    max-width: 1380px !important;
   }
 }
-
 .active {
   color: var(--primary);
 }
@@ -127,9 +126,9 @@ body {
   }
 }
 
-.form_group input,
-.form_group textarea,
-.form_group select {
+input,
+textarea,
+select {
   width: 100%;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -138,163 +137,10 @@ body {
   font-size: 15px;
   margin-top: 3px;
 }
-
-header nav ul li a:hover {
-  color: var(--secondary) !important;
-}
-
-.swiper-button-next::after,
-.swiper-button-prev::after {
-  font-size: 20px !important;
-  color: var(--primary) !important;
-}
-
-/* --------------------------- */
-
-@media only screen and (min-width: 1024px) {
-  .hero_slider {
-    width: calc(100% - 270px);
-  }
-}
-
-@media only screen and (max-width: 400px) {
-  .menu_wrap {
-    width: 90% !important;
-  }
-
-  .account_sidebar {
-    width: 90% !important;
-  }
-
-  .admin_sidebar {
-    width: 90% !important;
-  }
-
-  .serach_sidebar {
-    width: 90% !important;
-  }
-}
-
-.serach_sidebar {
-  width: 350px;
-  background: #fff;
-
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  z-index: 99999;
-
-  transform: translateX(-100%);
-  transition: all 0.3s ease;
-}
-
-.serach_sidebar_show {
-  transform: translateX(0%);
-}
-
-/* --------------------------------- */
-
-.overlay {
-  position: fixed;
-  top: -33px;
-  left: 0;
-  background: #00000066;
-  width: 100%;
-  height: 110vh;
-  z-index: 9999;
-
-  opacity: 0;
-  visibility: hidden;
-
-  transition: all 0.3s ease;
-}
-
-.overlay_show {
-  opacity: 1;
-  visibility: visible;
-}
-
-@media only screen and (max-width: 1024px) {
-  .menu_wrap {
-    position: fixed;
-    top: -33px;
-    left: 0;
-    width: 300px;
-    height: 110vh;
-    z-index: 9999;
-    background: var(--base100);
-    box-shadow:
-      3px -2px 20px 0px #0000000c,
-      0px 4px 20px 0px #0000000c;
-
-    transition: all 0.3s ease;
-    transform: translateX(-100%);
-  }
-
-  .menu_wrap_show {
-    transform: translateX(0%) !important;
-  }
-}
-
-@media only screen and (max-width: 640px) {
-  .overlay,
-  .menu_wrap {
-    top: 0;
-    height: 100vh;
-  }
-}
-
-/* ------Product Card--------------- */
-.product_card .product_img {
-  transition: all 0.3s ease;
-}
-
-.product_card:hover .product_img {
-  transform: scale(1.06);
-}
-
-.product_card:hover .title {
-  color: var(--secondary);
-}
-
-/* ---------------Shop page -------------------*/
-.shop_categories {
-  width: 300px;
-  background: var(--base100);
-  border-radius: 5px;
-  padding: 6px;
-  position: sticky;
-  top: 65px;
-  align-self: self-start;
-}
-
-.shop_products {
-  width: calc(100% - 300px);
-  background: var(--base100);
-  border-radius: 5px;
-  padding: 6px;
-}
-
-.shop_categories ul li a {
-  color: #404145e4;
-
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  transition: all 0.3s ease;
-}
-
-.shop_categories ul li a:hover {
-  background: #dddddd32;
-  color: var(--primary);
-}
-
-@media only screen and (max-width: 768px) {
-  .shop_products {
-    width: 100%;
-  }
+input::placeholder,
+textarea::placeholder {
+  font-size: 15px;
+  font-weight: 300;
 }
 
 /* ----------------Account --------------------- */
@@ -748,8 +594,6 @@ input.react-tagsinput-input {
   margin-top: 10px;
   opacity: 1;
 }
-
-
 
 @layer base {
   * {

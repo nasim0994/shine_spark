@@ -4,11 +4,13 @@ import React, { Suspense } from "react";
 
 import MainLayout from "../Layout/MainLayout";
 import Home from "../pages/Home/Home";
-import Spinner from "../components/Spinner/Spinner";
+import Spinner from "@/components/shared/Spinner/Spinner";
 
 // lazy import
 const AboutUs = React.lazy(() => import("../pages/AboutUs/AboutUs"));
 const ContactUs = React.lazy(() => import("../pages/ContactUs/ContactUs"));
+const Wishlist = React.lazy(() => import("@/pages/main/Wishlist"));
+
 const Invoice = React.lazy(() => import("../pages/Admin/Order/Invoice"));
 const ProductWays = React.lazy(
   () => import("../pages/Admin/Report/SalesReport/ProductWays"),
@@ -51,7 +53,7 @@ const UpdateFaq = React.lazy(() => import("../pages/Admin/Faq/updateFaq"));
 const Cart = React.lazy(() => import("../pages/Cart/Cart"));
 const Login = React.lazy(() => import("../pages/Login/Login"));
 const ProductDetails = React.lazy(
-  () => import("../pages/ProductDetails/ProductDetails"),
+  () => import("@/pages/ProductDetails/ProductDetails"),
 );
 const Shop = React.lazy(() => import("../pages/Shop/Shop"));
 const Signup = React.lazy(() => import("../pages/Signup/Signup"));
@@ -65,7 +67,7 @@ const EditeProfile = React.lazy(
 const Orders = React.lazy(() => import("../pages/Account/Orders/Orders"));
 const Profile = React.lazy(() => import("../pages/Account/Profile/Profile"));
 const Setting = React.lazy(() => import("../pages/Account/Setting/Setting"));
-const Wishlist = React.lazy(() => import("../pages/Account/Wishlist/Wishlist"));
+// const Wishlist = React.lazy(() => import("../pages/Account/Wishlist/Wishlist"));
 const Checkout = React.lazy(() => import("../pages/Checkout/Checkout"));
 
 const PaymentResult = React.lazy(
@@ -335,7 +337,7 @@ export const routes = createBrowserRouter([
         ),
       },
       {
-        path: "/product/:id",
+        path: "/product/:slug",
         element: (
           <Suspense fallback={<Spinner />}>
             <ProductDetails />
@@ -363,6 +365,14 @@ export const routes = createBrowserRouter([
         element: (
           <Suspense fallback={<Spinner />}>
             <Cart />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/wishlist",
+        element: (
+          <Suspense fallback={<Spinner />}>
+            <Wishlist />
           </Suspense>
         ),
       },
@@ -415,10 +425,10 @@ export const routes = createBrowserRouter([
         path: "/account/profile/edite",
         element: <EditeProfile />,
       },
-      {
-        path: "/account/wishlist",
-        element: <Wishlist />,
-      },
+      // {
+      //   path: "/account/wishlist",
+      //   element: <Wishlist />,
+      // },
       {
         path: "/account/orders",
         element: <Orders />,

@@ -105,6 +105,31 @@ exports.addAdmin = async (req, res) => {
   }
 };
 
+exports.defaultAdminCreate = async (req, res) => {
+  try {
+    const isExists = await Admin.findOne({ role: "superAdmin" });
+
+    if (!isExists) {
+
+      const admin = new Admin({
+        name: "Default Admin",
+        username: "admin",
+        phone: "00000000000",
+        password: "12345678",
+        role: "superAdmin",
+      });
+
+      await admin.save();
+      console.log("Default admin user created successfully");
+    }
+  } catch (error) {
+    res.json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 exports.getAllAdmins = async (req, res) => {
   try {
     const admins = await Admin.find({})

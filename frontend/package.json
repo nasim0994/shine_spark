@@ -1,6 +1,6 @@
 {
-  "name": "shanaforganic",
-  "homepage": "https://shanaforganic.com.bd",
+  "name": "shine_spark",
+  "homepage": "https://shinespark.com.bd",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,8 +11,7 @@
     "preview": "vite preview"
   },
   "keywords": [
-    "shanaforganic",
-    "shanaforganic.com.bd",
+    "shine_spark",
     "organic"
   ],
   "dependencies": {

@@ -1,0 +1,25 @@
+.category a {
+  padding: 4px 10px;
+  border-radius: 4px;
+  transition: all 0.5s ease;
+}
+
+.category a:hover {
+  background-color: var(--secondary);
+  color: var(--base100);
+}
+
+.menu_items a {
+  padding: 8px 10px;
+  display: block;
+  position: relative;
+  font-size: 15px;
+  color: var(--neutral);
+  transition: all 0.5s ease;
+  border-bottom: 1px solid transparent;
+}
+
+.menu_items a:hover {
+  color: var(--primary);
+  border-color: var(--primary);
+}

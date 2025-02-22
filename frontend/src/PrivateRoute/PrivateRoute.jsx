@@ -1,8 +1,8 @@
 import { Navigate, useLocation } from "react-router-dom";
-import Spinner from "../components/Spinner/Spinner";
 import { useSelector } from "react-redux";
+import Spinner from "@/components/shared/Spinner/Spinner";
 
-const PrivateRoute = ({ children }) => {
+export default function PrivateRoute({ children }) {
   const { loggedUser } = useSelector((state) => state.user);
   const location = useLocation();
   const token = localStorage.getItem("token");
@@ -15,7 +15,5 @@ const PrivateRoute = ({ children }) => {
     return children;
   }
 
-  return <Spinner></Spinner>;
-};
-
-export default PrivateRoute;
+  return <Spinner />;
+}

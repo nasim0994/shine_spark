@@ -11,7 +11,7 @@ export default function App() {
   const authChecked = useAuthCheck();
 
   const { data: favicon } = useGetFaviconQuery();
-  const icon = favicon?.data[0]?.icon;
+  const icon = favicon?.data?.icon;
 
   const { data } = useGetSEOQuery();
   const seo = data?.data;

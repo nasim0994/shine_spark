@@ -12,9 +12,7 @@ export default function SidebarSubItems({ subItems }) {
     return (
       <li>
         <button onClick={() => setSubDropdown(!subDropdown)}>
-          <div className="flex items-center gap-1.5">
-            <i>{subItems.icon}</i> {subItems.title}
-          </div>
+          <div className="flex items-center">{subItems.title}</div>
 
           {subDropdown ? (
             <span>

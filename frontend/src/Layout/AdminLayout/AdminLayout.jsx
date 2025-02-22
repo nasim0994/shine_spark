@@ -1,8 +1,8 @@
 import "./Admin.css";
 import { Outlet } from "react-router-dom";
-import AdminHeader from "../../components/AdminComponents/AdminHeader/AdminHeader";
-import AdminSidebar from "../../components/AdminComponents/AdminSidebar/AdminSidebar";
 import { useEffect, useState } from "react";
+import AdminSidebar from "@/components/AdminComponents/AdminSidebar/AdminSidebar";
+import AdminHeader from "@/components/AdminComponents/AdminHeader/AdminHeader";
 
 export default function AdminLayout() {
   const [sidebar, setSidebar] = useState(false);
@@ -25,7 +25,7 @@ export default function AdminLayout() {
       </aside>
       <div className="admin_content">
         <AdminHeader setSidebar={setSidebar} />
-        <main className="sm:p-5 py-5">
+        <main className="py-5 sm:p-5">
           <Outlet />
         </main>
       </div>

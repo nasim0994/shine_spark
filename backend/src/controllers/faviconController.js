@@ -6,9 +6,23 @@ exports.addFavicon = async (req, res) => {
 
   try {
     if (!icon) {
+      fs.unlink(`./uploads/favicon/${icon}`, (err) => {
+        if (err) {
+          console.error(err);
+        }
+      });
+
       return res.json({
         success: false,
-        message: "Favicon is requeired",
+        message: "Favicon is required",
+      });
+    }
+
+    const isExist = await Favicon.findOne();
+    if (isExist) {
+      return res.json({
+        success: false,
+        message: "Favicon already exists",
       });
     }
 
@@ -35,7 +49,7 @@ exports.addFavicon = async (req, res) => {
 
 exports.getFavicon = async (req, res) => {
   try {
-    const favicon = await Favicon.find({});
+    const favicon = await Favicon.findOne();
 
     if (!favicon) {
       return res.json({

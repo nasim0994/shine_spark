@@ -12,6 +12,7 @@ exports.addProduct = async (req, res) => {
   const thumbnail = req?.files?.thumbnail[0]?.filename;
   const sizechart = req?.files?.sizechart && req?.files?.sizechart[0]?.filename;
   const galleries = req.files.gallery ? req.files.gallery : [];
+  const colorImages = req.files.colorImage ? req.files.colorImage : [];
 
   if (!thumbnail) {
     return res.json({
@@ -20,29 +21,8 @@ exports.addProduct = async (req, res) => {
     });
   }
 
-  if (galleries?.length > 10) {
-    galleries?.forEach((gallery) => {
-      fs.unlink(`./uploads/products/${gallery?.filename}`, (err) => {
-        if (err) {
-          console.error(err);
-        }
-      });
-    });
 
-    // delete thumbnail image
-    fs.unlink(`./uploads/products/${thumbnail}`, (err) => {
-      if (err) {
-        console.error(err);
-      }
-    });
-
-    return res.json({
-      success: false,
-      message: "You can't upload more than 10 images",
-    });
-  }
-
-  const { title, variant } = req?.body;
+  const { title, variants, colors, sizes } = req?.body;
 
   let product = {
     ...req?.body,
@@ -51,15 +31,24 @@ exports.addProduct = async (req, res) => {
     sizechart: sizechart || null,
   };
 
-  if (variant) {
-    product.variant = JSON.parse(variant);
-  }
-
   if (galleries?.length > 0) {
     product.galleries = galleries?.map((gallery) => ({
       url: gallery.filename,
       name: gallery.originalname,
     }));
+  }
+
+  const parseVariants = variants && JSON.parse(variants);
+
+  if (parseVariants && parseVariants?.length > 0) {
+    const newVariants = parseVariants?.map((variantItem, index) => {
+      return {
+        ...variantItem,
+        colorImage: colorImages[index]?.filename,
+      };
+    });
+
+    product.variants = newVariants;
   }
 
   try {
@@ -98,8 +87,18 @@ exports.addProduct = async (req, res) => {
         });
       });
     }
-  }
-};
+
+    if (colorImages?.length > 0) {
+      colorImages?.forEach((image) => {
+        fs.unlink(`./uploads/products/${image?.filename}`, (err) => {
+          if (err) {
+            console.error(err);
+          }
+        });
+      });
+    }
+  };
+}
 
 exports.getAllProducts = async (req, res) => {
   const paginationOptions = pick(req.query, ["page", "limit"]);
@@ -283,12 +282,24 @@ exports.deleteProductById = async (req, res) => {
     }
 
     if (product?.galleries?.length > 0) {
-      product?.galleries?.forEach((gallery) => {
+      product?.galleries?.map((gallery) => {
         fs.unlink(`./uploads/products/${gallery?.url}`, (err) => {
           if (err) {
             console.error(err);
           }
         });
+      });
+    }
+
+    if (product?.variants?.length > 0) {
+      product?.variants?.map((variant) => {
+        if (variant?.colorImage) {
+          fs.unlink(`./uploads/products/${variant?.colorImage}`, (err) => {
+            if (err) {
+              console.error(err);
+            }
+          });
+        }
       });
     }
   } catch (error) {

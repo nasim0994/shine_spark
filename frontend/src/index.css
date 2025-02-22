@@ -236,7 +236,7 @@ table tfoot tr:last-child {
   border-bottom: none;
 }
 
-.add_product input[type="file"] {
+.add_product .gallery_input {
   width: 100%;
   height: 100%;
   cursor: pointer;

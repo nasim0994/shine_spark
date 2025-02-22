@@ -1,17 +1,16 @@
-import { useState } from "react";
-import { AiOutlineDelete } from "react-icons/ai";
-import { BiSolidPencil } from "react-icons/bi";
-import { Link } from "react-router-dom";
-
+import Pagination from "@/components/Pagination/Pagination";
+import ButtonSpinner from "@/components/shared/ButtonSpinner";
+import Spinner from "@/components/shared/Spinner/Spinner";
 import {
   useDeleteProductMutation,
   useGetAllProductsQuery,
   useUpdateFeaturedMutation,
-} from "../../../Redux/product/productApi";
-import Spinner from "../../../components/Spinner/Spinner";
-import Pagination from "../../../components/Pagination/Pagination";
+} from "@/Redux/product/productApi";
+import { useState } from "react";
+import { AiOutlineDelete } from "react-icons/ai";
+import { BiSolidPencil } from "react-icons/bi";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import ButtonSpinner from "../../../components/ButtonSpinner/ButtonSpinner";
 
 export default function ProductList() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -21,12 +20,7 @@ export default function ProductList() {
   query["page"] = currentPage;
   query["limit"] = limit;
 
-  const { data, isLoading, isError, error } = useGetAllProductsQuery({
-    ...query,
-  });
-
-  console.log(data);
-
+  const { data, isLoading, isError, error } = useGetAllProductsQuery(query);
   const [deleteProduct] = useDeleteProductMutation();
 
   const handleDeleteProduct = async (id) => {
@@ -61,9 +55,8 @@ export default function ProductList() {
   };
 
   let content = null;
-  if (isLoading) {
-    return (content = <Spinner />);
-  }
+  if (isLoading) return (content = <Spinner />);
+
   if (!isLoading && isError) {
     content = <p>{error?.error}</p>;
   }
@@ -105,6 +98,22 @@ export default function ProductList() {
         <td>{product?.sellingPrice}TK</td>
         <td>{product?.totalStock}</td>
         <td>
+          {ufLoading && selectedProduct === product?._id ? (
+            <ButtonSpinner />
+          ) : (
+            <label className="relative inline-flex cursor-pointer items-center">
+              <input
+                checked={product?.status && product?.status}
+                type="checkbox"
+                value={product?.status}
+                className="peer sr-only"
+                onChange={() => handleUpdateFeatured(product?._id)}
+              />
+              <div className="peer h-[23px] w-11 rounded-full bg-gray-200 after:absolute after:start-[1px] after:top-[1.5px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white rtl:peer-checked:after:-translate-x-full"></div>
+            </label>
+          )}
+        </td>
+        <td>
           <div className="flex items-center gap-2">
             <Link
               to={`/admin/product/edit-product/${product?._id}`}
@@ -145,6 +154,7 @@ export default function ProductList() {
                 <th>Featured</th>
                 <th>Base Price</th>
                 <th>Total Stock</th>
+                <th>Status</th>
                 <th>Action</th>
               </tr>
             </thead>

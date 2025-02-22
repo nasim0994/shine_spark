@@ -1,17 +1,16 @@
+import {
+  useAddCategoryMutation,
+  useGetCategoriesQuery,
+} from "@/Redux/category/categoryApi";
 import { useState } from "react";
 import { AiFillDelete } from "react-icons/ai";
 import ImageUploading from "react-images-uploading";
 import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
-import {
-  useAddCategoryMutation,
-  useGetCategoriesQuery,
-} from "../../../../Redux/category/categoryApi";
+import { toast } from "react-toastify";
 
 export default function AddCategory() {
   const navigate = useNavigate();
-  const [icons, seticons] = useState([]);
-
+  const [icons, setIcons] = useState([]);
   const { data } = useGetCategoriesQuery();
 
   const [addCategory, { isLoading }] = useAddCategoryMutation();
@@ -26,10 +25,16 @@ export default function AddCategory() {
     const order = e.target.order.value;
 
     if (!icon) {
-      return Swal.fire("", "Icon is required", "error");
+      return toast.error("Icon is required");
     }
+
+    // check image size
+    if (icon?.size > 1024 * 1024) {
+      return toast.error("Image size should be less than 1mb");
+    }
+
     if (name === "") {
-      return Swal.fire("", "category name is required", "error");
+      return toast.error("Category name is required");
     }
 
     const formData = new FormData();
@@ -40,19 +45,11 @@ export default function AddCategory() {
     const res = await addCategory(formData);
 
     if (res?.data?.success) {
-      Swal.fire("", "Category added successfully", "success");
-      seticons([]);
+      toast.success("Category added successfully");
+      setIcons([]);
       navigate("/admin/category/categories");
     } else {
-      Swal.fire(
-        "",
-        `${
-          res?.error?.data?.message
-            ? res?.error?.data?.message
-            : "something went wrong!"
-        }`,
-        "error"
-      );
+      toast.error(res?.data?.message || "Failed to add category");
       console.log(res);
     }
   };
@@ -60,24 +57,24 @@ export default function AddCategory() {
   return (
     <form
       onSubmit={handleAddCategory}
-      className="p-4 bg-base-100 shadhow rounded sm:w-1/2"
+      className="rounded bg-base-100 p-4 shadow sm:w-1/2"
     >
       <div>
         <p className="text-neutral-content">Icon</p>
         <ImageUploading
           value={icons}
-          onChange={(icn) => seticons(icn)}
+          onChange={(icn) => setIcons(icn)}
           dataURLKey="data_url"
         >
           {({ onImageUpload, onImageRemove, dragProps }) => (
             <div
-              className="border rounded border-dashed p-4 w-max"
+              className="w-max rounded border border-dashed p-4"
               {...dragProps}
             >
               <div className="flex items-center gap-2">
                 <span
                   onClick={onImageUpload}
-                  className="px-4 py-1.5 rounded-2xl text-base-100 bg-primary cursor-pointer text-sm"
+                  className="cursor-pointer rounded-2xl bg-primary px-4 py-1.5 text-sm text-base-100"
                 >
                   Choose Image
                 </span>
@@ -91,7 +88,7 @@ export default function AddCategory() {
                     <img src={img["data_url"]} alt="" className="w-40" />
                     <div
                       onClick={() => onImageRemove(index)}
-                      className="w-7 h-7 bg-primary rounded-full flex justify-center items-center text-base-100 absolute top-0 right-0 cursor-pointer"
+                      className="absolute right-0 top-0 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-primary text-base-100"
                     >
                       <AiFillDelete />
                     </div>
@@ -113,10 +110,7 @@ export default function AddCategory() {
       </div>
 
       <div className="mt-4">
-        <button
-          className="primary_btn text-sm"
-          disabled={isLoading && "disabled"}
-        >
+        <button className="primary_btn text-sm" disabled={isLoading}>
           {isLoading ? "Loading.." : "Add category"}
         </button>
       </div>

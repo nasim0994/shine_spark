@@ -1,12 +1,12 @@
 import { BiSolidPencil } from "react-icons/bi";
 import { MdOutlineDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
-import Spinner from "../../../components/Spinner/Spinner";
 import Swal from "sweetalert2";
 import {
   useAllColorsQuery,
   useDeleteColorMutation,
 } from "../../../Redux/color/colorApi";
+import Spinner from "@/components/shared/Spinner/Spinner";
 
 export default function AllColor() {
   const { data, isLoading, isError, error } = useAllColorsQuery();
@@ -31,9 +31,7 @@ export default function AllColor() {
   };
 
   let content = null;
-  if (isLoading) {
-    return (content = <Spinner />);
-  }
+  if (isLoading) return (content = <Spinner />);
 
   if (!isLoading && isError) {
     content = <p>{error?.data?.error}</p>;
@@ -48,7 +46,7 @@ export default function AllColor() {
           <div className="flex items-center gap-2">
             <Link
               to={`/admin/color/edit/${color?._id}`}
-              className="flex gap-1 items-center hover:text-green-700 duration-300"
+              className="flex items-center gap-1 duration-300 hover:text-green-700"
             >
               <BiSolidPencil />
             </Link>
@@ -66,7 +64,7 @@ export default function AllColor() {
 
   return (
     <div>
-      <div className="flex justify-end mb-2">
+      <div className="mb-2 flex justify-end">
         <Link to="/admin/color/add" className="primary_btn text-sm">
           Add New
         </Link>
@@ -87,7 +85,7 @@ export default function AllColor() {
               content
             ) : (
               <tr>
-                <td colSpan={4} className="text-center text-red-500 text-sm">
+                <td colSpan={4} className="text-center text-sm text-red-500">
                   No color found!
                 </td>
               </tr>

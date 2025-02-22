@@ -1,16 +1,15 @@
-import { BiSolidPencil } from "react-icons/bi";
-import { MdDeleteOutline } from "react-icons/md";
-import { Link } from "react-router-dom";
+import Spinner from "@/components/shared/Spinner/Spinner";
 import {
   useDeleteCategoryMutation,
   useGetCategoriesQuery,
-} from "../../../../Redux/category/categoryApi";
-import Spinner from "../../../../components/Spinner/Spinner";
+} from "@/Redux/category/categoryApi";
+import { BiSolidPencil } from "react-icons/bi";
+import { MdDeleteOutline } from "react-icons/md";
+import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 
 export default function AllCategories() {
   const { data, isLoading, isError, error } = useGetCategoriesQuery();
-
   const [deleteCategory] = useDeleteCategoryMutation();
 
   // Delete Category
@@ -28,10 +27,8 @@ export default function AllCategories() {
   };
 
   let content = null;
-  if (isLoading) {
-    return (content = <Spinner />);
-  }
 
+  if (isLoading) content = <Spinner />;
   if (!isLoading && isError) {
     content = <p>{error?.data?.error}</p>;
   }
@@ -41,11 +38,11 @@ export default function AllCategories() {
       <tr key={category?._id}>
         <td>{i + 1}</td>
         <td>
-          <div className="flex items-center gap-2 ">
+          <div className="flex items-center gap-2">
             <img
               src={`${import.meta.env.VITE_BACKEND_URL}/${category?.icon}`}
               alt=""
-              className="w-10 h-10 rounded-full border"
+              className="h-10 w-10 rounded-full border"
             />
             {category?.name}
           </div>
@@ -55,13 +52,13 @@ export default function AllCategories() {
           <div className="flex items-center gap-2">
             <Link
               to={`/admin/category/edit/${category?._id}`}
-              className="hover:text-green-700 duration-200"
+              className="duration-200 hover:text-green-700"
             >
               <BiSolidPencil />
             </Link>
             <button
               onClick={() => handleDeleteCategory(category?._id)}
-              className="hover:text-red-600 duration-200 text-lg"
+              className="text-lg duration-200 hover:text-red-600"
             >
               <MdDeleteOutline />
             </button>
@@ -73,7 +70,8 @@ export default function AllCategories() {
 
   return (
     <div>
-      <div className="flex justify-end mb-2">
+      <div className="mb-2 flex items-center justify-between">
+        <h1 className="text-lg">All Categories</h1>
         <Link to="/admin/category/add-category" className="primary_btn text-sm">
           Add New Category
         </Link>
@@ -94,7 +92,7 @@ export default function AllCategories() {
               content
             ) : (
               <tr>
-                <td colSpan={4} className="text-center text-red-500 text-sm">
+                <td colSpan={4} className="text-center text-sm text-red-500">
                   No category found!
                 </td>
               </tr>

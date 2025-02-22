@@ -1,9 +1,9 @@
-import { useNavigate, useParams } from "react-router-dom";
-import Swal from "sweetalert2";
 import {
   useColorByIdQuery,
   useEditColorMutation,
-} from "../../../Redux/color/colorApi";
+} from "@/Redux/color/colorApi";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function EditColor() {
   const { id } = useParams();
@@ -26,10 +26,10 @@ export default function EditColor() {
 
     const res = await editColor({ id, data });
     if (res?.data?.success) {
-      Swal.fire("", "Update Success", "success");
+      toast.success("Color Updated Successfully");
       navigate("/admin/colors");
     } else {
-      Swal.fire("", "Somethin went worng", "error");
+      toast.error(res?.data?.message || "Something went wrong");
       console.log(res);
     }
   };
@@ -37,7 +37,7 @@ export default function EditColor() {
   return (
     <form
       onSubmit={handleUpdateCategory}
-      className="p-4 bg-base-100 shadhow rounded sm:w-1/2"
+      className="rounded bg-base-100 p-4 shadow sm:w-1/2"
     >
       <div className="form_group mt-2">
         <p>Sub Category Name</p>
@@ -53,7 +53,7 @@ export default function EditColor() {
 
       <div className="mt-4">
         <button
-          className="bg-primary text-base-100 px-6 py-1.5 rounded"
+          className="rounded bg-primary px-6 py-1.5 text-base-100"
           disabled={updateLoading && "disabled"}
         >
           {updateLoading ? "Loading.." : "Update"}

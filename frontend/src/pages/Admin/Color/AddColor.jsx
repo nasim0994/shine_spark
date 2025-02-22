@@ -1,6 +1,6 @@
+import { useAddColorMutation } from "@/Redux/color/colorApi";
 import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
-import { useAddColorMutation } from "../../../Redux/color/colorApi";
+import { toast } from "react-toastify";
 
 export default function AddColor() {
   const navigate = useNavigate();
@@ -18,17 +18,18 @@ export default function AddColor() {
 
     const result = await addColor(data);
     if (result?.data?.success) {
-      Swal.fire("", "add success", "success");
+      toast.success("Color Added Successfully");
       navigate("/admin/colors");
     } else {
-      Swal.fire("", "Somethin went wrong", "error");
+      toast.error("Something went wrong");
+      console.log(result);
     }
   };
 
   return (
     <form
       onSubmit={handleAddCategory}
-      className="p-4 bg-base-100 shadhow rounded sm:w-1/2"
+      className="rounded bg-base-100 p-4 shadow sm:w-1/2"
     >
       <div className="form_group mt-2">
         <p className="text-neutral-content">Color Name</p>

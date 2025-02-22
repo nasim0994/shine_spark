@@ -60,17 +60,36 @@ const productSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    variant: {
-      colors: {
-        type: Array,
-      },
-      sizes: {
-        type: Array,
-      },
-      variants: {
-        type: Array,
-      },
-    },
+    variants: [
+      {
+        color: {
+          label: {
+            type: String,
+          },
+          value: {
+            type: String,
+          },
+        },
+        size: {
+          type: String,
+        },
+        stock: {
+          type: Number,
+        },
+        sku: {
+          type: String,
+        },
+        colorImage: {
+          type: String,
+        },
+        sellingPrice: {
+          type: Number,
+        },
+        purchasePrice: {
+          type: Number,
+        },
+      }
+    ],
     rating: {
       type: Number,
       default: 0,
@@ -84,6 +103,10 @@ const productSchema = new mongoose.Schema(
     },
     sizechart: {
       type: String,
+    },
+    status: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }

@@ -9,17 +9,15 @@ import "react-tagsinput/react-tagsinput.css";
 import { toast } from "react-toastify";
 import { FaStar } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
-
+import { FaCartPlus } from "react-icons/fa";
 import {
   useGetCategoriesQuery,
   useGetCategoryQuery,
-} from "../../../Redux/category/categoryApi";
-import { useAddProductMutation } from "../../../Redux/product/productApi";
-
-import { useGetSubCategoryQuery } from "../../../Redux/subCategory/subCategoryApi";
-import { useAllBrandsQuery } from "../../../Redux/brand/brandApi";
-import { useAllColorsQuery } from "../../../Redux/color/colorApi";
-import { FaCartPlus } from "react-icons/fa";
+} from "@/Redux/category/categoryApi";
+import { useGetSubCategoryQuery } from "@/Redux/subCategory/subCategoryApi";
+import { useAllBrandsQuery } from "@/Redux/brand/brandApi";
+import { useAllColorsQuery } from "@/Redux/color/colorApi";
+import { useAddProductMutation } from "@/Redux/product/productApi";
 
 export default function AddProduct() {
   const editor = useRef(null);
@@ -75,41 +73,17 @@ export default function AddProduct() {
   const [colors, setColors] = useState([]);
   const [sizes, setSizes] = useState([]);
 
-  // const [skus, setSkus] = useState([]);
-
-  // const makeSku = (colors, sizes) => {
-  //   let sku = [];
-
-  //   if (colors?.length && sizes?.length) {
-  //     colors.forEach((color) => {
-  //       sizes.forEach((size) => {
-  //         sku.push(`${color.label.split(" ").join("")}-${size}`);
-  //       });
-  //     });
-  //   } else if (colors.length) {
-  //     colors.forEach((color) => {
-  //       sku.push(color.label.split(" ").join(""));
-  //     });
-  //   } else if (sizes.length) {
-  //     sizes.forEach((size) => {
-  //       sku.push(size);
-  //     });
-  //   }
-
-  //   return sku;
-  // };
-
   const makeVariants = (colors, sizes) => {
     let variants = [];
-    let indexNumber = 1;
 
     if (colors?.length && sizes?.length) {
       // If both colors and sizes are provided
       colors?.forEach((color) => {
         sizes?.forEach((size) => {
           variants.push({
-            index: indexNumber++,
             sku: `${color.label.split(" ").join("")}-${size}`,
+            color,
+            size,
           });
         });
       });
@@ -117,16 +91,16 @@ export default function AddProduct() {
       // If only colors are provided
       colors?.forEach((color) => {
         variants.push({
-          index: indexNumber++,
           sku: color.label.split(" ").join(""),
+          color,
         });
       });
     } else if (sizes?.length) {
       // If only sizes are provided
       sizes?.forEach((size) => {
         variants.push({
-          index: indexNumber++,
           sku: size,
+          size,
         });
       });
     }
@@ -170,41 +144,6 @@ export default function AddProduct() {
     });
   }, [colors, sizes, sellingPrice, purchasePrice, stock]);
 
-  // useEffect(() => {
-  //   const skus = makeSku(colors, sizes);
-  //   setSkus(skus);
-
-  //   setVariants((prevVariants) => {
-  //     const filteredVariants = prevVariants.filter((variant) => {
-  //       const [color, size] = variant.sku.split("-");
-  //       const colorExists = colors.some(
-  //         (selectedColor) => selectedColor.label === color,
-  //       );
-  //       const sizeExists = sizes.includes(size);
-
-  //       return colorExists && (size ? sizeExists : true);
-  //     });
-
-  //     // Generate new variants based on the selected colors and sizes
-  //     const newVariants = skus.map((sku) => {
-  //       const existingVariant = filteredVariants.find(
-  //         (variant) => variant.sku === sku,
-  //       );
-
-  //       return (
-  //         existingVariant || {
-  //           sku,
-  //           sellingPrice: sellingPrice || "",
-  //           purchasePrice: purchasePrice || "",
-  //           stock: stock || "",
-  //         }
-  //       );
-  //     });
-
-  //     return newVariants;
-  //   });
-  // }, [colors, sizes, setVariants, sellingPrice, purchasePrice, stock]);
-
   const handleVariantChange = (e, sku, field) => {
     const value = e.target.value;
 
@@ -212,10 +151,6 @@ export default function AddProduct() {
       const existingVariantIndex = prevVariants.findIndex(
         (variant) => variant.sku === sku,
       );
-
-      if (value === "000") {
-        return prevVariants.filter((variant) => variant.sku !== sku);
-      }
 
       if (existingVariantIndex >= 0) {
         const updatedVariants = [...prevVariants];
@@ -234,6 +169,35 @@ export default function AddProduct() {
         ];
       }
     });
+  };
+
+  const handleVariantImageChange = (e, sku) => {
+    const file = e.target.files[0];
+
+    // check file size
+    if (file.size > 1024 * 1024) {
+      return toast.error("You can't upload more than 1MB file size");
+    }
+
+    if (file && file.size <= 1024 * 1024) {
+      setVariants((prevVariants) => {
+        return prevVariants.map((variant) =>
+          variant.sku === sku ? { ...variant, colorImage: file } : variant,
+        );
+      });
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setVariants((prevVariants) =>
+          prevVariants.map((variant) =>
+            variant.sku === sku
+              ? { ...variant, colorImageShow: reader.result }
+              : variant,
+          ),
+        );
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const [addProduct, { isLoading }] = useAddProductMutation();
@@ -255,6 +219,9 @@ export default function AddProduct() {
     if (variant && variants?.length <= 0) {
       return toast.warning("Variant is required");
     }
+
+    if (galleries?.length > 10)
+      return toast.warning("Maximum 10 images are allowed in gallery");
 
     const totalStock =
       variant && variants?.length > 0
@@ -284,15 +251,15 @@ export default function AddProduct() {
 
     formData.append("isVariant", variant);
 
-    if (variant && variants?.length > 0)
-      formData.append(
-        "variant",
-        JSON.stringify({
-          colors,
-          sizes,
-          variants,
-        }),
-      );
+    if (variant && variants?.length > 0) {
+      formData.append("variants", JSON.stringify(variants));
+
+      variants?.map((variant) => {
+        if (variant?.colorImage) {
+          formData.append("colorImage", variant?.colorImage);
+        }
+      });
+    }
 
     const res = await addProduct(formData);
 
@@ -399,7 +366,7 @@ export default function AddProduct() {
                   <input
                     type="file"
                     multiple
-                    className="absolute z-50 h-full w-full cursor-pointer"
+                    className="gallery_input absolute z-50 h-full w-full cursor-pointer"
                     style={{ opacity: 0, top: 0, left: 0, cursor: "pointer" }}
                     onChange={handleFileChange}
                   />
@@ -410,7 +377,7 @@ export default function AddProduct() {
             </div>
           </div>
 
-          <div className="form_group mt-3">
+          <div className="mt-3">
             <div className="mb-5 flex flex-col gap-3 rounded border p-4">
               <div>
                 <p className="text-sm">Product Title</p>
@@ -611,6 +578,7 @@ export default function AddProduct() {
                         <thead>
                           <tr>
                             <th>SKU</th>
+                            {colors?.length > 0 && <th>Color Image</th>}
                             <th>Selling Price</th>
                             <th>Purchase Price</th>
                             <th>Stock</th>
@@ -623,6 +591,31 @@ export default function AddProduct() {
                               <td className="whitespace-nowrap">
                                 {variant?.sku}
                               </td>
+                              {colors?.length > 0 && (
+                                <td>
+                                  <button className="relative h-8 w-full rounded border border-dashed p-1">
+                                    <input
+                                      type="file"
+                                      className="absolute -top-1 left-0 h-full w-full opacity-0"
+                                      onChange={(e) =>
+                                        handleVariantImageChange(
+                                          e,
+                                          variant?.sku,
+                                        )
+                                      }
+                                    />
+                                    {variant?.colorImageShow ? (
+                                      <img
+                                        src={variant?.colorImageShow}
+                                        alt="Color Preview"
+                                        className="mx-auto h-full w-10 rounded"
+                                      />
+                                    ) : (
+                                      "Add Image"
+                                    )}
+                                  </button>
+                                </td>
+                              )}
                               <td>
                                 <input
                                   type="number"

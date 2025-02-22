@@ -8,7 +8,7 @@ const {
   destroy,
 } = require("../controllers/product/category/categoryController");
 
-let upload = singleUploder("./uploads/categories", 100 * 1024, "icon");
+let upload = singleUploder("./uploads/categories", 1024 * 1024, "icon");
 
 router.post("/add", (req, res, next) => {
   upload(req, res, (err) => {

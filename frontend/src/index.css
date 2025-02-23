@@ -143,6 +143,10 @@ textarea::placeholder {
   font-weight: 300;
 }
 
+button:focus {
+  --tw-ring-shadow: none !important;
+}
+
 /* ----------------Account --------------------- */
 .account_sidebar {
   width: 300px;

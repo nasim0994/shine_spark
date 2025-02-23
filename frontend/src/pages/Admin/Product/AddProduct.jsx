@@ -1,11 +1,9 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
-import Select from "react-select";
+import { useRef, useState } from "react";
 import { AiFillDelete } from "react-icons/ai";
 import JoditEditor from "jodit-react";
 import ImageUploading from "react-images-uploading";
-import TagsInput from "react-tagsinput";
-import "react-tagsinput/react-tagsinput.css";
+
 import { toast } from "react-toastify";
 import { FaStar } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
@@ -16,8 +14,8 @@ import {
 } from "@/Redux/category/categoryApi";
 import { useGetSubCategoryQuery } from "@/Redux/subCategory/subCategoryApi";
 import { useAllBrandsQuery } from "@/Redux/brand/brandApi";
-import { useAllColorsQuery } from "@/Redux/color/colorApi";
 import { useAddProductMutation } from "@/Redux/product/productApi";
+import VariantCom from "@/components/AdminComponents/Product/AddProduct/VariantCom";
 
 export default function AddProduct() {
   const editor = useRef(null);
@@ -28,18 +26,13 @@ export default function AddProduct() {
   const { data: category } = useGetCategoryQuery(categoryId);
   const { data: subCategory } = useGetSubCategoryQuery(subCategoryId);
   const { data: brands } = useAllBrandsQuery();
-  const { data: color } = useAllColorsQuery();
-  const colorOptions = color?.data?.map((item) => ({
-    label: item?.name,
-    value: item?.code,
-  }));
 
   const subCategories = category?.data?.subCategories;
   const subSubCategories = subCategory?.data?.subSubCategories;
 
   const [thumbnail, setThumbnail] = useState([]);
   const [galleries, setGalleries] = useState([]);
-  const [sizechart, setSizechart] = useState([]);
+  // const [sizeChart, setSizeChart] = useState([]);
 
   const handleFileChange = (event) => {
     const files = Array.from(event.target.files);
@@ -68,137 +61,21 @@ export default function AddProduct() {
   const [sellingPrice, setSellingPrice] = useState(0);
   const [purchasePrice, setPurchasePrice] = useState(0);
   const [stock, setStock] = useState(0);
-  const [variant, setVariant] = useState(false);
+
+  // Variant
+  const [isVariant, setIsVariant] = useState(false);
+  const [isColor, setIsColor] = useState(false);
+  const [isSize, setIsSize] = useState(false);
+
   const [variants, setVariants] = useState([]);
-  const [colors, setColors] = useState([]);
+  const [colors, setColors] = useState([
+    {
+      color: "",
+      imageFile: "",
+      imageShow: "",
+    },
+  ]);
   const [sizes, setSizes] = useState([]);
-
-  const makeVariants = (colors, sizes) => {
-    let variants = [];
-
-    if (colors?.length && sizes?.length) {
-      // If both colors and sizes are provided
-      colors?.forEach((color) => {
-        sizes?.forEach((size) => {
-          variants.push({
-            sku: `${color.label.split(" ").join("")}-${size}`,
-            color,
-            size,
-          });
-        });
-      });
-    } else if (colors?.length) {
-      // If only colors are provided
-      colors?.forEach((color) => {
-        variants.push({
-          sku: color.label.split(" ").join(""),
-          color,
-        });
-      });
-    } else if (sizes?.length) {
-      // If only sizes are provided
-      sizes?.forEach((size) => {
-        variants.push({
-          sku: size,
-          size,
-        });
-      });
-    }
-
-    return variants;
-  };
-
-  useEffect(() => {
-    // Generate new variants based on the selected colors and sizes
-    const generatedVariants = makeVariants(colors, sizes);
-
-    setVariants((prevVariants) => {
-      // Filter out existing variants based on the current selections
-      const filteredVariants = prevVariants.filter((variant) => {
-        const [color, size] = variant.sku.split("-");
-        const colorExists = colors.some(
-          (selectedColor) => selectedColor.label === color,
-        );
-        const sizeExists = sizes.includes(size);
-
-        return colorExists && (size ? sizeExists : true);
-      });
-
-      // Map the generated variants to add additional properties
-      const newVariants = generatedVariants.map((generatedVariant) => {
-        const existingVariant = filteredVariants.find(
-          (variant) => variant.sku === generatedVariant.sku,
-        );
-
-        return (
-          existingVariant || {
-            ...generatedVariant,
-            sellingPrice: sellingPrice || "",
-            purchasePrice: purchasePrice || "",
-            stock: stock || "",
-          }
-        );
-      });
-
-      return newVariants;
-    });
-  }, [colors, sizes, sellingPrice, purchasePrice, stock]);
-
-  const handleVariantChange = (e, sku, field) => {
-    const value = e.target.value;
-
-    setVariants((prevVariants) => {
-      const existingVariantIndex = prevVariants.findIndex(
-        (variant) => variant.sku === sku,
-      );
-
-      if (existingVariantIndex >= 0) {
-        const updatedVariants = [...prevVariants];
-        updatedVariants[existingVariantIndex] = {
-          ...updatedVariants[existingVariantIndex],
-          [field]: value,
-        };
-        return updatedVariants;
-      } else {
-        return [
-          ...prevVariants,
-          {
-            sku,
-            [field]: value,
-          },
-        ];
-      }
-    });
-  };
-
-  const handleVariantImageChange = (e, sku) => {
-    const file = e.target.files[0];
-
-    // check file size
-    if (file.size > 1024 * 1024) {
-      return toast.error("You can't upload more than 1MB file size");
-    }
-
-    if (file && file.size <= 1024 * 1024) {
-      setVariants((prevVariants) => {
-        return prevVariants.map((variant) =>
-          variant.sku === sku ? { ...variant, colorImage: file } : variant,
-        );
-      });
-
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setVariants((prevVariants) =>
-          prevVariants.map((variant) =>
-            variant.sku === sku
-              ? { ...variant, colorImageShow: reader.result }
-              : variant,
-          ),
-        );
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   const [addProduct, { isLoading }] = useAddProductMutation();
 
@@ -213,10 +90,10 @@ export default function AddProduct() {
 
     if (!sellingPrice) return toast.warning("Selling Price is required");
     if (!purchasePrice) return toast.warning("Purchase Price is required");
-    if (!variant && !stock) return toast.warning("Stock is required");
+    if (!isVariant && !stock) return toast.warning("Stock is required");
 
     if (!details) return toast.warning("Description is required");
-    if (variant && variants?.length <= 0) {
+    if (isVariant && variants?.length <= 0) {
       return toast.warning("Variant is required");
     }
 
@@ -224,13 +101,13 @@ export default function AddProduct() {
       return toast.warning("Maximum 10 images are allowed in gallery");
 
     const totalStock =
-      variant && variants?.length > 0
+      isVariant && variants?.length > 0
         ? variants?.reduce((acc, curr) => acc + parseInt(curr?.stock), 0)
         : stock;
 
     const formData = new FormData();
     formData.append("thumbnail", thumbnail[0]?.file);
-    if (sizechart?.length > 0) formData.append("sizechart", sizechart[0]?.file);
+    // if (sizeChart?.length > 0) formData.append("sizeChart", sizeChart[0]?.file);
 
     if (galleries?.length > 0)
       galleries.forEach((gallery) => formData.append("gallery", gallery.file));
@@ -249,15 +126,23 @@ export default function AddProduct() {
     formData.append("featured", featured);
     formData.append("description", details);
 
-    formData.append("isVariant", variant);
+    formData.append("isVariant", isVariant);
 
-    if (variant && variants?.length > 0) {
+    if (isVariant && variants?.length > 0) {
       formData.append("variants", JSON.stringify(variants));
+    }
 
-      variants?.map((variant) => {
-        if (variant?.colorImage) {
-          formData.append("colorImage", variant?.colorImage);
-        }
+    if (sizes?.length > 0) {
+      formData.append("sizes", JSON.stringify(sizes));
+    }
+    if (colors?.length > 0) {
+      formData.append(
+        "colors",
+        JSON.stringify(colors?.map((color) => color.color)),
+      );
+
+      colors?.map((color) => {
+        formData.append("colorImages", color?.imageFile);
       });
     }
 
@@ -502,217 +387,27 @@ export default function AddProduct() {
                     onChange={(e) => setStock(e.target.value)}
                     required
                     defaultValue={stock}
-                    disabled={variant && "disabled"}
+                    disabled={isVariant}
                   />
                 </div>
               </div>
             </div>
 
             {/* Variants */}
-            <div className="mt-4 rounded border p-4">
-              <div className="flex items-center gap-3">
-                <p>Variant: </p>
-
-                <label className="relative flex cursor-pointer items-center">
-                  <input
-                    type="checkbox"
-                    className="peer sr-only"
-                    value={variant}
-                    onChange={() => {
-                      setVariant(!variant);
-                    }}
-                  />
-                  <div className="peer relative h-6 w-11 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-secondary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-blue-300 rtl:peer-checked:after:-translate-x-full"></div>
-                </label>
-              </div>
-
-              {variant && (
-                <>
-                  <div className="mt-2 rounded border p-3">
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <div>
-                        <p className="text-sm">Colors</p>
-
-                        <Select
-                          onChange={(color) => setColors(color)}
-                          defaultValue={colors}
-                          options={colorOptions}
-                          isMulti
-                          classNamePrefix="custom-select"
-                          getOptionLabel={(option) => (
-                            <div
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                cursor: "pointer",
-                              }}
-                            >
-                              <div
-                                style={{
-                                  width: 13,
-                                  height: 13,
-                                  backgroundColor: option.value,
-                                  marginRight: 6,
-                                  borderRadius: "50%",
-                                }}
-                              ></div>
-                              <span>{option.label}</span>
-                            </div>
-                          )}
-                          getOptionValue={(option) => option.value}
-                        />
-                      </div>
-
-                      <div>
-                        <p className="text-sm">Sizes</p>
-                        <TagsInput
-                          value={sizes}
-                          onChange={(tags) => setSizes(tags)}
-                          onlyUnique
-                        />
-                      </div>
-                    </div>
-
-                    <div className="relative mt-3 overflow-x-auto">
-                      <table className="border_table">
-                        <thead>
-                          <tr>
-                            <th>SKU</th>
-                            {colors?.length > 0 && <th>Color Image</th>}
-                            <th>Selling Price</th>
-                            <th>Purchase Price</th>
-                            <th>Stock</th>
-                          </tr>
-                        </thead>
-
-                        <tbody>
-                          {variants?.map((variant, i) => (
-                            <tr key={i}>
-                              <td className="whitespace-nowrap">
-                                {variant?.sku}
-                              </td>
-                              {colors?.length > 0 && (
-                                <td>
-                                  <button className="relative h-8 w-full rounded border border-dashed p-1">
-                                    <input
-                                      type="file"
-                                      className="absolute -top-1 left-0 h-full w-full opacity-0"
-                                      onChange={(e) =>
-                                        handleVariantImageChange(
-                                          e,
-                                          variant?.sku,
-                                        )
-                                      }
-                                    />
-                                    {variant?.colorImageShow ? (
-                                      <img
-                                        src={variant?.colorImageShow}
-                                        alt="Color Preview"
-                                        className="mx-auto h-full w-10 rounded"
-                                      />
-                                    ) : (
-                                      "Add Image"
-                                    )}
-                                  </button>
-                                </td>
-                              )}
-                              <td>
-                                <input
-                                  type="number"
-                                  onChange={(e) =>
-                                    handleVariantChange(
-                                      e,
-                                      variant?.sku,
-                                      "sellingPrice",
-                                    )
-                                  }
-                                  required
-                                  defaultValue={variant?.sellingPrice}
-                                />
-                              </td>
-                              <td>
-                                <input
-                                  type="number"
-                                  onChange={(e) =>
-                                    handleVariantChange(
-                                      e,
-                                      variant?.sku,
-                                      "purchasePrice",
-                                    )
-                                  }
-                                  required
-                                  defaultValue={variant?.purchasePrice}
-                                />
-                              </td>
-                              <td>
-                                <input
-                                  type="number"
-                                  onChange={(e) =>
-                                    handleVariantChange(
-                                      e,
-                                      variant?.sku,
-                                      "stock",
-                                    )
-                                  }
-                                  required
-                                  defaultValue={variant?.stock}
-                                />
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-
-                  {/* Sixechart */}
-                  <div className="mt-4 rounded border p-4">
-                    <p className="mb-2 text-sm">Add Sizechart </p>
-                    <ImageUploading
-                      value={thumbnail}
-                      onChange={(img) => setSizechart(img)}
-                      dataURLKey="data_url"
-                    >
-                      {({ onImageUpload, onImageRemove, dragProps }) => (
-                        <div
-                          className="grid gap-4 sm:grid-cols-2"
-                          {...dragProps}
-                        >
-                          <div className="flex flex-col items-center justify-center gap-2 rounded border border-dashed p-3">
-                            <span
-                              onClick={onImageUpload}
-                              className="cursor-pointer rounded-2xl bg-primary px-4 py-1.5 text-sm text-base-100"
-                            >
-                              Choose Image
-                            </span>
-
-                            <p className="text-neutral-content">or Drop here</p>
-                          </div>
-
-                          <div className="grid gap-4 rounded border border-dashed p-3">
-                            {sizechart?.map((img, index) => (
-                              <div key={index} className="image-item relative">
-                                <img
-                                  src={img["data_url"]}
-                                  alt="thumbnail"
-                                  className="h-20 w-full"
-                                />
-                                <div
-                                  onClick={() => onImageRemove(index)}
-                                  className="absolute right-0 top-0 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-primary text-base-100"
-                                >
-                                  <AiFillDelete />
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </ImageUploading>
-                  </div>
-                </>
-              )}
-            </div>
+            <VariantCom
+              isVariant={isVariant}
+              setIsVariant={setIsVariant}
+              isColor={isColor}
+              setIsColor={setIsColor}
+              isSize={isSize}
+              setIsSize={setIsSize}
+              colors={colors}
+              setColors={setColors}
+              sizes={sizes}
+              setSizes={setSizes}
+              variants={variants}
+              setVariants={setVariants}
+            />
 
             {/*  Featured */}
             <div className="mt-6 rounded border p-4">

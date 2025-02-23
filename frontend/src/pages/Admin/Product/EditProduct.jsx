@@ -9,19 +9,18 @@ import "react-tagsinput/react-tagsinput.css";
 import { toast } from "react-toastify";
 import { FaStar } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
-import {
-  useGetCategoriesQuery,
-  useGetCategoryQuery,
-} from "../../../Redux/category/categoryApi";
+import { FaCartPlus } from "react-icons/fa";
 import {
   useGetProductByIdQuery,
   useUpdateProductMutation,
-} from "../../../Redux/product/productApi";
-
-import { useGetSubCategoryQuery } from "../../../Redux/subCategory/subCategoryApi";
-import { useAllBrandsQuery } from "../../../Redux/brand/brandApi";
-import { useAllColorsQuery } from "../../../Redux/color/colorApi";
-import { FaCartPlus } from "react-icons/fa";
+} from "@/Redux/product/productApi";
+import {
+  useGetCategoriesQuery,
+  useGetCategoryQuery,
+} from "@/Redux/category/categoryApi";
+import { useGetSubCategoryQuery } from "@/Redux/subCategory/subCategoryApi";
+import { useAllBrandsQuery } from "@/Redux/brand/brandApi";
+import { useAllColorsQuery } from "@/Redux/color/colorApi";
 
 export default function EditProduct() {
   const { id } = useParams();
@@ -90,9 +89,25 @@ export default function EditProduct() {
 
       if (product?.isVariant) {
         setVariant(product?.isVariant);
-        setColors(product?.variant?.colors);
-        setSizes(product?.variant?.sizes);
-        setVariants(product?.variant?.variants);
+        setVariants(product?.variants);
+
+        if (product?.variants?.length > 0) {
+          const colors =
+            product?.variants
+              ?.map((variant) =>
+                variant?.color?.label && variant?.color?.value
+                  ? { label: variant.color.label, value: variant.color.value }
+                  : null,
+              )
+              .filter(Boolean) || [];
+
+          const sizes = product?.variants
+            ?.map((variant) => variant?.size)
+            .filter((size) => size !== undefined);
+
+          if (colors.length > 0) setColors(colors);
+          if (sizes.length > 0) setSizes(sizes);
+        }
       }
     }
   }, [product]);
@@ -120,32 +135,33 @@ export default function EditProduct() {
 
   const makeVariants = (colors, sizes) => {
     let variants = [];
-    let indexNumber = 1;
+    let index = 0;
 
     if (colors?.length && sizes?.length) {
-      // If both colors and sizes are provided
       colors?.forEach((color) => {
         sizes?.forEach((size) => {
           variants.push({
-            index: indexNumber++,
             sku: `${color.label.split(" ").join("")}-${size}`,
+            index: index++,
+            color,
+            size,
           });
         });
       });
     } else if (colors?.length) {
-      // If only colors are provided
       colors?.forEach((color) => {
         variants.push({
-          index: indexNumber++,
           sku: color.label.split(" ").join(""),
+          index: index++,
+          color,
         });
       });
     } else if (sizes?.length) {
-      // If only sizes are provided
       sizes?.forEach((size) => {
         variants.push({
-          index: indexNumber++,
           sku: size,
+          index: index++,
+          size,
         });
       });
     }
@@ -158,8 +174,7 @@ export default function EditProduct() {
       const generatedVariants = makeVariants(colors, sizes);
 
       setVariants((prevVariants) => {
-        // Initialize the index number based on the previous variants length
-        let indexNumber = prevVariants?.length + 1;
+        let index = prevVariants?.length + 1;
 
         // Filter out existing variants based on the current selections
         const filteredVariants = prevVariants?.filter((variant) => {
@@ -182,28 +197,39 @@ export default function EditProduct() {
                   selectedColor.label.replace(/\s+/g, "") === color,
               )
             : true;
+
           const sizeExists = size ? sizes.includes(size) : true;
 
           return colorExists && sizeExists;
-
-          // const colorExists = colors.some(
-          //   (selectedColor) =>
-          //     selectedColor.label.split(" ").join("") === color,
-          // );
-          // const sizeExists = sizes.includes(size);
-
-          // return colorExists && (size ? sizeExists : true);
         });
 
         // Map the generated variants to add additional properties
         const newVariants = generatedVariants?.map((generatedVariant) => {
-          const existingVariant = filteredVariants?.find(
-            (variant) => variant?.sku === generatedVariant?.sku,
-          );
+          const existingVariant = filteredVariants?.find((variant) => {
+            return variant?.index === generatedVariant?.index;
+          });
+
+          const colorImage = existingVariant
+            ? existingVariant.colorImage
+            : (filteredVariants?.find(
+                (variant) =>
+                  variant?.color?.label == generatedVariant?.color?.label,
+              )?.colorImage ?? null);
+
+          const colorImageShow = existingVariant
+            ? existingVariant.colorImageShow
+            : (filteredVariants?.find(
+                (variant) =>
+                  variant?.color?.label == generatedVariant?.color?.label,
+              )?.colorImageShow ?? null);
 
           return {
-            index: existingVariant ? existingVariant.index : indexNumber++,
+            index: existingVariant ? existingVariant.index : index++,
             sku: generatedVariant?.sku,
+            color: generatedVariant?.color,
+            size: generatedVariant?.size,
+            colorImage,
+            colorImageShow,
             sellingPrice: existingVariant?.sellingPrice ?? "",
             purchasePrice: existingVariant?.purchasePrice ?? "",
             stock: existingVariant?.stock ?? "",
@@ -246,6 +272,35 @@ export default function EditProduct() {
         ];
       }
     });
+  };
+
+  const handleVariantImageChange = (e, sku) => {
+    const file = e.target.files[0];
+
+    // check file size
+    if (file.size > 1024 * 1024) {
+      return toast.error("You can't upload more than 1MB file size");
+    }
+
+    if (file && file.size <= 1024 * 1024) {
+      setVariants((prevVariants) => {
+        return prevVariants.map((variant) =>
+          variant.sku === sku ? { ...variant, colorImage: file } : variant,
+        );
+      });
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setVariants((prevVariants) =>
+          prevVariants.map((variant) =>
+            variant.sku === sku
+              ? { ...variant, colorImageShow: reader.result }
+              : variant,
+          ),
+        );
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const [updateProduct, { isLoading }] = useUpdateProductMutation();
@@ -299,15 +354,39 @@ export default function EditProduct() {
     formData.append("featured", featured);
     formData.append("description", details);
 
-    if (variant && variants?.length > 0)
-      formData.append(
-        "variant",
-        JSON.stringify({
-          colors,
-          sizes,
-          variants,
-        }),
-      );
+    formData.append("isVariant", variant);
+    if (variant && variants?.length > 0) {
+      const formatVariants = variants?.map((variant) => {
+        const {
+          color,
+          size,
+          sku,
+          colorImage,
+          sellingPrice,
+          purchasePrice,
+          stock,
+        } = variant;
+
+        return {
+          color,
+          size,
+          sku,
+          colorImage,
+          sellingPrice,
+          purchasePrice,
+          stock,
+        };
+      });
+
+      formData.append("variants", JSON.stringify(formatVariants));
+
+      variants?.map((variant) => {
+        if (variant?.colorImage instanceof File) {
+          formData.append("colorImage", variant?.colorImage);
+          formData.append("colorImageSku", variant?.sku);
+        }
+      });
+    }
 
     const res = await updateProduct({ id, formData });
 
@@ -615,7 +694,6 @@ export default function EditProduct() {
 
               {variant && (
                 <>
-                  {" "}
                   <div className="mt-2 rounded border p-3">
                     <div className="grid gap-4 md:grid-cols-2">
                       <div>
@@ -666,6 +744,7 @@ export default function EditProduct() {
                         <thead>
                           <tr>
                             <th>SKU</th>
+                            {colors?.length > 0 && <th>Color Image</th>}
                             <th>Selling Price</th>
                             <th>Purchase Price</th>
                             <th>Stock</th>
@@ -678,6 +757,38 @@ export default function EditProduct() {
                               <td className="whitespace-nowrap">
                                 {variant?.sku}
                               </td>
+                              {colors?.length > 0 && (
+                                <td>
+                                  <button className="relative h-8 w-full rounded border border-dashed p-1">
+                                    <input
+                                      type="file"
+                                      className="absolute -top-1 left-0 h-full w-full opacity-0"
+                                      onChange={(e) =>
+                                        handleVariantImageChange(
+                                          e,
+                                          variant?.sku,
+                                        )
+                                      }
+                                    />
+                                    {variant?.colorImageShow ? (
+                                      <img
+                                        src={variant?.colorImageShow}
+                                        alt="Color Preview"
+                                        className="mx-auto h-full w-10 rounded"
+                                      />
+                                    ) : variant?.colorImage &&
+                                      !variant?.colorImageShow ? (
+                                      <img
+                                        src={`${import.meta.env.VITE_BACKEND_URL}/products/${variant?.colorImage}`}
+                                        alt="Color Preview"
+                                        className="mx-auto h-full w-10 rounded"
+                                      />
+                                    ) : (
+                                      "Add Image"
+                                    )}
+                                  </button>
+                                </td>
+                              )}
                               <td>
                                 <input
                                   type="number"
@@ -726,6 +837,7 @@ export default function EditProduct() {
                       </table>
                     </div>
                   </div>
+
                   {/* sizechart */}
                   <div className="mt-4 rounded border p-4">
                     <p className="mb-2 text-sm">Add Sizechart </p>

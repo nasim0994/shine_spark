@@ -1,11 +1,8 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import Select from "react-select";
 import { AiFillDelete } from "react-icons/ai";
 import JoditEditor from "jodit-react";
 import ImageUploading from "react-images-uploading";
-import TagsInput from "react-tagsinput";
-import "react-tagsinput/react-tagsinput.css";
 import { toast } from "react-toastify";
 import { FaStar } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
@@ -20,7 +17,7 @@ import {
 } from "@/Redux/category/categoryApi";
 import { useGetSubCategoryQuery } from "@/Redux/subCategory/subCategoryApi";
 import { useAllBrandsQuery } from "@/Redux/brand/brandApi";
-import { useAllColorsQuery } from "@/Redux/color/colorApi";
+import VariantCom from "@/components/AdminComponents/Product/EditProduct/VariantCom";
 
 export default function EditProduct() {
   const { id } = useParams();
@@ -33,7 +30,7 @@ export default function EditProduct() {
   const [thumbnail, setThumbnail] = useState([]);
   const [galleries, setGalleries] = useState([]);
   const [galleriesUrl, setGalleriesUrl] = useState([]);
-  const [sizechart, setSizechart] = useState([]);
+  const [sizeChart, setSizeChart] = useState([]);
 
   const [title, setTitle] = useState("");
   const [subSubCategoryId, setSubSubCategoryId] = useState("");
@@ -47,7 +44,10 @@ export default function EditProduct() {
   const [purchasePrice, setPurchasePrice] = useState(0);
   const [stock, setStock] = useState(0);
 
-  const [variant, setVariant] = useState(false);
+  // variants
+  const [isVariant, setIsVariant] = useState(false);
+  const [isColor, setIsColor] = useState(false);
+  const [isSize, setIsSize] = useState(false);
   const [variants, setVariants] = useState([]);
   const [colors, setColors] = useState([]);
   const [sizes, setSizes] = useState([]);
@@ -59,12 +59,6 @@ export default function EditProduct() {
   const { data: category } = useGetCategoryQuery(categoryId);
   const { data: subCategory } = useGetSubCategoryQuery(subCategoryId);
   const { data: brands } = useAllBrandsQuery();
-  const { data: color } = useAllColorsQuery();
-
-  const colorOptions = color?.data?.map((item) => ({
-    label: item?.name,
-    value: item?.code,
-  }));
 
   const subCategories = category?.data?.subCategories;
   const subSubCategories = subCategory?.data?.subSubCategories;
@@ -88,26 +82,22 @@ export default function EditProduct() {
       }
 
       if (product?.isVariant) {
-        setVariant(product?.isVariant);
+        setIsVariant(product?.isVariant);
         setVariants(product?.variants);
-
-        if (product?.variants?.length > 0) {
-          const colors =
-            product?.variants
-              ?.map((variant) =>
-                variant?.color?.label && variant?.color?.value
-                  ? { label: variant.color.label, value: variant.color.value }
-                  : null,
-              )
-              .filter(Boolean) || [];
-
-          const sizes = product?.variants
-            ?.map((variant) => variant?.size)
-            .filter((size) => size !== undefined);
-
-          if (colors.length > 0) setColors(colors);
-          if (sizes.length > 0) setSizes(sizes);
-        }
+      }
+      if (product?.sizes?.length > 0) {
+        setSizes(product?.sizes);
+        setIsSize(true);
+      }
+      if (product?.colors?.length > 0) {
+        setColors(
+          product?.colors?.map((color) => ({
+            color: color?.color,
+            imageFile: "",
+            imageShow: `${import.meta.env.VITE_BACKEND_URL}/products/${color?.image}`,
+          })),
+        );
+        setIsColor(true);
       }
     }
   }, [product]);
@@ -133,180 +123,10 @@ export default function EditProduct() {
     setGalleriesUrl(updatedGallery);
   };
 
-  const makeVariants = (colors, sizes) => {
-    let variants = [];
-    let index = 0;
-
-    if (colors?.length && sizes?.length) {
-      colors?.forEach((color) => {
-        sizes?.forEach((size) => {
-          variants.push({
-            sku: `${color.label.split(" ").join("")}-${size}`,
-            index: index++,
-            color,
-            size,
-          });
-        });
-      });
-    } else if (colors?.length) {
-      colors?.forEach((color) => {
-        variants.push({
-          sku: color.label.split(" ").join(""),
-          index: index++,
-          color,
-        });
-      });
-    } else if (sizes?.length) {
-      sizes?.forEach((size) => {
-        variants.push({
-          sku: size,
-          index: index++,
-          size,
-        });
-      });
-    }
-
-    return variants;
-  };
-
-  useEffect(() => {
-    if (variant) {
-      const generatedVariants = makeVariants(colors, sizes);
-
-      setVariants((prevVariants) => {
-        let index = prevVariants?.length + 1;
-
-        // Filter out existing variants based on the current selections
-        const filteredVariants = prevVariants?.filter((variant) => {
-          const skuParts = variant.sku.split("-");
-          let color = "";
-          let size = "";
-
-          // Assign based on how many parts are in sku
-          if (skuParts.length === 2) {
-            [color, size] = skuParts; // both color and size present
-          } else if (colors.length && skuParts.length === 1) {
-            color = skuParts[0]; // only color present
-          } else if (sizes.length && skuParts.length === 1) {
-            size = skuParts[0]; // only size present
-          }
-
-          const colorExists = color
-            ? colors.some(
-                (selectedColor) =>
-                  selectedColor.label.replace(/\s+/g, "") === color,
-              )
-            : true;
-
-          const sizeExists = size ? sizes.includes(size) : true;
-
-          return colorExists && sizeExists;
-        });
-
-        // Map the generated variants to add additional properties
-        const newVariants = generatedVariants?.map((generatedVariant) => {
-          const existingVariant = filteredVariants?.find((variant) => {
-            return variant?.index === generatedVariant?.index;
-          });
-
-          const colorImage = existingVariant
-            ? existingVariant.colorImage
-            : (filteredVariants?.find(
-                (variant) =>
-                  variant?.color?.label == generatedVariant?.color?.label,
-              )?.colorImage ?? null);
-
-          const colorImageShow = existingVariant
-            ? existingVariant.colorImageShow
-            : (filteredVariants?.find(
-                (variant) =>
-                  variant?.color?.label == generatedVariant?.color?.label,
-              )?.colorImageShow ?? null);
-
-          return {
-            index: existingVariant ? existingVariant.index : index++,
-            sku: generatedVariant?.sku,
-            color: generatedVariant?.color,
-            size: generatedVariant?.size,
-            colorImage,
-            colorImageShow,
-            sellingPrice: existingVariant?.sellingPrice ?? "",
-            purchasePrice: existingVariant?.purchasePrice ?? "",
-            stock: existingVariant?.stock ?? "",
-          };
-        });
-
-        return newVariants;
-      });
-    }
-  }, [colors, sizes, variant]);
-
-  const handleVariantChange = (e, sku, field) => {
-    const value = e.target.value;
-
-    if (value < 0) return toast.warning("Value can't be negative");
-
-    setVariants((prevVariants) => {
-      const existingVariantIndex = prevVariants.findIndex(
-        (variant) => variant.sku === sku,
-      );
-
-      if (value === "000") {
-        return prevVariants.filter((variant) => variant.sku !== sku);
-      }
-
-      if (existingVariantIndex >= 0) {
-        const updatedVariants = [...prevVariants];
-        updatedVariants[existingVariantIndex] = {
-          ...updatedVariants[existingVariantIndex],
-          [field]: value,
-        };
-        return updatedVariants;
-      } else {
-        return [
-          ...prevVariants,
-          {
-            sku,
-            [field]: value,
-          },
-        ];
-      }
-    });
-  };
-
-  const handleVariantImageChange = (e, sku) => {
-    const file = e.target.files[0];
-
-    // check file size
-    if (file.size > 1024 * 1024) {
-      return toast.error("You can't upload more than 1MB file size");
-    }
-
-    if (file && file.size <= 1024 * 1024) {
-      setVariants((prevVariants) => {
-        return prevVariants.map((variant) =>
-          variant.sku === sku ? { ...variant, colorImage: file } : variant,
-        );
-      });
-
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setVariants((prevVariants) =>
-          prevVariants.map((variant) =>
-            variant.sku === sku
-              ? { ...variant, colorImageShow: reader.result }
-              : variant,
-          ),
-        );
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const [updateProduct, { isLoading }] = useUpdateProductMutation();
 
   // Edit product
-  const handleAddProduct = async (e) => {
+  const handleEditProduct = async (e) => {
     e.preventDefault();
 
     if (!title) return toast.warning("Title is required");
@@ -314,15 +134,15 @@ export default function EditProduct() {
 
     if (!sellingPrice) return toast.warning("Selling Price is required");
     if (!purchasePrice) return toast.warning("Purchase Price is required");
-    if (!variant && !stock) return toast.warning("Stock is required");
+    if (!isVariant && !stock) return toast.warning("Stock is required");
 
     if (!details) return toast.warning("Description is required");
-    if (variant && variants?.length <= 0) {
+    if (isVariant && variants?.length <= 0) {
       return toast.warning("Variant is required");
     }
 
     const totalStock =
-      variant && variants?.length > 0
+      isVariant && variants?.length > 0
         ? variants?.reduce(
             (acc, curr) => parseInt(acc) + parseInt(curr?.stock),
             0,
@@ -332,7 +152,7 @@ export default function EditProduct() {
     const formData = new FormData();
 
     formData.append("thumbnail", thumbnail[0]?.file);
-    if (sizechart?.length > 0) formData.append("sizechart", sizechart[0]?.file);
+    if (sizeChart?.length > 0) formData.append("sizeChart", sizeChart[0]?.file);
 
     if (galleries?.length > 0)
       galleries.forEach((gallery) => formData.append("gallery", gallery.file));
@@ -354,62 +174,32 @@ export default function EditProduct() {
     formData.append("featured", featured);
     formData.append("description", details);
 
-    formData.append("isVariant", variant);
-    if (variant && variants?.length > 0) {
-      const formatVariants = variants?.map((variant) => {
-        const {
-          color,
-          size,
-          sku,
-          colorImage,
-          sellingPrice,
-          purchasePrice,
-          stock,
-        } = variant;
+    formData.append("isVariant", isVariant);
 
-        return {
-          color,
-          size,
-          sku,
-          colorImage,
-          sellingPrice,
-          purchasePrice,
-          stock,
-        };
-      });
+    console.log("variants", variants);
 
-      formData.append("variants", JSON.stringify(formatVariants));
+    // const res = await updateProduct({ id, formData });
 
-      variants?.map((variant) => {
-        if (variant?.colorImage instanceof File) {
-          formData.append("colorImage", variant?.colorImage);
-          formData.append("colorImageSku", variant?.sku);
-        }
-      });
-    }
-
-    const res = await updateProduct({ id, formData });
-
-    if (res?.data?.success) {
-      toast.success("Product added successfully");
-      setThumbnail([]);
-      setTitle("");
-      setCategoryId("");
-      setSubCategoryId("");
-      setSubSubCategoryId("");
-      setBrand("");
-      setDiscount("");
-      setSellingPrice("");
-      setPurchasePrice("");
-      setStock("");
-      setFeatured(false);
-      setVariants("");
-      setDetails("");
-      navigate("/admin/product/all-products");
-    } else {
-      toast.error(res?.data?.message || "Failed to add product");
-      console.log(res);
-    }
+    // if (res?.data?.success) {
+    //   toast.success("Product added successfully");
+    //   setThumbnail([]);
+    //   setTitle("");
+    //   setCategoryId("");
+    //   setSubCategoryId("");
+    //   setSubSubCategoryId("");
+    //   setBrand("");
+    //   setDiscount("");
+    //   setSellingPrice("");
+    //   setPurchasePrice("");
+    //   setStock("");
+    //   setFeatured(false);
+    //   setVariants("");
+    //   setDetails("");
+    //   navigate("/admin/product/all-products");
+    // } else {
+    //   toast.error(res?.data?.message || "Failed to add product");
+    //   console.log(res);
+    // }
   };
 
   if (pLoading) return <p>Loading...</p>;
@@ -667,233 +457,27 @@ export default function EditProduct() {
                     onChange={(e) => setStock(e.target.value)}
                     required
                     value={stock}
-                    disabled={variant && "disabled"}
+                    disabled={isVariant}
                   />
                 </div>
               </div>
             </div>
 
             {/* Variants */}
-            <div className="mt-4 rounded border p-4">
-              <div className="flex items-center gap-3">
-                <p>Variant: </p>
-
-                <label className="relative flex cursor-pointer items-center">
-                  <input
-                    type="checkbox"
-                    className="peer sr-only"
-                    value={variant}
-                    onChange={() => {
-                      setVariant(!variant);
-                    }}
-                    checked={variant}
-                  />
-                  <div className="peer relative h-6 w-11 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-secondary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-blue-300 rtl:peer-checked:after:-translate-x-full"></div>
-                </label>
-              </div>
-
-              {variant && (
-                <>
-                  <div className="mt-2 rounded border p-3">
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <div>
-                        <p className="text-sm">Colors</p>
-
-                        <Select
-                          defaultValue={colors}
-                          onChange={setColors}
-                          options={colorOptions}
-                          isMulti={true}
-                          classNamePrefix="custom-select"
-                          getOptionLabel={(option) => (
-                            <div
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                cursor: "pointer",
-                              }}
-                            >
-                              <div
-                                style={{
-                                  width: 13,
-                                  height: 13,
-                                  backgroundColor: option.value,
-                                  marginRight: 6,
-                                  borderRadius: "50%",
-                                }}
-                              ></div>
-                              <span>{option.label}</span>
-                            </div>
-                          )}
-                          getOptionValue={(option) => option.value}
-                        />
-                      </div>
-
-                      <div>
-                        <p className="text-sm">Sizes</p>
-                        <TagsInput
-                          value={sizes}
-                          onChange={(tags) => setSizes(tags)}
-                          onlyUnique
-                        />
-                      </div>
-                    </div>
-
-                    <div className="relative mt-3 overflow-x-auto">
-                      <table className="border_table">
-                        <thead>
-                          <tr>
-                            <th>SKU</th>
-                            {colors?.length > 0 && <th>Color Image</th>}
-                            <th>Selling Price</th>
-                            <th>Purchase Price</th>
-                            <th>Stock</th>
-                          </tr>
-                        </thead>
-
-                        <tbody>
-                          {variants?.map((variant, i) => (
-                            <tr key={i}>
-                              <td className="whitespace-nowrap">
-                                {variant?.sku}
-                              </td>
-                              {colors?.length > 0 && (
-                                <td>
-                                  <button className="relative h-8 w-full rounded border border-dashed p-1">
-                                    <input
-                                      type="file"
-                                      className="absolute -top-1 left-0 h-full w-full opacity-0"
-                                      onChange={(e) =>
-                                        handleVariantImageChange(
-                                          e,
-                                          variant?.sku,
-                                        )
-                                      }
-                                    />
-                                    {variant?.colorImageShow ? (
-                                      <img
-                                        src={variant?.colorImageShow}
-                                        alt="Color Preview"
-                                        className="mx-auto h-full w-10 rounded"
-                                      />
-                                    ) : variant?.colorImage &&
-                                      !variant?.colorImageShow ? (
-                                      <img
-                                        src={`${import.meta.env.VITE_BACKEND_URL}/products/${variant?.colorImage}`}
-                                        alt="Color Preview"
-                                        className="mx-auto h-full w-10 rounded"
-                                      />
-                                    ) : (
-                                      "Add Image"
-                                    )}
-                                  </button>
-                                </td>
-                              )}
-                              <td>
-                                <input
-                                  type="number"
-                                  onChange={(e) =>
-                                    handleVariantChange(
-                                      e,
-                                      variant?.sku,
-                                      "sellingPrice",
-                                    )
-                                  }
-                                  required
-                                  defaultValue={variant?.sellingPrice}
-                                />
-                              </td>
-                              <td>
-                                <input
-                                  type="number"
-                                  onChange={(e) =>
-                                    handleVariantChange(
-                                      e,
-                                      variant?.sku,
-                                      "purchasePrice",
-                                    )
-                                  }
-                                  required
-                                  defaultValue={variant?.purchasePrice}
-                                />
-                              </td>
-                              <td>
-                                <input
-                                  type="number"
-                                  onChange={(e) =>
-                                    handleVariantChange(
-                                      e,
-                                      variant?.sku,
-                                      "stock",
-                                    )
-                                  }
-                                  required
-                                  defaultValue={variant?.stock}
-                                />
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-
-                  {/* sizechart */}
-                  <div className="mt-4 rounded border p-4">
-                    <p className="mb-2 text-sm">Add Sizechart </p>
-                    <ImageUploading
-                      value={thumbnail}
-                      onChange={(img) => setSizechart(img)}
-                      dataURLKey="data_url"
-                    >
-                      {({ onImageUpload, onImageRemove, dragProps }) => (
-                        <div
-                          className="grid gap-4 sm:grid-cols-2"
-                          {...dragProps}
-                        >
-                          <div className="flex flex-col items-center justify-center gap-2 rounded border border-dashed p-3">
-                            <span
-                              onClick={onImageUpload}
-                              className="cursor-pointer rounded-2xl bg-primary px-4 py-1.5 text-sm text-base-100"
-                            >
-                              Choose Image
-                            </span>
-
-                            <p className="text-neutral-content">or Drop here</p>
-                          </div>
-
-                          <div className="grid gap-4 rounded border border-dashed p-3">
-                            {sizechart?.map((img, index) => (
-                              <div key={index} className="image-item relative">
-                                <img
-                                  src={img["data_url"]}
-                                  alt="thumbnail"
-                                  className="h-20 w-full"
-                                />
-                                <div
-                                  onClick={() => onImageRemove(index)}
-                                  className="absolute right-0 top-0 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-primary text-base-100"
-                                >
-                                  <AiFillDelete />
-                                </div>
-                              </div>
-                            ))}
-
-                            {sizechart?.length <= 0 && product?.sizechart && (
-                              <img
-                                src={`${import.meta.env.VITE_BACKEND_URL}/products/${product?.sizechart}`}
-                                alt="sizechart"
-                                className="h-20 w-full"
-                              />
-                            )}
-                          </div>
-                        </div>
-                      )}
-                    </ImageUploading>
-                  </div>
-                </>
-              )}
-            </div>
+            <VariantCom
+              isVariant={isVariant}
+              setIsVariant={setIsVariant}
+              isColor={isColor}
+              setIsColor={setIsColor}
+              isSize={isSize}
+              setIsSize={setIsSize}
+              colors={colors}
+              setColors={setColors}
+              sizes={sizes}
+              setSizes={setSizes}
+              variants={variants}
+              setVariants={setVariants}
+            />
 
             {/*  Featured */}
             <div className="mt-6 rounded border p-4">
@@ -931,7 +515,7 @@ export default function EditProduct() {
             {/* Buttons */}
             <div className="mt-6">
               <button
-                onClick={handleAddProduct}
+                onClick={handleEditProduct}
                 type="submit"
                 disabled={isLoading && "disabled"}
                 className="rounded bg-primary px-10 py-2 text-base-100"

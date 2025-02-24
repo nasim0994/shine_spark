@@ -175,31 +175,48 @@ export default function EditProduct() {
     formData.append("description", details);
 
     formData.append("isVariant", isVariant);
+    if (isVariant && variants?.length > 0) {
+      formData.append("variants", JSON.stringify(variants));
+    }
+    if (sizes?.length > 0) {
+      formData.append("sizes", JSON.stringify(sizes));
+    }
+    if (colors?.length > 0) {
+      formData.append(
+        "colors",
+        JSON.stringify(colors?.map((color) => color.color)),
+      );
 
-    console.log("variants", variants);
+      colors?.map((color) => {
+        if (color?.imageFile instanceof File) {
+          formData.append("colorImages", color?.imageFile);
+          formData.append("colorValues", color?.color);
+        }
+      });
+    }
 
-    // const res = await updateProduct({ id, formData });
+    const res = await updateProduct({ id, formData });
 
-    // if (res?.data?.success) {
-    //   toast.success("Product added successfully");
-    //   setThumbnail([]);
-    //   setTitle("");
-    //   setCategoryId("");
-    //   setSubCategoryId("");
-    //   setSubSubCategoryId("");
-    //   setBrand("");
-    //   setDiscount("");
-    //   setSellingPrice("");
-    //   setPurchasePrice("");
-    //   setStock("");
-    //   setFeatured(false);
-    //   setVariants("");
-    //   setDetails("");
-    //   navigate("/admin/product/all-products");
-    // } else {
-    //   toast.error(res?.data?.message || "Failed to add product");
-    //   console.log(res);
-    // }
+    if (res?.data?.success) {
+      toast.success("Product added successfully");
+      setThumbnail([]);
+      setTitle("");
+      setCategoryId("");
+      setSubCategoryId("");
+      setSubSubCategoryId("");
+      setBrand("");
+      setDiscount("");
+      setSellingPrice("");
+      setPurchasePrice("");
+      setStock("");
+      setFeatured(false);
+      setVariants("");
+      setDetails("");
+      navigate("/admin/product/all-products");
+    } else {
+      toast.error(res?.data?.message || "Failed to add product");
+      console.log(res);
+    }
   };
 
   if (pLoading) return <p>Loading...</p>;

@@ -317,7 +317,7 @@ exports.updateProduct = async (req, res) => {
   const galleries = req.files.gallery ? req.files.gallery : [];
   const colorImages = req.files.colorImages ? req.files.colorImages : [];
 
-  const { title, variants, galleriesUrl, colorImageSku } = req?.body;
+  const { title, variants, galleriesUrl, colorValues, colors, sizes } = req?.body;
 
 
   try {
@@ -335,6 +335,8 @@ exports.updateProduct = async (req, res) => {
       slug: slugify(`${title}`),
       thumbnail: thumbnail || isExit?.thumbnail,
       sizeChart: sizeChart || isExit?.sizeChart,
+      variants: variants && JSON.parse(variants),
+      sizes: sizes && JSON.parse(sizes),
     };
 
     let newImages = [];
@@ -376,34 +378,25 @@ exports.updateProduct = async (req, res) => {
     }
 
 
-    const parseVariants = variants && JSON.parse(variants);
-    const skuArray = Array.isArray(colorImageSku) ? colorImageSku : [colorImageSku];
-
-    console.log("parseVariants", parseVariants);
-
-
-    const uploadedImages = colorImages.map((file, index) => ({
-      sku: skuArray[index],
-      imageUrl: file?.filename,
+    const parseColors = colors && JSON.parse(colors);
+    const colorArray = Array.isArray(colorValues) ? colorValues : [colorValues];
+    const uploadedImages = colorImages?.map((file, index) => ({
+      color: colorArray[index],
+      image: file?.filename,
     }));
 
-
-
-
-
-    if (parseVariants && parseVariants?.length > 0) {
+    if (parseColors && parseColors?.length > 0) {
       if (uploadedImages?.length > 0) {
-        const newVariants = parseVariants?.map((variantItem) => {
+        const newColors = parseColors?.map((item) => {
           const matchedImage = uploadedImages?.find(
-            (img) => img?.sku === variantItem?.sku
-          );
-
+            (img) => img?.color == item
+          )
 
           // For delete old image
-          if (matchedImage && isExit?.variants) {
-            const oldVariant = isExit.variants.find((v) => v.sku === variantItem.sku);
-            if (oldVariant?.colorImage) {
-              const fullPath = `./uploads/products/${oldVariant?.colorImage}`;
+          if (matchedImage && isExit?.colors) {
+            const oldColor = isExit?.colors?.find((v) => v.color == item);
+            if (oldColor?.image) {
+              const fullPath = `./uploads/products/${oldColor?.image}`;
               fs.unlink(fullPath, (err) => {
                 if (err) {
                   console.error(`❌ Failed to delete old image: ${fullPath}`, err);
@@ -415,38 +408,37 @@ exports.updateProduct = async (req, res) => {
           }
 
           return {
-            ...variantItem,
-            colorImage: matchedImage?.imageUrl || variantItem?.colorImage || isExit?.variants?.find(v => v.sku === variantItem.sku)?.colorImage
+            color: item,
+            image: matchedImage?.image || isExit?.colors?.find(v => v.color == item)?.image
           };
         });
 
-        product.variants = newVariants;
+        product.colors = newColors;
       } else {
         // Handle deleted variants' images
-        const oldVariants = isExit?.variants || [];
-        const deletedVariants = oldVariants?.filter(
-          (oldVariant) => !parseVariants?.some((newVariant) => newVariant.sku === oldVariant.sku)
+        const oldColors = isExit?.variants || [];
+        const deletedColors = oldColors?.filter(
+          (oldColor) => !parseColors?.some((newColor) => newColor.color == oldColor.color)
         );
 
-        // Remove images of deleted variants
-        deletedVariants?.forEach((variant) => {
-          if (variant?.colorImage) {
-            const fullPath = `./uploads/products/${variant?.colorImage}`;
+        // Remove images of deleted colors
+        deletedColors?.forEach((color) => {
+          if (color?.image) {
+            const fullPath = `./uploads/products/${color?.image}`;
             fs.unlink(fullPath, (err) => {
               if (err) {
-                console.error(`❌ Failed to delete old image of deleted variant: ${fullPath}`, err);
+                console.error(`❌ Failed to delete old image of deleted color: ${fullPath}`, err);
               } else {
-                console.log(`✅ Deleted image of deleted variant: ${fullPath}`);
+                console.log(`✅ Deleted image of deleted color: ${fullPath}`);
               }
             });
           }
         });
 
-        product.variants = parseVariants;
+        product.colors = parseColors;
       }
     }
 
-    console.log("product", product);
 
 
     // update

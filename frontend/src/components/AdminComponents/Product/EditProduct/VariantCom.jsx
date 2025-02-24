@@ -1,3 +1,4 @@
+import { AiOutlineDelete } from "react-icons/ai";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -15,7 +16,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import TagsInput from "react-tagsinput";
 import "react-tagsinput/react-tagsinput.css";
 import { toast } from "react-toastify";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function VariantCom({
   isVariant,
@@ -30,7 +31,10 @@ export default function VariantCom({
   setSizes,
   variants,
   setVariants,
+  setSizeChart,
+  sizeChartDBUrl,
 }) {
+  const [sizeChartUrl, setSizeChartUrl] = useState(null);
   const { data: color } = useAllColorsQuery();
   const colorOptions = color?.data?.map((item) => ({
     label: item?.name,
@@ -105,7 +109,7 @@ export default function VariantCom({
     let variants = [];
     let index = 0;
 
-    if (colors?.length > 0 && sizes?.length > 0) {
+    if (isColor && colors?.length && isSize && sizes?.length) {
       colors?.forEach((color) => {
         sizes?.forEach((size) => {
           variants.push({
@@ -114,14 +118,14 @@ export default function VariantCom({
           });
         });
       });
-    } else if (colors?.length > 0) {
+    } else if (isColor && colors?.length) {
       colors?.forEach((color) => {
         variants.push({
           sku: color.split(" ").join("").toLowerCase(),
           index: index++,
         });
       });
-    } else if (sizes?.length > 0) {
+    } else if (isSize && sizes?.length) {
       sizes?.forEach((size) => {
         variants.push({
           sku: size.toLowerCase(),
@@ -133,6 +137,97 @@ export default function VariantCom({
     return variants;
   };
 
+  // useEffect(() => {
+  //   if (isVariant) {
+  //     const generatedVariants = makeVariants(
+  //       colors?.map((color) => color?.color),
+  //       sizes,
+  //     );
+
+  //     setVariants((prevVariants) => {
+  //       let index = prevVariants?.length + 1;
+
+  //       const filteredVariants = prevVariants?.filter((variant) => {
+  //         const skuParts = variant.sku.split("-");
+  //         let color = "";
+  //         let size = "";
+
+  //         if (skuParts.length === 2) {
+  //           [color, size] = skuParts;
+  //         } else if (colors.length && skuParts.length === 1) {
+  //           color = skuParts[0];
+  //         } else if (sizes.length && skuParts.length === 1) {
+  //           size = skuParts[0];
+  //         }
+
+  //         const colorExists = color
+  //           ? colors.some(
+  //               (selectedColor) => selectedColor?.color.toLowerCase() == color,
+  //             )
+  //           : true;
+  //         const sizeExists = size ? sizes.includes(size) : true;
+
+  //         return colorExists && sizeExists;
+  //       });
+
+  //       // Map the generated variants to add additional properties
+  //       const newVariants = generatedVariants?.map((generatedVariant) => {
+  //         const existingVariant = filteredVariants?.find((variant) => {
+  //           return variant?.sku == generatedVariant?.sku;
+  //         });
+
+  //         return {
+  //           index: existingVariant ? existingVariant.index : index++,
+  //           sku: generatedVariant?.sku,
+  //           sellingPrice: existingVariant?.sellingPrice ?? "",
+  //           purchasePrice: existingVariant?.purchasePrice ?? "",
+  //           stock: existingVariant?.stock ?? "",
+  //         };
+  //       });
+
+  //       return newVariants;
+  //     });
+  //   }
+  // }, [colors, sizes, isVariant, setVariants]);
+
+  // useEffect(() => {
+  //   if (isVariant) {
+  //     const generatedVariants = makeVariants(
+  //       colors?.map((color) => color?.color),
+  //       sizes,
+  //     );
+
+  //     setVariants((prevVariants) => {
+  //       let index = prevVariants?.length + 1;
+
+  //       const variantMap = new Map();
+  //       prevVariants.forEach((variant) => {
+  //         variantMap.set(variant.sku, variant);
+  //       });
+
+  //       const newVariants = generatedVariants.map((generatedVariant) => {
+  //         const existingVariant =
+  //           variantMap.get(generatedVariant.sku) ||
+  //           prevVariants.find((variant) => {
+  //             console.log(variant.sku, generatedVariant.sku);
+
+  //             return variant.sku == generatedVariant.sku;
+  //           });
+
+  //         return {
+  //           index: existingVariant ? existingVariant.index : index++,
+  //           sku: generatedVariant.sku,
+  //           sellingPrice: existingVariant?.sellingPrice ?? "",
+  //           purchasePrice: existingVariant?.purchasePrice ?? "",
+  //           stock: existingVariant?.stock ?? "",
+  //         };
+  //       });
+
+  //       return newVariants;
+  //     });
+  //   }
+  // }, [colors, sizes, isVariant, setVariants]);
+
   useEffect(() => {
     if (isVariant) {
       const generatedVariants = makeVariants(
@@ -141,46 +236,32 @@ export default function VariantCom({
       );
 
       setVariants((prevVariants) => {
-        // Initialize the index number based on the previous variants length
-        let indexNumber = prevVariants?.length + 1;
+        let index = prevVariants?.length + 1;
 
-        // Filter out existing variants based on the current selections
-        const filteredVariants = prevVariants?.filter((variant) => {
-          const skuParts = variant.sku.split("-");
-          let color = "";
-          let size = "";
-
-          // Assign based on how many parts are in sku
-          if (skuParts.length === 2) {
-            [color, size] = skuParts; // both color and size present
-          } else if (colors.length && skuParts.length === 1) {
-            color = skuParts[0]; // only color present
-          } else if (sizes.length && skuParts.length === 1) {
-            size = skuParts[0]; // only size present
-          }
-
-          const colorExists = color
-            ? colors.some(
-                (selectedColor) => selectedColor?.color.toLowerCase() == color,
-              )
-            : true;
-          const sizeExists = size ? sizes.includes(size) : true;
-
-          return colorExists && sizeExists;
+        // পুরোনো variants গুলোকে একটি Map এ রেখে দেওয়া
+        const variantMap = new Map();
+        prevVariants.forEach((variant) => {
+          variantMap.set(variant.sku, variant);
         });
 
-        // Map the generated variants to add additional properties
-        const newVariants = generatedVariants?.map((generatedVariant) => {
-          const existingVariant = filteredVariants?.find(
-            (variant) => variant?.sku === generatedVariant?.sku,
-          );
+        const newVariants = generatedVariants.map((generatedVariant) => {
+          // আগের variant খুঁজে বের করা
+          let existingVariant = variantMap.get(generatedVariant.sku);
+
+          if (!existingVariant) {
+            // যদি পুরোপুরি মিলে না, তাহলে color মিলিয়ে আগের variant খুঁজবো
+            const colorKey = generatedVariant.sku.split("-")[0]; // "brown-l" হলে শুধু "brown" নিব
+            existingVariant = prevVariants.find((variant) =>
+              variant.sku.startsWith(colorKey),
+            );
+          }
 
           return {
-            index: existingVariant ? existingVariant.index : indexNumber++,
-            sku: generatedVariant?.sku,
-            sellingPrice: existingVariant?.sellingPrice ?? "",
-            purchasePrice: existingVariant?.purchasePrice ?? "",
-            stock: existingVariant?.stock ?? "",
+            index: existingVariant ? existingVariant.index : index++,
+            sku: generatedVariant.sku,
+            sellingPrice: existingVariant?.sellingPrice ?? "", // আগের value ধরে রাখা
+            purchasePrice: existingVariant?.purchasePrice ?? "", // আগের value ধরে রাখা
+            stock: existingVariant?.stock ?? "", // আগের value ধরে রাখা
           };
         });
 
@@ -188,6 +269,8 @@ export default function VariantCom({
       });
     }
   }, [colors, sizes, isVariant, setVariants]);
+
+  console.log(variants);
 
   const handleVariantChange = (e, sku, field) => {
     const value = e.target.value;
@@ -339,6 +422,7 @@ export default function VariantCom({
             {isSize && (
               <div className="mt-3 rounded border border-dashed bg-gray-50/80 p-3">
                 <p className="mb-1 text-[15px]">Sizes</p>
+
                 <TagsInput
                   value={sizes}
                   onChange={(tags) => setSizes(tags)}
@@ -350,6 +434,47 @@ export default function VariantCom({
                       "placeholder:text-xs border-0 m-0 p-0 pb-1 pl-1 w-max",
                   }}
                 />
+
+                <div className="mt-3 flex items-start">
+                  <button className="relative">
+                    <input
+                      type="file"
+                      className="absolute -top-1 left-0 h-full w-full opacity-0"
+                      onChange={(e) => {
+                        setSizeChart(e.target.files[0]);
+                        setSizeChartUrl(URL.createObjectURL(e.target.files[0]));
+                      }}
+                    />
+                    {sizeChartUrl ? (
+                      <img
+                        src={sizeChartUrl}
+                        alt="Color Preview"
+                        className="mx-auto h-14 w-20 rounded"
+                      />
+                    ) : sizeChartDBUrl ? (
+                      <img
+                        src={`${import.meta.env.VITE_BACKEND_URL}/products/${sizeChartDBUrl}`}
+                        alt="Color Preview"
+                        className="mx-auto h-14 w-20 rounded"
+                      />
+                    ) : (
+                      <small className="rounded border border-dashed bg-base-100 p-2">
+                        Add Size Chart
+                      </small>
+                    )}
+                  </button>
+
+                  {sizeChartUrl && (
+                    <button
+                      onClick={() => {
+                        setSizeChart(null);
+                        setSizeChartUrl(null);
+                      }}
+                    >
+                      <AiOutlineDelete className="text-red-300 duration-300 hover:text-red-500" />
+                    </button>
+                  )}
+                </div>
               </div>
             )}
           </div>
@@ -377,7 +502,7 @@ export default function VariantCom({
                             handleVariantChange(e, variant?.sku, "sellingPrice")
                           }
                           required
-                          defaultValue={variant?.sellingPrice}
+                          value={variant?.sellingPrice}
                         />
                       </td>
                       <td>
@@ -391,7 +516,7 @@ export default function VariantCom({
                             )
                           }
                           required
-                          defaultValue={variant?.purchasePrice}
+                          value={variant?.purchasePrice}
                         />
                       </td>
                       <td>
@@ -401,7 +526,7 @@ export default function VariantCom({
                             handleVariantChange(e, variant?.sku, "stock")
                           }
                           required
-                          defaultValue={variant?.stock}
+                          value={variant?.stock}
                         />
                       </td>
                     </tr>
@@ -412,9 +537,30 @@ export default function VariantCom({
           </div>
 
           {/* SizeChart */}
-          <div className="mt-4 rounded border p-4">
-            <p className="mb-2 text-sm">Add Size Chart </p>
-          </div>
+          {/* {isSize && (
+            <div className="mt-4 rounded border p-4">
+              <p className="mb-2 text-sm">Add Size Chart </p>
+              <button className="relative h-20 w-28 rounded border border-dashed p-1">
+                <input
+                  type="file"
+                  className="absolute -top-1 left-0 h-full w-full opacity-0"
+                  onChange={(e) => {
+                    setSizeChart(e.target.files[0]);
+                    setSizeChartUrl(URL.createObjectURL(e.target.files[0]));
+                  }}
+                />
+                {sizeChartUrl ? (
+                  <img
+                    src={sizeChartUrl}
+                    alt="Color Preview"
+                    className="mx-auto h-[90%] w-[90%] rounded"
+                  />
+                ) : (
+                  <small className="px-2">Add Image</small>
+                )}
+              </button>
+            </div>
+          )} */}
         </>
       )}
     </div>

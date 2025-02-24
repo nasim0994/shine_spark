@@ -8,10 +8,10 @@ import { Provider } from "react-redux";
 import { store } from "./Redux/store/store.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
+  <>
     <Provider store={store}>
       <App />
     </Provider>
     <ToastContainer position="top-center" autoClose={1000} />
-  </React.StrictMode>,
+  </>,
 );

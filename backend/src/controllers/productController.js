@@ -39,7 +39,7 @@ exports.addProduct = async (req, res) => {
     }));
   }
 
-  const parseColors = colors && JSON.parse(colors);
+  const parseColors = colors ? JSON.parse(colors) : [];
 
   if (parseColors && parseColors?.length > 0 && colorImages?.length > 0) {
     const uploadedImages = colorImages?.map((file, index) => ({
@@ -48,8 +48,9 @@ exports.addProduct = async (req, res) => {
     }));
 
     product.colors = uploadedImages;
+  } else {
+    product.colors = parseColors;
   }
-
 
   try {
     const result = await Product.create(product);
@@ -62,6 +63,7 @@ exports.addProduct = async (req, res) => {
     res.json({
       success: false,
       message: error.message,
+      error
     });
 
     fs.unlink(`./uploads/products/${thumbnail}`, (err) => {
@@ -377,66 +379,69 @@ exports.updateProduct = async (req, res) => {
       });
     }
 
-
     const parseColors = colors && JSON.parse(colors);
-    const colorArray = Array.isArray(colorValues) ? colorValues : [colorValues];
+    const colorArray = colorValues ? (Array.isArray(colorValues) ? colorValues : [colorValues]) : [];
     const uploadedImages = colorImages?.map((file, index) => ({
       color: colorArray[index],
       image: file?.filename,
     }));
 
-    if (parseColors && parseColors?.length > 0) {
-      if (uploadedImages?.length > 0) {
-        const newColors = parseColors?.map((item) => {
-          const matchedImage = uploadedImages?.find(
-            (img) => img?.color == item
-          )
+    if (colorImages?.length > 0) {
+      if (parseColors && parseColors?.length > 0) {
+        if (uploadedImages?.length > 0) {
+          const newColors = parseColors?.map((item) => {
+            const matchedImage = uploadedImages?.find(
+              (img) => img?.color == item
+            )
 
-          // For delete old image
-          if (matchedImage && isExit?.colors) {
-            const oldColor = isExit?.colors?.find((v) => v.color == item);
-            if (oldColor?.image) {
-              const fullPath = `./uploads/products/${oldColor?.image}`;
+            // For delete old image
+            if (matchedImage && isExit?.colors) {
+              const oldColor = isExit?.colors?.find((v) => v.color == item);
+              if (oldColor?.image) {
+                const fullPath = `./uploads/products/${oldColor?.image}`;
+                fs.unlink(fullPath, (err) => {
+                  if (err) {
+                    console.error(`❌ Failed to delete old image: ${fullPath}`, err);
+                  } else {
+                    console.log(`✅ Deleted old image: ${fullPath}`);
+                  }
+                });
+              }
+            }
+
+            return {
+              color: item,
+              image: matchedImage?.image || isExit?.colors?.find(v => v.color == item)?.image
+            };
+          });
+
+          product.colors = newColors;
+        } else {
+          // Handle deleted variants' images
+          const oldColors = isExit?.variants || [];
+          const deletedColors = oldColors?.filter(
+            (oldColor) => !parseColors?.some((newColor) => newColor.color == oldColor.color)
+          );
+
+          // Remove images of deleted colors
+          deletedColors?.forEach((color) => {
+            if (color?.image) {
+              const fullPath = `./uploads/products/${color?.image}`;
               fs.unlink(fullPath, (err) => {
                 if (err) {
-                  console.error(`❌ Failed to delete old image: ${fullPath}`, err);
+                  console.error(`❌ Failed to delete old image of deleted color: ${fullPath}`, err);
                 } else {
-                  console.log(`✅ Deleted old image: ${fullPath}`);
+                  console.log(`✅ Deleted image of deleted color: ${fullPath}`);
                 }
               });
             }
-          }
+          });
 
-          return {
-            color: item,
-            image: matchedImage?.image || isExit?.colors?.find(v => v.color == item)?.image
-          };
-        });
-
-        product.colors = newColors;
-      } else {
-        // Handle deleted variants' images
-        const oldColors = isExit?.variants || [];
-        const deletedColors = oldColors?.filter(
-          (oldColor) => !parseColors?.some((newColor) => newColor.color == oldColor.color)
-        );
-
-        // Remove images of deleted colors
-        deletedColors?.forEach((color) => {
-          if (color?.image) {
-            const fullPath = `./uploads/products/${color?.image}`;
-            fs.unlink(fullPath, (err) => {
-              if (err) {
-                console.error(`❌ Failed to delete old image of deleted color: ${fullPath}`, err);
-              } else {
-                console.log(`✅ Deleted image of deleted color: ${fullPath}`);
-              }
-            });
-          }
-        });
-
-        product.colors = parseColors;
+          product.colors = parseColors;
+        }
       }
+    } else {
+      product.colors = isExit?.colors;
     }
 
 
@@ -503,6 +508,7 @@ exports.updateProduct = async (req, res) => {
     res.json({
       success: false,
       message: error.message,
+      error
     });
 
     if (sizeChart) {

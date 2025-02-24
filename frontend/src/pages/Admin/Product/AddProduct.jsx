@@ -32,7 +32,7 @@ export default function AddProduct() {
 
   const [thumbnail, setThumbnail] = useState([]);
   const [galleries, setGalleries] = useState([]);
-  // const [sizeChart, setSizeChart] = useState([]);
+  const [sizeChart, setSizeChart] = useState(null);
 
   const handleFileChange = (event) => {
     const files = Array.from(event.target.files);
@@ -107,7 +107,6 @@ export default function AddProduct() {
 
     const formData = new FormData();
     formData.append("thumbnail", thumbnail[0]?.file);
-    // if (sizeChart?.length > 0) formData.append("sizeChart", sizeChart[0]?.file);
 
     if (galleries?.length > 0)
       galleries.forEach((gallery) => formData.append("gallery", gallery.file));
@@ -132,10 +131,10 @@ export default function AddProduct() {
       formData.append("variants", JSON.stringify(variants));
     }
 
-    if (sizes?.length > 0) {
+    if (isSize && sizes?.length > 0) {
       formData.append("sizes", JSON.stringify(sizes));
     }
-    if (colors?.length > 0) {
+    if (isColor && colors?.length > 0) {
       formData.append(
         "colors",
         JSON.stringify(colors?.map((color) => color.color)),
@@ -145,6 +144,7 @@ export default function AddProduct() {
         formData.append("colorImages", color?.imageFile);
       });
     }
+    if (sizeChart) formData.append("sizeChart", sizeChart);
 
     const res = await addProduct(formData);
 
@@ -407,6 +407,7 @@ export default function AddProduct() {
               setSizes={setSizes}
               variants={variants}
               setVariants={setVariants}
+              setSizeChart={setSizeChart}
             />
 
             {/*  Featured */}

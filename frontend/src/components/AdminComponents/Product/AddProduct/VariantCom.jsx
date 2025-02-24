@@ -1,7 +1,7 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { AiOutlinePlus } from "react-icons/ai";
+import { AiOutlineDelete, AiOutlinePlus } from "react-icons/ai";
 import {
   Select,
   SelectContent,
@@ -15,7 +15,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import TagsInput from "react-tagsinput";
 import "react-tagsinput/react-tagsinput.css";
 import { toast } from "react-toastify";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function VariantCom({
   isVariant,
@@ -33,14 +33,14 @@ export default function VariantCom({
   sellingPrice,
   purchasePrice,
   stock,
+  setSizeChart,
 }) {
+  const [sizeChartUrl, setSizeChartUrl] = useState(null);
   const { data: color } = useAllColorsQuery();
   const colorOptions = color?.data?.map((item) => ({
     label: item?.name,
     value: item?.code,
   }));
-
-  console.log(variants);
 
   const handleColorChange = (value, i) => {
     const colorExists = colors.some((color) => color.color === value);
@@ -109,23 +109,25 @@ export default function VariantCom({
     let variants = [];
     let index = 0;
 
-    if (colors?.length && sizes?.length) {
+    if (isColor && colors?.length > 0 && isSize && sizes?.length > 0) {
       colors?.forEach((color) => {
         sizes?.forEach((size) => {
+          console.log(color, size);
+
           variants.push({
             sku: `${color.split(" ").join("")}-${size}`.toLowerCase(),
             index: index++,
           });
         });
       });
-    } else if (colors?.length) {
+    } else if (isColor && colors?.length > 0) {
       colors?.forEach((color) => {
         variants.push({
           sku: color.split(" ").join("").toLowerCase(),
           index: index++,
         });
       });
-    } else if (sizes?.length) {
+    } else if (isSize && sizes?.length > 0) {
       sizes?.forEach((size) => {
         variants.push({
           sku: size.toLowerCase(),
@@ -334,71 +336,108 @@ export default function VariantCom({
                       "placeholder:text-xs border-0 m-0 p-0 pb-1 pl-1 w-max",
                   }}
                 />
+
+                <div className="mt-3 flex items-start">
+                  <button className="relative">
+                    <input
+                      type="file"
+                      className="absolute -top-1 left-0 h-full w-full opacity-0"
+                      onChange={(e) => {
+                        setSizeChart(e.target.files[0]);
+                        setSizeChartUrl(URL.createObjectURL(e.target.files[0]));
+                      }}
+                    />
+                    {sizeChartUrl ? (
+                      <img
+                        src={sizeChartUrl}
+                        alt="Color Preview"
+                        className="mx-auto h-14 w-20 rounded"
+                      />
+                    ) : (
+                      <small className="rounded border border-dashed bg-base-100 p-2">
+                        Add Size Chart
+                      </small>
+                    )}
+                  </button>
+
+                  {sizeChartUrl && (
+                    <button
+                      onClick={() => {
+                        setSizeChart(null);
+                        setSizeChartUrl(null);
+                      }}
+                    >
+                      <AiOutlineDelete className="text-red-300 duration-300 hover:text-red-500" />
+                    </button>
+                  )}
+                </div>
               </div>
             )}
           </div>
 
-          <div className="mt-2 rounded border p-3">
-            <div className="relative mt-3 overflow-x-auto">
-              <table className="border_table">
-                <thead>
-                  <tr>
-                    <th>SKU</th>
-                    <th>Selling Price</th>
-                    <th>Purchase Price</th>
-                    <th>Stock</th>
-                  </tr>
-                </thead>
+          {isColor ||
+            (isSize && (
+              <div className="mt-2 rounded border p-3">
+                <div className="relative mt-3 overflow-x-auto">
+                  <table className="border_table">
+                    <thead>
+                      <tr>
+                        <th>SKU</th>
+                        <th>Selling Price</th>
+                        <th>Purchase Price</th>
+                        <th>Stock</th>
+                      </tr>
+                    </thead>
 
-                <tbody>
-                  {variants?.map((variant, i) => (
-                    <tr key={i}>
-                      <td className="whitespace-nowrap">{variant?.sku}</td>
-                      <td>
-                        <input
-                          type="number"
-                          onChange={(e) =>
-                            handleVariantChange(e, variant?.sku, "sellingPrice")
-                          }
-                          required
-                          defaultValue={variant?.sellingPrice}
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="number"
-                          onChange={(e) =>
-                            handleVariantChange(
-                              e,
-                              variant?.sku,
-                              "purchasePrice",
-                            )
-                          }
-                          required
-                          defaultValue={variant?.purchasePrice}
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="number"
-                          onChange={(e) =>
-                            handleVariantChange(e, variant?.sku, "stock")
-                          }
-                          required
-                          defaultValue={variant?.stock}
-                        />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* SizeChart */}
-          <div className="mt-4 rounded border p-4">
-            <p className="mb-2 text-sm">Add Size Chart </p>
-          </div>
+                    <tbody>
+                      {variants?.map((variant, i) => (
+                        <tr key={i}>
+                          <td className="whitespace-nowrap">{variant?.sku}</td>
+                          <td>
+                            <input
+                              type="number"
+                              onChange={(e) =>
+                                handleVariantChange(
+                                  e,
+                                  variant?.sku,
+                                  "sellingPrice",
+                                )
+                              }
+                              required
+                              defaultValue={variant?.sellingPrice}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="number"
+                              onChange={(e) =>
+                                handleVariantChange(
+                                  e,
+                                  variant?.sku,
+                                  "purchasePrice",
+                                )
+                              }
+                              required
+                              defaultValue={variant?.purchasePrice}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="number"
+                              onChange={(e) =>
+                                handleVariantChange(e, variant?.sku, "stock")
+                              }
+                              required
+                              defaultValue={variant?.stock}
+                            />
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ))}
         </>
       )}
     </div>

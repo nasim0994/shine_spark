@@ -30,7 +30,6 @@ export default function EditProduct() {
   const [thumbnail, setThumbnail] = useState([]);
   const [galleries, setGalleries] = useState([]);
   const [galleriesUrl, setGalleriesUrl] = useState([]);
-  const [sizeChart, setSizeChart] = useState([]);
 
   const [title, setTitle] = useState("");
   const [subSubCategoryId, setSubSubCategoryId] = useState("");
@@ -49,8 +48,17 @@ export default function EditProduct() {
   const [isColor, setIsColor] = useState(false);
   const [isSize, setIsSize] = useState(false);
   const [variants, setVariants] = useState([]);
-  const [colors, setColors] = useState([]);
+  const [colors, setColors] = useState([
+    {
+      color: "",
+      imageFile: "",
+      imageShow: "",
+    },
+  ]);
   const [sizes, setSizes] = useState([]);
+  const [sizeChart, setSizeChart] = useState(null);
+
+  const [sizeChartDBUrl, setSizeChartDBUrl] = useState(null);
 
   const { data, isLoading: pLoading } = useGetProductByIdQuery(id);
   const product = data?.data;
@@ -76,6 +84,7 @@ export default function EditProduct() {
       setSellingPrice(product?.sellingPrice);
       setPurchasePrice(product?.purchasePrice);
       setStock(product?.totalStock);
+      setSizeChartDBUrl(product?.sizeChart);
 
       if (product?.galleries?.length > 0) {
         setGalleriesUrl(product?.galleries);
@@ -152,7 +161,6 @@ export default function EditProduct() {
     const formData = new FormData();
 
     formData.append("thumbnail", thumbnail[0]?.file);
-    if (sizeChart?.length > 0) formData.append("sizeChart", sizeChart[0]?.file);
 
     if (galleries?.length > 0)
       galleries.forEach((gallery) => formData.append("gallery", gallery.file));
@@ -194,6 +202,7 @@ export default function EditProduct() {
         }
       });
     }
+    if (sizeChart) formData.append("sizeChart", sizeChart);
 
     const res = await updateProduct({ id, formData });
 
@@ -494,6 +503,8 @@ export default function EditProduct() {
               setSizes={setSizes}
               variants={variants}
               setVariants={setVariants}
+              setSizeChart={setSizeChart}
+              sizeChartDBUrl={sizeChartDBUrl}
             />
 
             {/*  Featured */}

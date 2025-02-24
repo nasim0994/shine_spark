@@ -19,9 +19,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useLocation } from "react-router-dom";
 
 export default function Shop() {
   const [sidebar, setSidebar] = useState(false);
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const category = queryParams.get("category");
+  const subCategory = queryParams.get("subCategory");
+  const subSubCategory = queryParams.get("subSubCategory");
+  const brand = queryParams.get("brand");
+  const search = queryParams.get("search");
 
   return (
     <section className="py-2">

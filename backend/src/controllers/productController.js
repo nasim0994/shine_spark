@@ -563,7 +563,7 @@ exports.updateProduct = async (req, res) => {
 // get Flash products
 exports.getFeaturedProducts = async (req, res) => {
   try {
-    const products = await Product.find({ featured: true })
+    const products = await Product.find({ featured: true, status: true })
       .limit(req.query.limit)
       .sort({ createdAt: -1 })
       .populate("category subCategory subSubCategory", "name slug icon");

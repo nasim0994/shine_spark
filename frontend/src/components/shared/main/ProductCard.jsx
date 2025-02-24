@@ -1,7 +1,7 @@
 import IHeart from "@/components/shared/icons/IHeart";
 import { Link } from "react-router-dom";
 
-export default function ProductCard() {
+export default function ProductCard({ product }) {
   return (
     <div className="group">
       <div className="relative overflow-hidden">
@@ -9,10 +9,10 @@ export default function ProductCard() {
           <IHeart width={20} height={20} color="#fff" />
         </button>
 
-        <Link to={`/product/${`slug`}`}>
+        <Link to={`/product/${product?.slug}`}>
           <img
-            src="https://staticm247.kalkifashion.com/media/tagalys/product_images/f/i/firozi_blue_crushed_tissue_saree_with_sequins_embellished_scallop_border-sg257040_7_.jpg?smallSize=true"
-            alt={`product`}
+            src={`${import.meta.env.VITE_BACKEND_URL}/products/${product?.thumbnail}`}
+            alt={product?.title}
             width={500}
             height={500}
             className="relative z-10 h-[300px] w-full object-cover md:h-[380px]"
@@ -22,13 +22,25 @@ export default function ProductCard() {
           </button>
         </Link>
       </div>
-      <Link href={`/product/${`slug`}`} className="mt-2">
-        <h2 className="text-[15px] text-neutral">
-          Dark Green Bandhani Kurta Set with...
-        </h2>
+      <Link href={`/product/${`slug`}`}>
+        <h2 className="mt-2 text-[15px] text-neutral">{product?.title}</h2>
         <div className="mt-1 flex items-center gap-2">
-          <p>$100</p>
-          <del className="text-sm text-neutral-content opacity-80">$120</del>
+          {product?.discount > 0 ? (
+            <>
+              <p>
+                {parseInt(
+                  product?.sellingPrice -
+                    (product?.sellingPrice * product?.discount) / 100,
+                )}
+              </p>
+              <del className="text-sm text-neutral-content opacity-80">
+                {product?.sellingPrice}
+              </del>
+              <p className="text-red-500">{product?.discount}%</p>
+            </>
+          ) : (
+            <p>{product?.sellingPrice}</p>
+          )}
         </div>
       </Link>
     </div>

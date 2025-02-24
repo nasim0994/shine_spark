@@ -5,6 +5,7 @@ import {
   useDeleteProductMutation,
   useGetAllProductsQuery,
   useUpdateFeaturedMutation,
+  useUpdateStatusMutation,
 } from "@/Redux/product/productApi";
 import { useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
@@ -19,6 +20,7 @@ export default function ProductList() {
   let query = {};
   query["page"] = currentPage;
   query["limit"] = limit;
+  query["status"] = "all";
 
   const { data, isLoading, isError, error } = useGetAllProductsQuery(query);
   const [deleteProduct] = useDeleteProductMutation();
@@ -40,11 +42,25 @@ export default function ProductList() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [updateFeatured, { isLoading: ufLoading }] =
     useUpdateFeaturedMutation();
+  const [updateStatus, { isLoading: usLoading }] = useUpdateStatusMutation();
 
   const handleUpdateFeatured = async (id) => {
     setSelectedProduct(id);
 
     const res = await updateFeatured(id);
+
+    if (res?.data?.success) {
+      toast.success("Status updated success");
+    } else {
+      toast.error(res?.data?.message || "Something went wrong!");
+      console.log(res);
+    }
+  };
+
+  const handleUpdateStatus = async (id) => {
+    setSelectedProduct(id);
+
+    const res = await updateStatus(id);
 
     if (res?.data?.success) {
       toast.success("Status updated success");
@@ -98,7 +114,7 @@ export default function ProductList() {
         <td>{product?.sellingPrice}TK</td>
         <td>{product?.totalStock}</td>
         <td>
-          {ufLoading && selectedProduct === product?._id ? (
+          {usLoading && selectedProduct === product?._id ? (
             <ButtonSpinner />
           ) : (
             <label className="relative inline-flex cursor-pointer items-center">
@@ -107,7 +123,7 @@ export default function ProductList() {
                 type="checkbox"
                 value={product?.status}
                 className="peer sr-only"
-                onChange={() => handleUpdateFeatured(product?._id)}
+                onChange={() => handleUpdateStatus(product?._id)}
               />
               <div className="peer h-[23px] w-11 rounded-full bg-gray-200 after:absolute after:start-[1px] after:top-[1.5px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white rtl:peer-checked:after:-translate-x-full"></div>
             </label>
@@ -135,7 +151,8 @@ export default function ProductList() {
 
   return (
     <div>
-      <div className="mb-3 flex justify-end">
+      <div className="mb-3 flex items-center justify-between">
+        <h2 className="text-[17px]">All Products</h2>
         <Link
           to="/admin/product/add-product"
           className="rounded bg-primary px-6 py-2 text-sm text-base-100"

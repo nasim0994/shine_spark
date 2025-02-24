@@ -25,7 +25,7 @@ export default function AdminLayout() {
       </aside>
       <div className="admin_content">
         <AdminHeader setSidebar={setSidebar} />
-        <main className="py-5 sm:p-5">
+        <main className="py-3 sm:p-3">
           <Outlet />
         </main>
       </div>

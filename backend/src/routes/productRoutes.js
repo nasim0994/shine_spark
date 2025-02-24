@@ -9,6 +9,7 @@ const {
   updateProduct,
   getFeaturedProducts,
   updateFeatured,
+  updateStatus,
 } = require("../controllers/productController");
 
 const storage = multer.diskStorage({
@@ -39,5 +40,6 @@ router.patch("/update-product/:id", upload, updateProduct);
 router.delete("/delete/:id", deleteProductById);
 
 router.put("/update/feature/:id", updateFeatured);
+router.put("/update/status/:id", updateStatus);
 
 module.exports = router;

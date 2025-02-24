@@ -343,6 +343,11 @@ export default function VariantCom({
                       type="file"
                       className="absolute -top-1 left-0 h-full w-full opacity-0"
                       onChange={(e) => {
+                        if (e.target.files[0].size > 1024 * 1024) {
+                          return toast.warning(
+                            "File size is too large. Max 1mb is allowed",
+                          );
+                        }
                         setSizeChart(e.target.files[0]);
                         setSizeChartUrl(URL.createObjectURL(e.target.files[0]));
                       }}

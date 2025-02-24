@@ -113,6 +113,7 @@ exports.getAllProducts = async (req, res) => {
     range,
     sort: priceSort,
     search,
+    status
   } = req.query;
 
   try {
@@ -139,6 +140,16 @@ exports.getAllProducts = async (req, res) => {
     if (subCategory) query.subCategory = subCategoryId;
     if (subSubCategory) query.subSubCategory = subSubategoryId;
     if (brand) query.brand = brandName;
+    if (status === "all") {
+      query;
+    } else if (status == "active") {
+      query.status = true;
+    } else if (status == "inactive") {
+      query.status = false;
+    } else {
+      query.status = true;
+    }
+
 
     const prices = range && JSON.parse(range);
     let sortOption = {};
@@ -293,10 +304,10 @@ exports.deleteProductById = async (req, res) => {
       });
     }
 
-    if (product?.variants?.length > 0) {
-      product?.variants?.map((variant) => {
-        if (variant?.colorImage) {
-          fs.unlink(`./uploads/products/${variant?.colorImage}`, (err) => {
+    if (product?.colors?.length > 0) {
+      product?.colors?.map((color) => {
+        if (color?.image) {
+          fs.unlink(`./uploads/products/${color?.image}`, (err) => {
             if (err) {
               console.error(err);
             }

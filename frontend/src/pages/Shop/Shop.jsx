@@ -1,13 +1,12 @@
 import "@/assets/css/shop.css";
 import { AiOutlineClose } from "react-icons/ai";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BiFilterAlt } from "react-icons/bi";
 import ProductCard from "@/components/shared/main/ProductCard";
 import ShopCategories from "@/components/shared/main/ShopCategories/ShopCategories";
 import {
   Breadcrumb,
   BreadcrumbItem,
-  BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
@@ -19,9 +18,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useGetAllProductsQuery } from "@/Redux/product/productApi";
+import ProductCards from "@/components/shared/Skeleton/ProductCards/ProductCards";
 
 export default function Shop() {
+  useEffect(() => {
+    window.scroll(0, 0);
+  }, []);
   const [sidebar, setSidebar] = useState(false);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -30,6 +34,19 @@ export default function Shop() {
   const subSubCategory = queryParams.get("subSubCategory");
   const brand = queryParams.get("brand");
   const search = queryParams.get("search");
+  const sort = queryParams.get("sort");
+
+  let query = {};
+  if (category) query.category = category;
+  if (subCategory) query.subCategory = subCategory;
+  if (subSubCategory) query.subSubCategory = subSubCategory;
+  if (brand) query.brand = brand;
+  if (search) query.search = search;
+  if (sort) query.sort = sort;
+
+  const { data, isLoading } = useGetAllProductsQuery(query);
+  const products = data?.data;
+  const meta = data?.meta;
 
   return (
     <section className="py-2">
@@ -37,17 +54,11 @@ export default function Shop() {
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href="/">Home</BreadcrumbLink>
+              <Link to="/">Home</Link>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/docs/components">
-                Components
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
+              <BreadcrumbPage>Shop</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -90,9 +101,9 @@ export default function Shop() {
           <div className="shop_content">
             <div className="flex items-center justify-between">
               <div className="items-end gap-2 sm:flex">
-                <p>Ready to Ship Men&apos;s Wear</p>
+                <p>Ready to Ship</p>
                 <p className="text-sm text-neutral-content opacity-60">
-                  1461 items
+                  {meta?.total} items
                 </p>
               </div>
 
@@ -101,20 +112,19 @@ export default function Shop() {
                   <SelectValue placeholder="Sort" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="apple">Apple</SelectItem>
-                  <SelectItem value="banana">Banana</SelectItem>
-                  <SelectItem value="blueberry">Blueberry</SelectItem>
-                  <SelectItem value="grapes">Grapes</SelectItem>
-                  <SelectItem value="pineapple">Pineapple</SelectItem>
+                  <SelectItem value={1}>Price Low to High</SelectItem>
+                  <SelectItem value={-1}>Price High to Low</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="mt-2 grid grid-cols-2 gap-2 lg:grid-cols-3 lg:gap-4 xl:grid-cols-4">
-              <ProductCard />
-              <ProductCard />
-              <ProductCard />
-              <ProductCard />
+              {isLoading && <ProductCards />}
+              {!isLoading &&
+                products?.length > 0 &&
+                products?.map((product) => (
+                  <ProductCard key={product?._id} product={product} />
+                ))}
             </div>
           </div>
         </div>

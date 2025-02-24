@@ -8,19 +8,26 @@ import IWhatsapp from "@/components/shared/icons/IWhatsapp";
 import IUser from "@/components/shared/icons/IUser";
 import IHeart from "@/components/shared/icons/IHeart";
 import ICart from "@/components/shared/icons/ICart";
+import { useGetCategoriesQuery } from "@/Redux/category/categoryApi";
 
 export default function MainHeader() {
+  const { data } = useGetCategoriesQuery();
+  const categories = data?.data;
+
   return (
     <section className="py-3 shadow">
       <div className="container">
         <div className="flex w-full items-center justify-between">
           {/* category */}
           <div className="category hidden items-center gap-2 lg:flex lg:w-2/5">
-            <Link to="/">Women</Link>
-            <Link to="/">Men</Link>
-            <Link to="/">Kids</Link>
-            <Link to="/">Bridal</Link>
-            <Link to="/">luxe</Link>
+            {categories?.slice(0, 5)?.map((category) => (
+              <Link
+                key={category?._id}
+                to={`/shops?category=${category?.slug}`}
+              >
+                {category?.name}
+              </Link>
+            ))}
           </div>
 
           {/* Logo */}

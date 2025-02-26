@@ -79,10 +79,8 @@ const MyReviews = React.lazy(
   () => import("../pages/Account/Reviews/MyReviews"),
 );
 
-const AdminLayout = React.lazy(
-  () => import("../Layout/AdminLayout/AdminLayout"),
-);
-const AdminRoute = React.lazy(() => import("../PrivateRoute/AdminRoute"));
+const AdminLayout = React.lazy(() => import("@/Layout/AdminLayout"));
+const AdminRoute = React.lazy(() => import("@/PrivateRoute/AdminRoute"));
 
 // Dashboard
 const Dashboard = React.lazy(

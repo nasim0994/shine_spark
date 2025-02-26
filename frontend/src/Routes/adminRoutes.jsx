@@ -164,106 +164,136 @@ export const adminRoutes = {
       element: <Dashboard />,
     },
     {
-      path: "/admin/category/categories",
+      path: "/admin/product/category/all",
       element: <AllCategories />,
     },
     {
-      path: "/admin/category/add-category",
+      path: "/admin/product/category/add",
       element: <AddCategory />,
     },
     {
-      path: "/admin/category/edit/:id",
+      path: "/admin/product/category/edit/:id",
       element: <EditCategory />,
     },
     {
-      path: "/admin/category/sub-categories",
+      path: "/admin/product/category/sub-category/all",
       element: <AllSubCategories />,
     },
     {
-      path: "/admin/category/add-sub-category",
+      path: "/admin/product/category/sub-category/add",
       element: <AddSubCategory />,
     },
     {
-      path: "/admin/category/edit-sub-category/:id",
+      path: "/admin/product/category/sub-category/edit/:id",
       element: <EditSubCategory />,
     },
     {
-      path: "/admin/category/sub-sub-categories",
+      path: "/admin/product/category/sub-sub-category/all",
       element: <AllSubSubCategory />,
     },
     {
-      path: "/admin/category/add-sub-sub-category",
+      path: "/admin/product/category/sub-sub-category/add",
       element: <AddSubSubCategory />,
     },
     {
-      path: "/admin/category/edit-sub-sub-category/:id",
+      path: "/admin/product/category/sub-sub-category/edit/:id",
       element: <EditSubSubCategory />,
     },
     {
-      path: "/admin/brands",
+      path: "/admin/product/brand/all",
       element: <AllBrands />,
     },
     {
-      path: "/admin/add-brand",
+      path: "/admin/product/brand/add",
       element: <AddBrand />,
     },
     {
-      path: "/admin/edit-brand/:id",
+      path: "/admin/product/brand/edit/:id",
       element: <EditBrand />,
     },
     {
-      path: "/admin/colors",
+      path: "/admin/product/color/all",
       element: <AllColor />,
     },
     {
-      path: "/admin/color/add",
+      path: "/admin/product/color/add",
       element: <AddColor />,
     },
     {
-      path: "/admin/color/edit/:id",
+      path: "/admin/product/color/edit/:id",
       element: <EditColor />,
     },
     {
-      path: "/admin/product/all-products",
+      path: "/admin/product/all",
       element: <ProductList />,
     },
     {
-      path: "/admin/product/add-product",
+      path: "/admin/product/add",
       element: <AddProduct />,
     },
     {
-      path: "/admin/product/edit-product/:id",
+      path: "/admin/product/edit/:id",
       element: <EditProduct />,
     },
+
+    // Order
     {
-      path: "/admin/order/todays-orders",
+      path: "/admin/order/today",
       element: <TodaysOrders />,
     },
     {
-      path: "/admin/order/all-orders",
+      path: "/admin/order/all",
       element: <AllOrders />,
     },
     {
       path: "/admin/order/:id",
       element: <OrderDetails />,
     },
+
+    // User
     {
-      path: "/admin/customer/all-customers",
+      path: "/admin/user/customer/all",
       element: <AllUsers />,
     },
-
-    //--------------Flash Deal
+    //--------------Administrator
     {
-      path: "/admin/flash-deal/add",
+      path: "/admin/administrator/all",
+      element: <Administrator />,
+    },
+    {
+      path: "/admin/administrator/add",
+      element: <AddAdministrator />,
+    },
+    {
+      path: "/admin/administrator/edit/:id",
+      element: <EditAdministrator />,
+    },
+
+    //--------------Promo
+    {
+      path: "/admin/promo/flash-sale/add",
       element: <AddFlashDeal />,
     },
     {
-      path: "/admin/flash-deal",
+      path: "/admin/promo/flash-sale/all",
       element: <FlashDealList />,
     },
     {
-      path: "/admin/flash-deal/edit/:id",
+      path: "/admin/promo/flash-sale/edit/:id",
       element: <EditFlashDeal />,
+    },
+
+    {
+      path: "/admin/promo/coupon/all",
+      element: <CouponLists />,
+    },
+    {
+      path: "/admin/promo/coupon/add",
+      element: <AddCoupon />,
+    },
+    {
+      path: "/admin/promo/coupon/edit/:id",
+      element: <EditCoupon />,
     },
 
     //--------------Review
@@ -272,71 +302,81 @@ export const adminRoutes = {
       element: <AllReview />,
     },
 
-    //--------------Administrator
+    //----------Business Setting
+    //e-commerce-setting
     {
-      path: "/admin/administrator/all-administrator",
-      element: <Administrator />,
-    },
-    {
-      path: "/admin/administrator/add-administrator",
-      element: <AddAdministrator />,
-    },
-    {
-      path: "/admin/administrator/edit-administrator/:id",
-      element: <EditAdministrator />,
-    },
-
-    //--------------e-commerce-setting
-    {
-      path: "/admin/ecommerce-setting/coupons",
-      element: <CouponLists />,
-    },
-    {
-      path: "/admin/ecommerce-setting/coupons/add-coupon",
-      element: <AddCoupon />,
-    },
-    {
-      path: "/admin/ecommerce-setting/coupons/edit-coupon/:id",
-      element: <EditCoupon />,
-    },
-
-    {
-      path: "/admin/ecommerce-setting/shipping-configuration",
+      path: "/admin/business/e-commerce/shipping-configuration",
       element: <ShippingConfiguration />,
+    },
+    {
+      path: "/admin/business/e-commerce/company",
+      element: <BusinessInfo />,
+    },
+
+    // Pages
+    {
+      path: "/admin/pages/about-us",
+      element: <About />,
+    },
+    {
+      path: "/admin/pages/contact-us",
+      element: <Contact />,
+    },
+    {
+      path: "/admin/pages/privacy-policy",
+      element: <AdminPrivacyPolicy />,
+    },
+    {
+      path: "/admin/pages/terms-conditions",
+      element: <AdminTermsCondition />,
+    },
+    {
+      path: "/admin/pages/return-policy",
+      element: <AdminReturnPolicy />,
+    },
+    {
+      path: "/admin/pages/faq/all",
+      element: <FaqList />,
+    },
+    {
+      path: "/admin/pages/faq/add",
+      element: <AddFaq />,
+    },
+    {
+      path: "/admin/pages/faq/edit/:id",
+      element: <UpdateFaq />,
     },
 
     //-------------Banner
     {
-      path: "/admin/banner/main/all",
+      path: "/admin/business/section/banner/all",
       element: <Banner />,
     },
     {
-      path: "/admin/banner/main/add",
+      path: "/admin/business/section/banner/add",
       element: <AddBanner />,
     },
     {
-      path: "/admin/banner/main/edit/:id",
+      path: "/admin/business/section/banner/edit/:id",
       element: <EditBanner />,
     },
 
     //--------Shop Campaign Banner
     {
-      path: "/admin/banner/shop-banner",
+      path: "/admin/business/section/campaign-banner-1",
       element: <ShopBanner />,
     },
-
-    //
     //-------------CampaignBanners
     {
-      path: "/admin/banner/campaign-banners",
+      path: "/admin/business/section/campaign-banner/all",
       element: <CampaignBanners />,
     },
     {
-      path: "/admin/banner/campaign-banners/add",
+      path: "/admin/business/section/campaign-banner/add",
       element: <AddCampaignBanner />,
     },
     {
-      path: "/admin/banner/campaign-banners/edit/:id",
+      path: "/admin/business/section/campaign-banner/edit/:id",
       element: <EditCampaignBanner />,
     },
 
@@ -345,25 +385,8 @@ export const adminRoutes = {
       path: "/admin/general-setting/profile",
       element: <AdminProfile />,
     },
-    {
-      path: "/admin/general-setting/business-info",
-      element: <BusinessInfo />,
-    },
 
-    {
-      path: "/admin/front-end/privacy-policy",
-      element: <AdminPrivacyPolicy />,
-    },
-    {
-      path: "/admin/front-end/terms-conditions",
-      element: <AdminTermsCondition />,
-    },
-    {
-      path: "/admin/front-end/return-policy",
-      element: <AdminReturnPolicy />,
-    },
-
-    //--------------Front-End
+    // ----------Front-End Setting
     {
       path: "/admin/front-end/logo",
       element: <Logo />,
@@ -372,32 +395,10 @@ export const adminRoutes = {
       path: "/admin/front-end/favicon",
       element: <Favicon />,
     },
-    {
-      path: "/admin/front-end/about-us",
-      element: <About />,
-    },
-    {
-      path: "/admin/front-end/contact-us",
-      element: <Contact />,
-    },
-
-    // Faq
-    {
-      path: "/admin/front-end/faq/all",
-      element: <FaqList />,
-    },
-    {
-      path: "/admin/front-end/faq/add",
-      element: <AddFaq />,
-    },
-    {
-      path: "/admin/front-end/faq/edit/:id",
-      element: <UpdateFaq />,
-    },
 
     // ----Report
     {
-      path: "/admin/report/sales/product-ways",
+      path: "/admin/report/sales-report/product-ways",
       element: <ProductWays />,
     },
 

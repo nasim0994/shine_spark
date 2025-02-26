@@ -5,9 +5,8 @@ import { IoFlashOutline, IoStorefrontOutline } from "react-icons/io5";
 import { BsBoxes } from "react-icons/bs";
 import { TbShoppingBagCheck, TbReportMoney } from "react-icons/tb";
 import { LuFileBox } from "react-icons/lu";
-import { GrUserWorker } from "react-icons/gr";
 import { CgSearchFound } from "react-icons/cg";
-import { MdMonitor, MdOutlineSettings } from "react-icons/md";
+import { MdMonitor } from "react-icons/md";
 
 import SidebarItems from "./SidebarItems";
 import { useDispatch, useSelector } from "react-redux";
@@ -64,11 +63,11 @@ const adminSidebarItems = [
             subSubMenu: [
               {
                 title: "Add New Product",
-                path: "/admin/product/add-product",
+                path: "/admin/product/add",
               },
               {
                 title: "All Products",
-                path: "/admin/product/all-products",
+                path: "/admin/product/all",
               },
             ],
           },
@@ -90,11 +89,11 @@ const adminSidebarItems = [
         subMenu: [
           {
             title: "All Orders",
-            path: "/admin/order/all-orders",
+            path: "/admin/order/all",
           },
           {
             title: "Today's Orders",
-            path: "/admin/order/todays-orders",
+            path: "/admin/order/today",
           },
         ],
       },
@@ -107,15 +106,15 @@ const adminSidebarItems = [
             subSubMenu: [
               {
                 title: "Product Ways",
-                path: "/admin/report/sales/product-ways",
+                path: "/admin/report/sales-report/product-ways",
               },
               {
                 title: "Invoice Ways",
-                path: "/admin/report/sales/invoice-ways",
+                path: "/admin/report/sales-report/invoice-ways",
               },
               {
                 title: "Date Ways",
-                path: "/admin/report/sales/date-ways",
+                path: "/admin/report/sales-report/date-ways",
               },
             ],
           },
@@ -129,12 +128,12 @@ const adminSidebarItems = [
       {
         icon: <IoFlashOutline />,
         title: "Flash Sale",
-        path: "/admin/promo/flash-sale",
+        path: "/admin/promo/flash-sale/all",
       },
       {
         icon: <RiCouponLine />,
         title: "Coupon",
-        path: "/admin/promo/coupon",
+        path: "/admin/promo/coupon/all",
       },
     ],
   },
@@ -149,12 +148,7 @@ const adminSidebarItems = [
       {
         icon: <RiAdminFill />,
         title: "Administrator",
-        path: "/admin/administrator/all-administrator",
-      },
-      {
-        icon: <GrUserWorker />,
-        title: "Staff",
-        path: "/admin/staff/all",
+        path: "/admin/administrator/all",
       },
     ],
   },
@@ -167,15 +161,11 @@ const adminSidebarItems = [
         subMenu: [
           {
             title: "Company",
-            path: "/admin/business/ecommerce/company",
+            path: "/admin/business/e-commerce/company",
           },
           {
             title: "Shipping Configuration",
-            path: "/admin/business/ecommerce/shipping-configuration",
-          },
-          {
-            title: "Landing Page",
-            path: "/admin/business/ecommerce/landing-page/all",
+            path: "/admin/business/e-commerce/shipping-configuration",
           },
         ],
       },
@@ -184,16 +174,24 @@ const adminSidebarItems = [
         title: "Pages",
         subMenu: [
           {
-            title: "Contact Us",
-            path: "/admin/pages/contact-us",
-          },
-          {
             title: "About Us",
             path: "/admin/pages/about-us",
           },
           {
+            title: "Contact Us",
+            path: "/admin/pages/contact-us",
+          },
+          {
+            title: "FAQ",
+            path: "/admin/pages/faq/all",
+          },
+          {
             title: "Privacy Policy",
             path: "/admin/pages/privacy-policy",
+          },
+          {
+            title: "Terms & Conditions",
+            path: "/admin/pages/terms-conditions",
           },
           {
             title: "Return Policy",
@@ -203,37 +201,27 @@ const adminSidebarItems = [
       },
       {
         icon: <PiFlagBannerFill />,
-        title: "Sections",
+        title: "Section",
         subMenu: [
           {
             title: "Banner",
-            path: "/admin/business/sections/banner",
+            path: "/admin/business/section/banner/all",
+          },
+          {
+            title: "Campaign Banner 1",
+            path: "/admin/business/section/campaign-banner-1",
           },
           {
             title: "Campaign Banner",
-            path: "/admin/business/sections/campaign-banner",
+            path: "/admin/business/section/campaign-banner/all",
           },
         ],
       },
     ],
   },
   {
-    title: "Settings",
+    title: "Setting",
     menu: [
-      {
-        icon: <MdOutlineSettings />,
-        title: "E-commerce Setting",
-        subMenu: [
-          {
-            title: "Coupon",
-            path: "/admin/ecommerce-setting/coupons",
-          },
-          {
-            title: "Shipping Configuration",
-            path: "/admin/ecommerce-setting/shipping-configuration",
-          },
-        ],
-      },
       {
         icon: <IoMdSettings />,
         title: "General Setting",
@@ -242,15 +230,11 @@ const adminSidebarItems = [
             title: "Profile",
             path: "/admin/general-setting/profile",
           },
-          {
-            title: "Business Info",
-            path: "/admin/general-setting/business-info",
-          },
         ],
       },
       {
         icon: <MdMonitor />,
-        title: "Front-End Setting",
+        title: "Front-End",
         subMenu: [
           {
             title: "Logo",
@@ -259,30 +243,6 @@ const adminSidebarItems = [
           {
             title: "Favicon",
             path: "/admin/front-end/favicon",
-          },
-          {
-            title: "About Us",
-            path: "/admin/front-end/about-us",
-          },
-          {
-            title: "FAQ",
-            path: "/admin/front-end/faq/all",
-          },
-          {
-            title: "Contact Us",
-            path: "/admin/front-end/contact-us",
-          },
-          {
-            title: "Privacy Policy",
-            path: "/admin/front-end/privacy-policy",
-          },
-          {
-            title: "Terms & Conditions",
-            path: "/admin/front-end/terms-conditions",
-          },
-          {
-            title: "Return Policy",
-            path: "/admin/front-end/return-policy",
           },
         ],
       },

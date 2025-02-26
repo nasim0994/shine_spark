@@ -47,7 +47,7 @@ export default function AddCategory() {
     if (res?.data?.success) {
       toast.success("Category added successfully");
       setIcons([]);
-      navigate("/admin/category/categories");
+      navigate("/admin/product/category/all");
     } else {
       toast.error(res?.data?.message || "Failed to add category");
       console.log(res);

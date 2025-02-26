@@ -14,22 +14,25 @@ import {
   REGISTER,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+import { combineReducers } from "redux";
 
 const persistConfig = {
-  key: "cart",
+  key: "root",
   storage,
+  whitelist: ["cart", "wishlist"],
 };
 
-const persistedCartReducer = persistReducer(persistConfig, cartSlice);
+const rootReducer = combineReducers({
+  user: userSlice,
+  cart: cartSlice,
+  wishlist: wishlistSlice,
+  [apiSlice.reducerPath]: apiSlice.reducer,
+});
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
-  reducer: {
-    user: userSlice,
-    cart: persistedCartReducer,
-    wishlist: wishlistSlice,
-    [apiSlice.reducerPath]: apiSlice.reducer,
-  },
-
+  reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {

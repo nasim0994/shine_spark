@@ -7,10 +7,10 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Link } from "react-router-dom";
-import IHeart from "@/components/shared/icons/IHeart";
 import { useSelector } from "react-redux";
 import { subTotalSelector } from "@/Redux/cart/cartSlice";
 import { currencyFormatter } from "@/lib/currencyFormatter";
+import WishlistBtn from "../WishlistBtn";
 
 export default function CartSidebar() {
   const { carts } = useSelector((state) => state.cart);
@@ -80,9 +80,7 @@ export default function CartSidebar() {
               </div>
 
               <div className="flex flex-col items-center justify-center gap-1">
-                <button>
-                  <IHeart width={20} height={20} />
-                </button>
+                <WishlistBtn product={product} />
                 <p>-</p>
                 <button>
                   <AiOutlineDelete className="text-xl opacity-60" />

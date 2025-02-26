@@ -1,39 +1,49 @@
 import { createSlice } from "@reduxjs/toolkit";
+import toast from "react-hot-toast";
 
-const wishlistValue = {
+const initialState = {
   wishlists: [],
 };
-
-const loadState = () => {
-  const storedState = localStorage.getItem("wishlistState");
-
-  return storedState ? JSON.parse(storedState) : wishlistValue;
-};
-
-const initialState = loadState();
 
 export const wishlistSlice = createSlice({
   name: "wishlist",
   initialState: initialState,
   reducers: {
     addToWishlist: (state, action) => {
-      state.wishlists = action.payload;
+      const product = action.payload;
 
-      localStorage.setItem("wishlistState", JSON.stringify(state));
+      const existItem = state?.wishlists?.find(
+        (item) => item?._id === product?._id,
+      );
+
+      if (existItem) {
+        toast.error("This product is already in your wishlist");
+      } else {
+        const newProduct = {
+          _id: product?._id,
+          slug: product?.slug,
+          title: product?.title,
+          thumbnail: product?.thumbnail,
+          price: product?.sellingPrice,
+          discount: product?.discount,
+        };
+        state.wishlists.push(newProduct);
+        toast.success("Product added to wishlist");
+      }
     },
     removeFromWishlist: (state, action) => {
-      const { _id } = action.payload;
-      state.wishlists = state.wishlists.filter((item) => item._id !== _id);
-
-      localStorage.setItem("wishlistState", JSON.stringify(state));
+      const id = action.payload;
+      state.wishlists = state.wishlists.filter((item) => item._id !== id);
     },
     clearWishlist: (state) => {
       state.wishlists = [];
-
-      localStorage.setItem("wishlistState", JSON.stringify(state));
     },
   },
 });
+
+export const checkIsProductInWishlist = (state, _id) => {
+  return state?.wishlist?.wishlists?.some((item) => item?._id === _id);
+};
 
 export const { addToWishlist, removeFromWishlist, clearWishlist } =
   wishlistSlice.actions;

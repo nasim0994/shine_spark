@@ -1,4 +1,3 @@
-import IHeart from "@/components/shared/icons/IHeart";
 import {
   Tooltip,
   TooltipContent,
@@ -15,6 +14,7 @@ import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { addToCart } from "@/Redux/cart/cartSlice";
 import { currencyFormatter } from "@/lib/currencyFormatter";
+import WishlistBtn from "@/components/shared/main/WishlistBtn";
 
 export default function ProductDetails() {
   useEffect(() => {
@@ -23,14 +23,16 @@ export default function ProductDetails() {
   const { slug } = useParams();
   const { data, isLoading } = useGetProductBySlugQuery(slug);
   const product = data?.data;
+  const dispatch = useDispatch();
 
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedPrice, setSelectedPrice] = useState(product?.sellingPrice);
-  const dispatch = useDispatch();
+  const [showImage, setShowImage] = useState(product?.thumbnail);
 
   useEffect(() => {
     setSelectedPrice(product?.sellingPrice);
+    setShowImage(product?.thumbnail);
   }, [product]);
 
   const handelSelectSize = (size) => {
@@ -44,8 +46,10 @@ export default function ProductDetails() {
   const handelColorSelect = (clr) => {
     if (selectedColor === clr?.color) {
       setSelectedColor("");
+      setShowImage(product?.thumbnail);
     } else {
       setSelectedColor(clr?.color);
+      setShowImage(clr?.image);
     }
   };
 
@@ -104,21 +108,34 @@ export default function ProductDetails() {
           {/* left-images */}
           <div className="grid gap-3 md:grid-cols-7 md:gap-4 lg:col-span-3">
             <div className="order-2 flex gap-2 md:order-1 md:flex-col md:gap-3">
-              {product?.galleries?.map((gallery, i) => (
-                <img
-                  key={i}
-                  src={`${import.meta.env.VITE_BACKEND_URL}/products/${gallery}`}
-                  alt={`product`}
-                  width={100}
-                  height={60}
-                  className="w-12 md:h-32 md:w-full"
-                />
-              ))}
+              {product?.galleries?.length > 0
+                ? product?.galleries?.map((gallery, i) => (
+                    <img
+                      key={i}
+                      src={`${import.meta.env.VITE_BACKEND_URL}/products/${gallery}`}
+                      onClick={() => setShowImage(gallery)}
+                      alt={product?.title}
+                      width={100}
+                      height={60}
+                      className="w-12 cursor-pointer md:h-32 md:w-full"
+                    />
+                  ))
+                : product?.colors?.map((color, i) => (
+                    <img
+                      key={i}
+                      src={`${import.meta.env.VITE_BACKEND_URL}/products/${color?.image}`}
+                      onClick={() => setShowImage(color?.image)}
+                      alt={product?.title}
+                      width={100}
+                      height={60}
+                      className="w-12 cursor-pointer md:h-32 md:w-full"
+                    />
+                  ))}
             </div>
 
             <div className="order-1 md:order-2 md:col-span-6">
               <img
-                src={`${import.meta.env.VITE_BACKEND_URL}/products/${product?.thumbnail}`}
+                src={`${import.meta.env.VITE_BACKEND_URL}/products/${showImage}`}
                 alt={product?.title}
                 width={500}
                 height={500}
@@ -132,9 +149,7 @@ export default function ProductDetails() {
             <h2 className="text-2xl font-medium">{product?.title}</h2>
             <div className="flex items-center justify-between">
               <p className="text-neutral">Style No SG263271</p>
-              <button>
-                <IHeart width={22} height={22} />
-              </button>
+              <WishlistBtn product={product} />
             </div>
 
             {/* Price */}

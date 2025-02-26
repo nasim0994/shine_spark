@@ -39,6 +39,7 @@ export const cartSlice = createSlice({
 
       const cartProduct = {
         _id: product._id,
+        slug: product?.slug,
         title: product.title,
         price,
         discount,

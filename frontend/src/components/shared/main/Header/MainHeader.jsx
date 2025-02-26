@@ -9,10 +9,14 @@ import IUser from "@/components/shared/icons/IUser";
 import IHeart from "@/components/shared/icons/IHeart";
 import ICart from "@/components/shared/icons/ICart";
 import { useGetCategoriesQuery } from "@/Redux/category/categoryApi";
+import { useSelector } from "react-redux";
 
 export default function MainHeader() {
   const { data } = useGetCategoriesQuery();
   const categories = data?.data;
+
+  const { carts } = useSelector((state) => state.cart);
+  const { wishlists } = useSelector((state) => state.wishlist);
 
   return (
     <section className="py-3 shadow">
@@ -58,13 +62,23 @@ export default function MainHeader() {
             <Link to="/login">
               <IUser width={26} height={26} />
             </Link>
-            <Link to="/wishlist">
+            <Link to="/wishlist" className="relative">
               <IHeart width={25} height={25} />
+              {wishlists.length > 0 && (
+                <span className="absolute -right-3 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-base-100">
+                  {wishlists?.length}
+                </span>
+              )}
             </Link>
             <Sheet>
               <SheetTrigger asChild>
-                <button>
+                <button className="relative">
                   <ICart width={24} height={24} />
+                  {carts.length > 0 && (
+                    <span className="absolute -right-3 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-base-100">
+                      {carts?.length}
+                    </span>
+                  )}
                 </button>
               </SheetTrigger>
 

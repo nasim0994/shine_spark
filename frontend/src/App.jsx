@@ -1,5 +1,4 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-// import { routes } from "./Routes/Routes";
 import useAuthCheck from "./hooks/useAuthCheck";
 import { Helmet } from "react-helmet";
 import { useGetFaviconQuery } from "./Redux/favicon/faviconApi";
@@ -108,7 +107,7 @@ export default function App() {
         ></iframe>
       </noscript>
 
-      <RouterProvider router={router}></RouterProvider>
+      <RouterProvider router={router} />
     </>
   );
 }

@@ -4,62 +4,146 @@ import Spinner from "@/components/shared/Spinner/Spinner";
 import { Navigate } from "react-router-dom";
 
 const AdminLayout = React.lazy(() => import("@/Layout/AdminLayout"));
-import AdminRoute from "@/PrivateRoute/AdminRoute";
-import Dashboard from "@/pages/Admin/Dashboard/Dashboard";
-import AllCategories from "@/pages/Admin/Category/Categories/AllCategories";
-import AddCategory from "@/pages/Admin/Category/Categories/AddCategory";
-import EditCategory from "@/pages/Admin/Category/Categories/EditCategory";
-import AllSubCategories from "@/pages/Admin/Category/SubCategories/AllSubCategories";
-import AddSubCategory from "@/pages/Admin/Category/SubCategories/AddSubCategory";
-import EditSubCategory from "@/pages/Admin/Category/SubCategories/EditSubCategory";
-import AllSubSubCategory from "@/pages/Admin/Category/SubSubCategory/AllSubSubCategory";
-import AddSubSubCategory from "@/pages/Admin/Category/SubSubCategory/AddSubSubCategory";
-import EditSubSubCategory from "@/pages/Admin/Category/SubSubCategory/EditSubSubCategory";
-import AllBrands from "@/pages/Admin/Brand/AllBrands";
-import AddBrand from "@/pages/Admin/Brand/AddBrand";
-import EditBrand from "@/pages/Admin/Brand/EditBrand";
-import AllColor from "@/pages/Admin/Color/AllColor";
-import AddColor from "@/pages/Admin/Color/AddColor";
-import EditColor from "@/pages/Admin/Color/EditColor";
-import ProductList from "@/pages/Admin/Product/ProductList";
-import AddProduct from "@/pages/Admin/Product/AddProduct";
-import EditProduct from "@/pages/Admin/Product/EditProduct";
-import TodaysOrders from "@/pages/Admin/Order/TodayOrders";
-import AllOrders from "@/pages/Admin/Order/AllOrders";
-import OrderDetails from "@/pages/Admin/Order/OrderDetails";
-import AllUsers from "@/pages/Admin/User/AllUsers";
-import AddFlashDeal from "@/pages/Admin/FlashDeal/AddFlashDeal";
-import FlashDealList from "@/pages/Admin/FlashDeal/FlashDealList";
-import EditFlashDeal from "@/pages/Admin/FlashDeal/EditFlashDeal";
-import AllReview from "@/pages/Admin/AllReview/AllReview";
-import Administrator from "@/pages/Admin/Administrator/Administrator";
-import AddAdministrator from "@/pages/Admin/Administrator/AddAdministrator";
-import EditAdministrator from "@/pages/Admin/Administrator/EditAdmin";
-import CouponLists from "@/pages/Admin/EcommerceSetting/Coupon/CouponLists";
-import AddCoupon from "@/pages/Admin/EcommerceSetting/Coupon/AddCoupon";
-import EditCoupon from "@/pages/Admin/EcommerceSetting/Coupon/EditCoupon";
-import ShippingConfiguration from "@/pages/Admin/EcommerceSetting/ShippingConfiguration/ShippingConfiguration";
-import Banner from "@/pages/Admin/EcommerceSetting/Banner/Banner";
-import AddBanner from "@/pages/Admin/EcommerceSetting/Banner/AddBanner";
-import EditBanner from "@/pages/Admin/EcommerceSetting/Banner/EditBanner";
-import ShopBanner from "@/pages/Admin/EcommerceSetting/ShopBanner/ShopBanner";
-import CampaignBanners from "@/pages/Admin/EcommerceSetting/CampaignBanners/CampaignBanners";
-import AddCampaignBanner from "@/pages/Admin/EcommerceSetting/CampaignBanners/AddCampaignBanner";
-import EditCampaignBanner from "@/pages/Admin/EcommerceSetting/CampaignBanners/EditCampaignBanner";
-import AdminProfile from "@/pages/Admin/GeneralSetting/AdminProfile/AdminProfile";
-import BusinessInfo from "@/pages/Admin/GeneralSetting/BusinessInfo/BusinessInfo";
-import AdminPrivacyPolicy from "@/pages/Admin/PrivacyPolicy/AdminPrivacyPolicy";
-import AdminTermsCondition from "@/pages/Admin/TermsCondition/AdminTermsCondition";
-import AdminReturnPolicy from "@/pages/Admin/ReturnPolicy/AdminReturnPolicy";
-import Logo from "@/pages/Admin/FrontEnd/Logo/Logo";
-import Favicon from "@/pages/Admin/FrontEnd/Favicon/Favicon";
-import About from "@/pages/Admin/FrontEnd/About/About";
-import Contact from "@/pages/Admin/FrontEnd/Contact/Contact";
-import FaqList from "@/pages/Admin/Faq/FaqList";
-import AddFaq from "@/pages/Admin/Faq/AddFaq";
-import UpdateFaq from "@/pages/Admin/Faq/UpdateFaq";
-import ProductWays from "@/pages/Admin/Report/SalesReport/ProductWays";
-import SEOSetting from "@/pages/Admin/SEOSetting/SEOSetting";
+const AdminRoute = React.lazy(() => import("@/PrivateRoute/AdminRoute"));
+const Dashboard = React.lazy(() => import("@/pages/Admin/Dashboard/Dashboard"));
+const AllCategories = React.lazy(
+  () => import("@/pages/Admin/Category/Categories/AllCategories"),
+);
+const AddCategory = React.lazy(
+  () => import("@/pages/Admin/Category/Categories/AddCategory"),
+);
+const EditCategory = React.lazy(
+  () => import("@/pages/Admin/Category/Categories/EditCategory"),
+);
+const AllSubCategories = React.lazy(
+  () => import("@/pages/Admin/Category/SubCategories/AllSubCategories"),
+);
+const AddSubCategory = React.lazy(
+  () => import("@/pages/Admin/Category/SubCategories/AddSubCategory"),
+);
+const EditSubCategory = React.lazy(
+  () => import("@/pages/Admin/Category/SubCategories/EditSubCategory"),
+);
+const AllSubSubCategory = React.lazy(
+  () => import("@/pages/Admin/Category/SubSubCategory/AllSubSubCategory"),
+);
+const AddSubSubCategory = React.lazy(
+  () => import("@/pages/Admin/Category/SubSubCategory/AddSubSubCategory"),
+);
+const EditSubSubCategory = React.lazy(
+  () => import("@/pages/Admin/Category/SubSubCategory/EditSubSubCategory"),
+);
+const AllBrands = React.lazy(() => import("@/pages/Admin/Brand/AllBrands"));
+const AddBrand = React.lazy(() => import("@/pages/Admin/Brand/AddBrand"));
+const EditBrand = React.lazy(() => import("@/pages/Admin/Brand/EditBrand"));
+const AllColor = React.lazy(() => import("@/pages/Admin/Color/AllColor"));
+const AddColor = React.lazy(() => import("@/pages/Admin/Color/AddColor"));
+const EditColor = React.lazy(() => import("@/pages/Admin/Color/EditColor"));
+const ProductList = React.lazy(
+  () => import("@/pages/Admin/Product/ProductList"),
+);
+const AddProduct = React.lazy(() => import("@/pages/Admin/Product/AddProduct"));
+const EditProduct = React.lazy(
+  () => import("@/pages/Admin/Product/EditProduct"),
+);
+const TodaysOrders = React.lazy(
+  () => import("@/pages/Admin/Order/TodayOrders"),
+);
+const AllOrders = React.lazy(() => import("@/pages/Admin/Order/AllOrders"));
+const OrderDetails = React.lazy(
+  () => import("@/pages/Admin/Order/OrderDetails"),
+);
+const AllUsers = React.lazy(() => import("@/pages/Admin/User/AllUsers"));
+const AddFlashDeal = React.lazy(
+  () => import("@/pages/Admin/FlashDeal/AddFlashDeal"),
+);
+const FlashDealList = React.lazy(
+  () => import("@/pages/Admin/FlashDeal/FlashDealList"),
+);
+const EditFlashDeal = React.lazy(
+  () => import("@/pages/Admin/FlashDeal/EditFlashDeal"),
+);
+const AllReview = React.lazy(() => import("@/pages/Admin/AllReview/AllReview"));
+const Administrator = React.lazy(
+  () => import("@/pages/Admin/Administrator/Administrator"),
+);
+const AddAdministrator = React.lazy(
+  () => import("@/pages/Admin/Administrator/AddAdministrator"),
+);
+const EditAdministrator = React.lazy(
+  () => import("@/pages/Admin/Administrator/EditAdmin"),
+);
+const CouponLists = React.lazy(
+  () => import("@/pages/Admin/EcommerceSetting/Coupon/CouponLists"),
+);
+const AddCoupon = React.lazy(
+  () => import("@/pages/Admin/EcommerceSetting/Coupon/AddCoupon"),
+);
+const EditCoupon = React.lazy(
+  () => import("@/pages/Admin/EcommerceSetting/Coupon/EditCoupon"),
+);
+const ShippingConfiguration = React.lazy(
+  () =>
+    import(
+      "@/pages/Admin/EcommerceSetting/ShippingConfiguration/ShippingConfiguration"
+    ),
+);
+const Banner = React.lazy(
+  () => import("@/pages/Admin/EcommerceSetting/Banner/Banner"),
+);
+const AddBanner = React.lazy(
+  () => import("@/pages/Admin/EcommerceSetting/Banner/AddBanner"),
+);
+const EditBanner = React.lazy(
+  () => import("@/pages/Admin/EcommerceSetting/Banner/EditBanner"),
+);
+const ShopBanner = React.lazy(
+  () => import("@/pages/Admin/EcommerceSetting/ShopBanner/ShopBanner"),
+);
+const CampaignBanners = React.lazy(
+  () =>
+    import("@/pages/Admin/EcommerceSetting/CampaignBanners/CampaignBanners"),
+);
+const AddCampaignBanner = React.lazy(
+  () =>
+    import("@/pages/Admin/EcommerceSetting/CampaignBanners/AddCampaignBanner"),
+);
+const EditCampaignBanner = React.lazy(
+  () =>
+    import("@/pages/Admin/EcommerceSetting/CampaignBanners/EditCampaignBanner"),
+);
+const AdminProfile = React.lazy(
+  () => import("@/pages/Admin/GeneralSetting/AdminProfile/AdminProfile"),
+);
+const BusinessInfo = React.lazy(
+  () => import("@/pages/Admin/GeneralSetting/BusinessInfo/BusinessInfo"),
+);
+const AdminPrivacyPolicy = React.lazy(
+  () => import("@/pages/Admin/PrivacyPolicy/AdminPrivacyPolicy"),
+);
+const AdminTermsCondition = React.lazy(
+  () => import("@/pages/Admin/TermsCondition/AdminTermsCondition"),
+);
+const AdminReturnPolicy = React.lazy(
+  () => import("@/pages/Admin/ReturnPolicy/AdminReturnPolicy"),
+);
+const Logo = React.lazy(() => import("@/pages/Admin/FrontEnd/Logo/Logo"));
+const Favicon = React.lazy(
+  () => import("@/pages/Admin/FrontEnd/Favicon/Favicon"),
+);
+const About = React.lazy(() => import("@/pages/Admin/FrontEnd/About/About"));
+const Contact = React.lazy(
+  () => import("@/pages/Admin/FrontEnd/Contact/Contact"),
+);
+const FaqList = React.lazy(() => import("@/pages/Admin/Faq/FaqList"));
+const AddFaq = React.lazy(() => import("@/pages/Admin/Faq/AddFaq"));
+const UpdateFaq = React.lazy(() => import("@/pages/Admin/Faq/UpdateFaq"));
+const ProductWays = React.lazy(
+  () => import("@/pages/Admin/Report/SalesReport/ProductWays"),
+);
+const SEOSetting = React.lazy(
+  () => import("@/pages/Admin/SEOSetting/SEOSetting"),
+);
 
 export const adminRoutes = {
   path: "/admin",

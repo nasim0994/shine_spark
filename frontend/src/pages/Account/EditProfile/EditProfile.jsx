@@ -4,7 +4,7 @@ import { useEditUserInfoMutation } from "../../../Redux/user/userApi";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function EditeProfile() {
+export default function EditProfile() {
   window.scroll(0, 0);
   const { loggedUser } = useSelector((state) => state.user);
   const user = loggedUser?.data;

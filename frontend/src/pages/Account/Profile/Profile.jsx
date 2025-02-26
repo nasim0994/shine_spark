@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 import { FcEditImage } from "react-icons/fc";
 import { AiFillDelete, AiOutlineCloseCircle } from "react-icons/ai";
 import ImageUploading from "react-images-uploading";
-import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
-import Spinner from "../../../components/Spinner/Spinner";
-import { useGetMyOrdersQuery } from "../../../Redux/order/orderApi";
-import usePageView from "../../../hooks/usePageView";
+import usePageView from "@/hooks/usePageView";
+import { useGetMyOrdersQuery } from "@/Redux/order/orderApi";
+import Spinner from "@/components/shared/Spinner/Spinner";
+import toast from "react-hot-toast";
 
 export default function Profile() {
   window.scroll(0, 0);
@@ -22,9 +22,8 @@ export default function Profile() {
   const orders = data?.data;
   const wishlists = useSelector((state) => state.wishlist.wishlists);
 
-  if (!user) {
-    return <Spinner />;
-  }
+  if (!user) return <Spinner />;
+
   const { name, phone, email, city, area, street } = user;
   const image =
     !user?.image || user?.image === "" || user?.image === null
@@ -62,13 +61,14 @@ export default function Profile() {
       }
       const result = await response.json();
       if (result?.success) {
-        Swal.fire("", "Image update success", "success");
+        toast.success("Image Updated Successfully");
         setModal(false);
         setTimeout(() => {
           location.reload();
         }, 1000);
       } else {
-        Swal.fire("Something went worng", "", "error");
+        toast.error(result?.data?.message || "Something went wrong");
+        console.log(result);
       }
 
       setLoading(false);

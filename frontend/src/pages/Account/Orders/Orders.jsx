@@ -1,8 +1,8 @@
 import { FaEye } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { useGetMyOrdersQuery } from "../../../Redux/order/orderApi";
 import moment from "moment";
+import { useGetMyOrdersQuery } from "@/Redux/order/orderApi";
 
 export default function Orders() {
   const { loggedUser } = useSelector((state) => state.user);

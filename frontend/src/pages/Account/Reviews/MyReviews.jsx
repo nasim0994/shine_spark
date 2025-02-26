@@ -1,17 +1,16 @@
-import { useState } from "react";
-import { MdDeleteOutline, MdEdit } from "react-icons/md";
-import { useSelector } from "react-redux";
-import Swal from "sweetalert2";
+import Pagination from "@/components/Pagination/Pagination";
+import Rating from "@/components/Rating/Rating";
 import {
   useDeleteReviewMutation,
   useGetReviewsByUserIdQuery,
-} from "../../../Redux/review/reviewApi";
-import Pagination from "../../../components/Pagination/Pagination";
-import Rating from "../../../components/Rating/Rating";
-import ReviewEditForm from "../../ProductDetails/Review/ReviewEditForm";
+} from "@/Redux/review/reviewApi";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { MdDeleteOutline, MdEdit } from "react-icons/md";
+import { useSelector } from "react-redux";
 
 export default function MyReviews() {
-  const [editModal, setEditModal] = useState(false);
+  // const [editModal, setEditModal] = useState(false);
   const { loggedUser } = useSelector((state) => state.user);
   const userId = loggedUser?.data?._id;
   const [currentPage, setCurrentPage] = useState(1);
@@ -36,16 +35,21 @@ export default function MyReviews() {
     const data = {
       user: userId,
     };
-    await deleteReview({ reviewId, data }).unwrap();
-    Swal.fire("", "Review deleted successfully", "success");
+    const res = await deleteReview({ reviewId, data });
+    if (res?.data?.success) {
+      toast.success("Review deleted successfully");
+    } else {
+      toast.error(res?.data?.message || "Failed to delete review");
+      console.log(res);
+    }
   };
 
   // Edit Review
-  const [editedReview, setEditedReview] = useState({});
-  const handleReviewEdit = (review) => {
-    setEditedReview(review);
-    setEditModal(true);
-  };
+  // const [editedReview, setEditedReview] = useState({});
+  // const handleReviewEdit = (review) => {
+  //   setEditedReview(review);
+  //   setEditModal(true);
+  // };
 
   return (
     <div>
@@ -85,17 +89,17 @@ export default function MyReviews() {
 
             <div className="absolute right-3 top-3 flex items-center gap-1">
               <button
-                onClick={() => handleReviewEdit(review)}
+                // onClick={() => handleReviewEdit(review)}
                 className="text-lg text-neutral-content duration-200 hover:text-primary"
               >
                 <MdEdit />
               </button>
 
-              <ReviewEditForm
+              {/* <ReviewEditForm
                 editModal={editModal}
                 setEditModal={setEditModal}
                 review={editedReview}
-              />
+              /> */}
 
               <button
                 onClick={() => handleReviewDelete(review?._id)}

@@ -4,9 +4,9 @@ import {
   useDeleteCouponMutation,
   useGetCouponsQuery,
   useUpdateStatusMutation,
-} from "../../../../Redux/coupon/couponApi";
-import Spinner from "../../../../components/Spinner/Spinner";
-import Swal from "sweetalert2";
+} from "@/Redux/coupon/couponApi";
+import toast from "react-hot-toast";
+import Spinner from "@/components/shared/Spinner/Spinner";
 
 export default function CouponLists() {
   const { data, isLoading } = useGetCouponsQuery();
@@ -17,7 +17,12 @@ export default function CouponLists() {
     const isConfirm = window.confirm("Are you sure delete this coupon?");
     if (isConfirm) {
       const res = await deleteCoupon(id);
-      Swal.fire("", "Delete success", "success");
+      if (res?.data?.success) {
+        toast.success("Coupon deleted successfully");
+      } else {
+        toast.error(res?.data?.message || "Something went wrong");
+        console.log(res);
+      }
     }
   };
 
@@ -32,20 +37,19 @@ export default function CouponLists() {
       const res = await updateStatus({ id, status });
 
       if (res?.data?.success) {
-        Swal.fire("", "Update success", "success");
+        toast.success("Coupon status updated successfully");
       } else {
-        Swal.fire("", "Something went wrong", "error");
+        toast.error(res?.data?.message || "Something went wrong");
+        console.log(res);
       }
     }
   };
 
-  if (isLoading) {
-    return <Spinner />;
-  }
+  if (isLoading) return <Spinner />;
 
   return (
-    <section className="bg-base-100 shadow rounded">
-      <div className="p-4 border-b text-neutral font-medium flex justify-between items-center">
+    <section className="rounded bg-base-100 shadow">
+      <div className="flex items-center justify-between border-b p-4 font-medium text-neutral">
         <h3>Coupon Lists</h3>
         <Link
           to="/admin/ecommerce-setting/coupons/add-coupon"
@@ -62,7 +66,7 @@ export default function CouponLists() {
                 <th>Sl</th>
                 <th>Coupon Code</th>
                 <th>Discount</th>
-                <th>Minimum Ammount</th>
+                <th>Minimum Amount</th>
                 <th>Start Date-Time</th>
                 <th>End Date-Time</th>
                 <th>Status</th>
@@ -96,13 +100,13 @@ export default function CouponLists() {
                       <div className="flex items-center gap-2 text-lg">
                         <Link
                           to={`/admin/ecommerce-setting/coupons/edit-coupon/${coupon?._id}`}
-                          className="hover:text-red-500 duration-200"
+                          className="duration-200 hover:text-red-500"
                         >
                           <MdEdit />
                         </Link>
                         <button
                           onClick={() => handleDeleteCoupon(coupon?._id)}
-                          className="hover:text-red-500 duration-200"
+                          className="duration-200 hover:text-red-500"
                         >
                           <MdDelete />
                         </button>

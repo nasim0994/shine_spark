@@ -1,9 +1,8 @@
+import AccountSidebar from "@/components/AccountSidebar/AccountSidebar";
+import Footer from "@/components/shared/main/Footer/Footer";
+import Header from "@/components/shared/main/Header/Header";
 import { useState, useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import Footer from "../components/Footer/Footer";
-import Header from "../components/Header/Header";
-import AccountSidebar from "../components/AccountSidebar/AccountSidebar";
-import MobileBottomHeader from "../components/Header/MobileBottomHeader/MobileBottomHeader";
 
 export default function AccountLayout() {
   const [sidebar, setSidebar] = useState(false);
@@ -50,8 +49,6 @@ export default function AccountLayout() {
         </div>
       </section>
       <Footer />
-
-      <MobileBottomHeader setSidebar={setSidebar} />
     </>
   );
 }

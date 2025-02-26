@@ -1,7 +1,7 @@
+import { useUpdateUserPasswordMutation } from "@/Redux/user/userApi";
+import { userLogout } from "@/Redux/user/userSlice";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
-import { userLogout } from "../../../Redux/user/userSlice";
-import { useUpdateUserPasswordMutation } from "../../../Redux/user/userApi";
 
 export default function UpdatePass({ id }) {
   const [updateUserPassword, { isLoading }] = useUpdateUserPasswordMutation();

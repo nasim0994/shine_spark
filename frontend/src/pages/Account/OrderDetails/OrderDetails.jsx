@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import moment from "moment";
-import { useGetOrderByIdQuery } from "../../../Redux/order/orderApi";
-import Spinner from "../../../components/Spinner/Spinner";
+import { useGetOrderByIdQuery } from "@/Redux/order/orderApi";
+import Spinner from "@/components/shared/Spinner/Spinner";
 
 const OrderDetailsPage = () => {
   const { id } = useParams();
@@ -11,9 +11,7 @@ const OrderDetailsPage = () => {
   const products = data?.data?.products;
 
   let content = null;
-  if (isLoading) {
-    content = <Spinner />;
-  }
+  if (isLoading) content = <Spinner />;
 
   if (!isLoading && isError) {
     content = <p className="mt-5 text-red-500">Order get failed</p>;

@@ -1,11 +1,22 @@
-import { RouterProvider } from "react-router-dom";
-import { routes } from "./Routes/Routes";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+// import { routes } from "./Routes/Routes";
 import useAuthCheck from "./hooks/useAuthCheck";
 import { Helmet } from "react-helmet";
 import { useGetFaviconQuery } from "./Redux/favicon/faviconApi";
 import { useGetSEOQuery } from "./Redux/seoApi";
 import { useEffect } from "react";
 import Spinner from "./components/shared/Spinner/Spinner";
+import { mainRoutes } from "./Routes/mainRoutes";
+import { accountRoutes } from "./Routes/accountRoutes";
+import { rootRoutes } from "./Routes/rootRoutes";
+import { adminRoutes } from "./Routes/adminRoutes";
+
+const router = createBrowserRouter([
+  mainRoutes,
+  accountRoutes,
+  rootRoutes,
+  adminRoutes,
+]);
 
 export default function App() {
   const authChecked = useAuthCheck();
@@ -97,7 +108,7 @@ export default function App() {
         ></iframe>
       </noscript>
 
-      <RouterProvider router={routes}></RouterProvider>
+      <RouterProvider router={router}></RouterProvider>
     </>
   );
 }

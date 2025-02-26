@@ -5,6 +5,7 @@ import {
   discountAmountSelector,
   subTotalSelector,
 } from "@/Redux/cart/cartSlice";
+import { useEffect } from "react";
 import {
   MdOutlineDeleteSweep,
   MdOutlineRemoveShoppingCart,
@@ -13,6 +14,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function Cart() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const { carts } = useSelector((state) => state.cart);
   const subTotal = useSelector(subTotalSelector);
   const discountAmount = useSelector(discountAmountSelector);

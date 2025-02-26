@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 import { MdDelete, MdEdit } from "react-icons/md";
-import Spinner from "../../../../components/Spinner/Spinner";
-import { toast } from "react-toastify";
 import {
   useDeleteBannerMutation,
   useGetBannersQuery,
-} from "../../../../Redux/banner/bannerApi";
+} from "@/Redux/banner/bannerApi";
+import toast from "react-hot-toast";
+import Spinner from "@/components/shared/Spinner/Spinner";
 
 export default function Banner() {
   const { data, isLoading, isError } = useGetBannersQuery();
@@ -25,13 +25,9 @@ export default function Banner() {
     }
   };
 
-  if (isLoading) {
-    return <Spinner />;
-  }
+  if (isLoading) return <Spinner />;
 
-  if (isError) {
-    return <p>Fail fetch </p>;
-  }
+  if (isError) return <p>Fail fetch </p>;
 
   return (
     <section className="rounded bg-base-100 shadow">

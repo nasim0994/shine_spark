@@ -111,7 +111,7 @@ const adminSidebarItems = [
         path: "/admin/banner/main/all",
       },
       {
-        title: "Shop Campaign Banner",
+        title: "Campaign Banner 1",
         path: "/admin/banner/shop-banner",
       },
       {

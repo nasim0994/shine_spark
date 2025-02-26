@@ -2,19 +2,34 @@
 import { createBrowserRouter } from "react-router-dom";
 import React, { Suspense } from "react";
 
-import MainLayout from "../Layout/MainLayout";
-import Home from "../pages/Home/Home";
+import MainLayout from "@/Layout/MainLayout";
+import Home from "@/pages/main/Home";
 import Spinner from "@/components/shared/Spinner/Spinner";
-import Cart from "@/pages/main/Cart";
 
 // lazy import
-const AboutUs = React.lazy(() => import("../pages/AboutUs/AboutUs"));
-const ContactUs = React.lazy(() => import("../pages/ContactUs/ContactUs"));
+// ------------------------------------------------------------------------------
+//Main Layout
+// ------------------------------------------------------------------------------
+const Cart = React.lazy(() => import("@/pages/main/Cart"));
+const Login = React.lazy(() => import("@/pages/main/Login"));
+const Signup = React.lazy(() => import("@/pages/main/Signup"));
+const ProductDetails = React.lazy(() => import("@/pages/main/ProductDetails"));
+const Shop = React.lazy(() => import("@/pages/main/Shop"));
+const AboutUs = React.lazy(() => import("@/pages/main/AboutUs"));
+const ContactUs = React.lazy(() => import("@/pages/main/ContactUs"));
 const Wishlist = React.lazy(() => import("@/pages/main/Wishlist"));
+const PrivacyPolicy = React.lazy(() => import("@/pages/main/PrivacyPolicy"));
+const TermsCondition = React.lazy(() => import("@/pages/main/TermsCondition"));
+const ReturnPolicy = React.lazy(() => import("@/pages/main/ReturnPolicy"));
+const FAQ = React.lazy(() => import("@/pages/main/FAQ"));
+const Checkout = React.lazy(() => import("@/pages/main/Checkout"));
 
-const Invoice = React.lazy(() => import("../pages/Admin/Order/Invoice"));
+// ------------------------------------------------------------------------------
+//Admin Layout
+// ------------------------------------------------------------------------------
+const Invoice = React.lazy(() => import("@/pages/Admin/Order/Invoice"));
 const ProductWays = React.lazy(
-  () => import("../pages/Admin/Report/SalesReport/ProductWays"),
+  () => import("@/pages/Admin/Report/SalesReport/ProductWays"),
 );
 const CampaignBanners = React.lazy(
   () =>
@@ -42,22 +57,10 @@ const AdminTermsCondition = React.lazy(
 const AdminReturnPolicy = React.lazy(
   () => import("../pages/Admin/ReturnPolicy/AdminReturnPolicy"),
 );
-const PrivacyPolicy = React.lazy(() => import("../pages/PrivacyPolicy"));
-const TermsCondition = React.lazy(() => import("../pages/TermsCondition"));
-const ReturnPolicy = React.lazy(() => import("../pages/ReturnPolicy"));
-const FAQ = React.lazy(() => import("../pages/FAQ/FAQ"));
+
 const FaqList = React.lazy(() => import("../pages/Admin/Faq/faqList"));
 const AddFaq = React.lazy(() => import("../pages/Admin/Faq/addFaq"));
 const UpdateFaq = React.lazy(() => import("../pages/Admin/Faq/updateFaq"));
-
-// Main pages
-// const Cart = React.lazy(() => import("../pages/Cart/Cart"));
-const Login = React.lazy(() => import("../pages/Login/Login"));
-const ProductDetails = React.lazy(
-  () => import("@/pages/ProductDetails/ProductDetails"),
-);
-const Shop = React.lazy(() => import("../pages/Shop/Shop"));
-const Signup = React.lazy(() => import("../pages/Signup/Signup"));
 
 // Account Layout and Private Routes
 const AccountLayout = React.lazy(() => import("../Layout/AccountLayout"));
@@ -68,22 +71,13 @@ const EditeProfile = React.lazy(
 const Orders = React.lazy(() => import("../pages/Account/Orders/Orders"));
 const Profile = React.lazy(() => import("../pages/Account/Profile/Profile"));
 const Setting = React.lazy(() => import("../pages/Account/Setting/Setting"));
-// const Wishlist = React.lazy(() => import("../pages/Account/Wishlist/Wishlist"));
-const Checkout = React.lazy(() => import("../pages/Checkout/Checkout"));
 
-const PaymentResult = React.lazy(
-  () => import("../pages/Checkout/PaymentResult"),
-);
 const OrderDetailsPage = React.lazy(
   () => import("../pages/Account/OrderDetails/OrderDetails"),
 );
 const MyReviews = React.lazy(
   () => import("../pages/Account/Reviews/MyReviews"),
 );
-
-// ------------------------------------------------------------------------------
-//Admin Layout and Routes
-// ------------------------------------------------------------------------------
 
 const AdminLayout = React.lazy(
   () => import("../Layout/AdminLayout/AdminLayout"),
@@ -382,17 +376,6 @@ export const routes = createBrowserRouter([
         element: (
           <Suspense fallback={<Spinner />}>
             <Checkout />
-          </Suspense>
-        ),
-      },
-
-      {
-        path: "/payment-result/:transactionId",
-        element: (
-          <Suspense fallback={<Spinner />}>
-            <PrivateRoute>
-              <PaymentResult />
-            </PrivateRoute>
           </Suspense>
         ),
       },

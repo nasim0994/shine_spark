@@ -1,14 +1,48 @@
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import { Autoplay, Navigation } from "swiper/modules";
+import { useGetBannersQuery } from "../../../Redux/banner/bannerApi";
+import { Link } from "react-router-dom";
+import BannerSkeleton from "@/components/shared/Skeleton/BannerSkeleton";
+
 export default function Banner() {
+  const { data, isLoading, isError } = useGetBannersQuery();
+
+  let content = null;
+  if (isLoading) return (content = <BannerSkeleton />);
+
+  if (!isLoading && !isError) {
+    content = data?.data?.map((banner) => (
+      <SwiperSlide key={banner._id}>
+        <Link to={banner?.link}>
+          <img
+            src={`${import.meta.env.VITE_BACKEND_URL}/banner/${banner?.image}`}
+            alt="banner"
+            className="h-full w-full object-cover"
+            loading="lazy"
+          />
+        </Link>
+      </SwiperSlide>
+    ));
+  }
+
   return (
-    <section className="py-2 lg:py-3">
+    <section className="py-3">
       <div className="container">
-        <img
-          src="https://staticm247.kalkifashion.com/media/wysiwyg/1-slider-banner-all-country-1440x540-11-02-25.jpg?w=1440"
-          alt="banner"
-          width={500}
-          height={500}
-          className="h-[210px] w-full sm:h-[300px] lg:h-[76vh]"
-        />
+        <div className="relative h-40 sm:h-60 lg:h-[520px]">
+          <Swiper
+            navigation={true}
+            modules={[Navigation, Autoplay]}
+            loop={true}
+            autoplay={{
+              delay: 5000,
+              disableOnInteraction: false,
+            }}
+            className="mySwiper h-full w-full"
+          >
+            {content}
+          </Swiper>
+        </div>
       </div>
     </section>
   );

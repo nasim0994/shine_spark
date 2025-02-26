@@ -5,8 +5,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   useEditCampaignBannerMutation,
   useGetCampaignBannerByIdQuery,
-} from "../../../../Redux/campaignBanner/campaignBannerApi";
-import Swal from "sweetalert2";
+} from "@/Redux/campaignBanner/campaignBannerApi";
+import toast from "react-hot-toast";
 
 export default function EditCampaignBanner() {
   const [images, setImages] = useState([]);
@@ -22,6 +22,10 @@ export default function EditCampaignBanner() {
     const link = e.target.link.value;
     const order = e.target.order.value;
 
+    if (image && image?.size > 1024 * 1024) {
+      return toast.error("Image size should be less than 1mb");
+    }
+
     const formData = new FormData();
     if (images?.length > 0) formData.append("image", image);
     formData.append("link", link);
@@ -29,13 +33,13 @@ export default function EditCampaignBanner() {
 
     const res = await editCampaignBanner({ formData, id });
     if (res?.data?.success) {
-      Swal.fire("", "Update success", "success");
+      toast.success("Campaign Banner Updated Successfully");
       navigate("/admin/banner/campaign-banners");
     }
   };
 
   return (
-    <section className="rounded bg-base-100 shadow md:w-[600px]">
+    <section className="rounded bg-base-100 shadow">
       <div className="border-b p-4 font-medium text-neutral">
         <h3>Edit Campaign Banner</h3>
       </div>

@@ -1,9 +1,9 @@
 import { useState } from "react";
 import ImageUploading from "react-images-uploading";
 import { AiFillDelete } from "react-icons/ai";
-import Swal from "sweetalert2";
-import { useAddCampaignBannerMutation } from "../../../../Redux/campaignBanner/campaignBannerApi";
 import { useNavigate } from "react-router-dom";
+import { useAddCampaignBannerMutation } from "@/Redux/campaignBanner/campaignBannerApi";
+import toast from "react-hot-toast";
 
 export default function AddCampaignBanner() {
   const [images, setImages] = useState([]);
@@ -17,7 +17,11 @@ export default function AddCampaignBanner() {
     e.preventDefault();
     const image = images[0]?.file;
     if (!image) {
-      return Swal.fire("", "Image is required", "error");
+      return toast.error("Please select an image");
+    }
+
+    if (image.size > 1024 * 1024) {
+      return toast.error("Image size should be less than 1mb");
     }
 
     const form = e.target;
@@ -31,7 +35,7 @@ export default function AddCampaignBanner() {
 
     const res = await addBanner(formData);
     if (res?.data?.success) {
-      Swal.fire("", "Banner add success", "success");
+      toast.success("Campaign Banner Added Successfully");
       navigate("/admin/banner/campaign-banners");
       setImages([]);
       form.reset();
@@ -39,7 +43,7 @@ export default function AddCampaignBanner() {
   };
 
   return (
-    <section className="rounded bg-base-100 shadow md:w-[600px]">
+    <section className="rounded bg-base-100 shadow">
       <div className="border-b p-4 font-medium text-neutral">
         <h3>Add New Campaign Banner</h3>
       </div>
@@ -112,8 +116,8 @@ export default function AddCampaignBanner() {
           </p>
         )}
 
-        <div className="mt-6 flex justify-end border-t p-4">
-          <button disabled={isLoading && "disabled"} className="primary_btn">
+        <div>
+          <button disabled={isLoading} className="primary_btn">
             {isLoading ? "Loading..." : "Add Campaign Banner"}
           </button>
         </div>

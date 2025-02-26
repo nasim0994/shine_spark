@@ -4,6 +4,7 @@ import { clearWishlist } from "@/Redux/wishlist/wishlistSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function Wishlist() {
+  window.scrollTo(0, 0);
   const { wishlists } = useSelector((state) => state.wishlist);
   const dispatch = useDispatch();
 

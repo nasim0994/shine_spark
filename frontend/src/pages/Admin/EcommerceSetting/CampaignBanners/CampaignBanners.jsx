@@ -3,9 +3,9 @@ import { MdEdit, MdDelete } from "react-icons/md";
 import {
   useDeleteCampaignBannerMutation,
   useGetCampaignBannersQuery,
-} from "../../../../Redux/campaignBanner/campaignBannerApi";
-import Spinner from "../../../../components/Spinner/Spinner";
-import Swal from "sweetalert2";
+} from "@/Redux/campaignBanner/campaignBannerApi";
+import Spinner from "@/components/shared/Spinner/Spinner";
+import toast from "react-hot-toast";
 
 export default function CampaignBanners() {
   const { data, isLoading } = useGetCampaignBannersQuery();
@@ -15,13 +15,11 @@ export default function CampaignBanners() {
     const isConfirm = window.confirm("are you sure delete this banner?");
     if (isConfirm) {
       await deleteCampaignBanner(id);
-      Swal.fire("", "Delete success", "success");
+      toast.success("Banner Deleted Successfully");
     }
   };
 
-  if (isLoading) {
-    return <Spinner />;
-  }
+  if (isLoading) return <Spinner />;
 
   return (
     <section className="rounded bg-base-100 shadow">
@@ -32,7 +30,7 @@ export default function CampaignBanners() {
         </Link>
       </div>
       <div className="p-4">
-        <div className="relative overflow-x-auto shadow-lg">
+        <div className="relative overflow-x-auto">
           <table className="dashboard_table">
             <thead>
               <tr>
@@ -53,7 +51,7 @@ export default function CampaignBanners() {
                           src={`${
                             import.meta.env.VITE_BACKEND_URL
                           }/campaignBanner/${banner?.image}`}
-                          alt=""
+                          alt="campaignBanner"
                           className="h-10 w-16"
                         />
                       </div>

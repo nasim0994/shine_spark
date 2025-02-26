@@ -1,13 +1,13 @@
-import IHeart from "@/components/shared/icons/IHeart";
 import { Link } from "react-router-dom";
+import WishlistBtn from "./WishlistBtn";
 
 export default function ProductCard({ product }) {
   return (
     <div className="group">
       <div className="relative overflow-hidden">
-        <button className="absolute right-3 top-3 z-20">
-          <IHeart width={20} height={20} color="#fff" />
-        </button>
+        <div className="absolute right-3 top-3 z-20">
+          <WishlistBtn product={product} color="#fff" />
+        </div>
 
         <Link to={`/product/${product?.slug}`}>
           <img

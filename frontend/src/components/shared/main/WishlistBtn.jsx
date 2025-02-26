@@ -5,7 +5,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import IHeart from "../icons/IHeart";
 
-export default function WishlistBtn({ product }) {
+export default function WishlistBtn({ product, color }) {
   const dispatch = useDispatch();
   const isExistWishlist = useSelector((state) =>
     checkIsProductInWishlist(state, product?._id),
@@ -19,7 +19,7 @@ export default function WishlistBtn({ product }) {
       {isExistWishlist ? (
         <IHeart width={22} height={22} color="#ffa500" />
       ) : (
-        <IHeart width={22} height={22} />
+        <IHeart width={22} height={22} color={color} />
       )}
     </button>
   );

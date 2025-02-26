@@ -2,8 +2,8 @@ import {
   useColorByIdQuery,
   useEditColorMutation,
 } from "@/Redux/color/colorApi";
+import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
 
 export default function EditColor() {
   const { id } = useParams();
@@ -54,7 +54,7 @@ export default function EditColor() {
       <div className="mt-4">
         <button
           className="rounded bg-primary px-6 py-1.5 text-base-100"
-          disabled={updateLoading && "disabled"}
+          disabled={updateLoading}
         >
           {updateLoading ? "Loading.." : "Update"}
         </button>

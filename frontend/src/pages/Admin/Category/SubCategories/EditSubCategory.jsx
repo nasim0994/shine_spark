@@ -1,12 +1,12 @@
 import { useNavigate, useParams } from "react-router-dom";
-import Spinner from "../../../../components/Spinner/Spinner";
-import Swal from "sweetalert2";
+import { useEffect, useState } from "react";
 import {
   useGetSubCategoryQuery,
   useUpdateSubCategoryMutation,
-} from "../../../../Redux/subCategory/subCategoryApi";
-import { useGetCategoriesQuery } from "../../../../Redux/category/categoryApi";
-import { useEffect, useState } from "react";
+} from "@/Redux/subCategory/subCategoryApi";
+import { useGetCategoriesQuery } from "@/Redux/category/categoryApi";
+import Spinner from "@/components/shared/Spinner/Spinner";
+import toast from "react-hot-toast";
 
 export default function EditSubCategory() {
   const { id } = useParams();
@@ -25,9 +25,7 @@ export default function EditSubCategory() {
   const [updateSubCategory, { isLoading: updateLoading }] =
     useUpdateSubCategoryMutation();
 
-  if (isLoading) {
-    return <Spinner />;
-  }
+  if (isLoading) return <Spinner />;
 
   const handleUpdateCategory = async (e) => {
     e.preventDefault();
@@ -42,17 +40,18 @@ export default function EditSubCategory() {
 
     const result = await updateSubCategory({ id, data });
     if (result?.data?.success) {
-      Swal.fire("", "Update Success", "success");
+      toast.success("Sub Category updated successfully");
       navigate("/admin/category/sub-categories");
     } else {
-      Swal.fire("", "Somethin went worng", "error");
+      toast.error(result?.data?.message || "Failed to update sub category");
+      console.log(result);
     }
   };
 
   return (
     <form
       onSubmit={handleUpdateCategory}
-      className="p-4 bg-base-100 shadhow rounded sm:w-1/2"
+      className="rounded bg-base-100 p-4 shadow sm:w-1/2"
     >
       <div className="form_group mt-2">
         <p>Sub Category Name</p>
@@ -81,8 +80,8 @@ export default function EditSubCategory() {
 
       <div className="mt-4">
         <button
-          className="bg-primary text-base-100 px-6 py-1.5 rounded"
-          disabled={updateLoading && "disabled"}
+          className="rounded bg-primary px-6 py-1.5 text-base-100"
+          disabled={updateLoading}
         >
           {updateLoading ? "Loading.." : "Update"}
         </button>

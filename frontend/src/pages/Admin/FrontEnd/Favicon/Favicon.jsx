@@ -1,12 +1,12 @@
-import { useState } from "react";
-import { AiFillDelete } from "react-icons/ai";
-import ImageUploading from "react-images-uploading";
 import {
   useAddFaviconMutation,
   useGetFaviconQuery,
   useUpdateFaviconMutation,
-} from "../../../../Redux/favicon/faviconApi";
-import { toast } from "react-toastify";
+} from "@/Redux/favicon/faviconApi";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { AiFillDelete } from "react-icons/ai";
+import ImageUploading from "react-images-uploading";
 
 export default function Favicon() {
   const [images, setImages] = useState([]);
@@ -25,6 +25,8 @@ export default function Favicon() {
     const icon = images[0]?.file;
 
     if (!icon) return toast.error("Please select an icon");
+    if (icon.size > 1024 * 1024)
+      return toast.error("Image size must be less than 1MB");
 
     const formData = new FormData();
     formData.append("icon", icon);
@@ -114,7 +116,7 @@ export default function Favicon() {
 
         <div className="mt-5">
           <div className="flex gap-2">
-            <button disabled={addLoading && "disabled"} className="primary_btn">
+            <button disabled={addLoading} className="primary_btn">
               {addLoading || updateLoading
                 ? "Loading..."
                 : favicon?._id

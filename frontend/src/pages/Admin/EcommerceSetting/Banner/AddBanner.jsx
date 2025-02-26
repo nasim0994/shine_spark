@@ -124,7 +124,7 @@ export default function AddBanner() {
         </div>
 
         <div className="mt-4">
-          <button disabled={isLoading && "disabled"} className="primary_btn">
+          <button disabled={isLoading} className="primary_btn">
             {isLoading ? "Loading..." : "Add Banner"}
           </button>
         </div>

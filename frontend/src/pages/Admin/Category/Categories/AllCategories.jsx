@@ -3,10 +3,10 @@ import {
   useDeleteCategoryMutation,
   useGetCategoriesQuery,
 } from "@/Redux/category/categoryApi";
+import toast from "react-hot-toast";
 import { BiSolidPencil } from "react-icons/bi";
 import { MdDeleteOutline } from "react-icons/md";
 import { Link } from "react-router-dom";
-import Swal from "sweetalert2";
 
 export default function AllCategories() {
   const { data, isLoading, isError, error } = useGetCategoriesQuery();
@@ -18,9 +18,9 @@ export default function AllCategories() {
     if (isConfirm) {
       const res = await deleteCategory(id);
       if (res?.data?.success) {
-        Swal.fire("", "Category Delete Success", "success");
+        toast.success("Category deleted successfully");
       } else {
-        Swal.fire("", "Somethin went worng", "error");
+        toast.error(res?.data?.message || "Failed to delete category");
         console.log(res);
       }
     }

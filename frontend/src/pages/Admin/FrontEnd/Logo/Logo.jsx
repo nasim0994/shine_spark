@@ -1,85 +1,69 @@
-import { useEffect, useState } from "react";
-import { AiFillDelete } from "react-icons/ai";
-import ImageUploading from "react-images-uploading";
-import Swal from "sweetalert2";
-import Spinner from "../../../../components/Spinner/Spinner";
-
+import Spinner from "@/components/shared/Spinner/Spinner";
 import {
   useAddLogoMutation,
   useGetMainLogoQuery,
   useUpdateMainLogoMutation,
-} from "../../../../Redux/logo/logoApi";
+} from "@/Redux/logo/logoApi";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { AiFillDelete } from "react-icons/ai";
+import ImageUploading from "react-images-uploading";
 
 export default function Logo() {
   const [logos, setLogos] = useState([]);
   const { data, isLoading } = useGetMainLogoQuery();
-  const [addLogo, { isLoading: addLoading, isSuccess, isError }] =
-    useAddLogoMutation();
+  const [addLogo, { isLoading: addLoading }] = useAddLogoMutation();
 
-  const [
-    updateMainLogo,
-    {
-      isLoading: updateLoading,
-      isSuccess: updateSuccess,
-      isError: updateError,
-    },
-  ] = useUpdateMainLogoMutation();
+  const [updateMainLogo, { isLoading: updateLoading }] =
+    useUpdateMainLogoMutation();
 
   const id = data?.data[0]?._id;
 
   const handleUpdateAddMainLogo = async () => {
     const logo = logos[0]?.file;
-    if (!logo) {
-      return Swal.fire("", "Logo is required", "error");
+    if (!logo) return toast.error("Please select a logo");
+
+    if (logo.size > 1024 * 1024) {
+      return toast.error("Image size must be less than 1MB");
     }
 
     let formData = new FormData();
     formData.append("logo", logo);
 
     if (data?.data?.length > 0) {
-      await updateMainLogo({ id, formData });
+      const res = await updateMainLogo({ id, formData });
+      if (res?.data?.success) {
+        toast.success("Logo updated successfully");
+      } else {
+        toast.error(res?.data?.message || "Failed to update logo");
+        console.log(res);
+      }
     } else {
-      await addLogo(formData);
+      const res = await addLogo(formData);
+      if (res?.data?.success) {
+        toast.success("Logo added successfully");
+      } else {
+        toast.error(res?.data?.message || "Failed to update logo");
+        console.log(res);
+      }
     }
   };
 
-  useEffect(() => {
-    // update
-    if (updateSuccess) {
-      Swal.fire("", "Logo Update success", "success");
-      setLogos([]);
-    }
-    if (updateError) {
-      Swal.fire("", "somethin wrong, please try again", "error");
-    }
-
-    // Add
-    if (isSuccess) {
-      Swal.fire("", "Logo successfully added", "success");
-      setLogos([]);
-    }
-    if (isError) {
-      Swal.fire("", "Something went wrong when uploading", "error");
-    }
-  }, [updateSuccess, updateError, isSuccess, isError]);
-
-  if (isLoading) {
-    return <Spinner />;
-  }
+  if (isLoading) return <Spinner />;
 
   return (
     <section>
-      <div className="p-4 border-b bg-base-100 rounded">
+      <div className="rounded border-b bg-base-100 p-4">
         <h1 className="font-medium text-neutral">Logo Setting</h1>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6 mt-4">
-        <div className="bg-base-100 rounded shadow">
+      <div className="mt-4 grid gap-6 md:grid-cols-2">
+        <div className="rounded bg-base-100 shadow">
           <div>
-            <p className="text-neutral-content border-b p-3">
+            <p className="border-b p-3 text-neutral-content">
               Logo <small>(max 120px/56px)</small>
             </p>
-            <div className="p-4 sm:flex items-center gap-4">
+            <div className="items-center gap-4 p-4 sm:flex">
               <ImageUploading
                 value={logos}
                 onChange={(file) => setLogos(file)}
@@ -87,13 +71,13 @@ export default function Logo() {
               >
                 {({ onImageUpload, onImageRemove, dragProps }) => (
                   <div
-                    className="border rounded border-dashed p-4 w-max"
+                    className="w-max rounded border border-dashed p-4"
                     {...dragProps}
                   >
                     <div className="flex items-center gap-2">
                       <span
                         onClick={onImageUpload}
-                        className="px-4 py-1.5 rounded-2xl text-base-100 bg-primary cursor-pointer text-sm"
+                        className="cursor-pointer rounded-2xl bg-primary px-4 py-1.5 text-sm text-base-100"
                       >
                         Choose Image
                       </span>
@@ -107,7 +91,7 @@ export default function Logo() {
                           <img src={img["data_url"]} alt="" className="w-40" />
                           <div
                             onClick={() => onImageRemove(index)}
-                            className="w-7 h-7 bg-primary rounded-full flex justify-center items-center text-base-100 absolute top-0 right-0 cursor-pointer"
+                            className="absolute right-0 top-0 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-primary text-base-100"
                           >
                             <AiFillDelete />
                           </div>
@@ -124,23 +108,23 @@ export default function Logo() {
                     data?.data[0]?.logo
                   }`}
                   alt=""
-                  className="w-32 mt-4"
+                  className="mt-4 w-32"
                 />
               )}
             </div>
           </div>
 
-          <div className="flex justify-end mt-6 border-t p-4">
+          <div className="mt-6 flex justify-end border-t p-4">
             <button
-              disabled={(updateLoading || addLoading) && "disabled"}
+              disabled={updateLoading || addLoading}
               onClick={handleUpdateAddMainLogo}
               className="primary_btn"
             >
               {updateLoading || addLoading
                 ? "Loading"
                 : id
-                ? "Update Logo"
-                : "Add Logo"}
+                  ? "Update Logo"
+                  : "Add Logo"}
             </button>
           </div>
         </div>

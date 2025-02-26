@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import JoditEditor from "jodit-react";
-import Swal from "sweetalert2";
 import {
   useAddReturnPolicyMutation,
   useGetReturnPolicyQuery,
   useUpdateReturnPolicyMutation,
-} from "../../../Redux/returnPolicy/returnPolicyApi";
+} from "@/Redux/returnPolicy/returnPolicyApi";
+import toast from "react-hot-toast";
 
 export default function AdminReturnPolicy() {
   const editor = useRef(null);
@@ -35,20 +35,22 @@ export default function AdminReturnPolicy() {
       if (id) {
         const res = await updateReturnPolicy({ id, data: info });
         if (res?.data?.success) {
-          Swal.fire("Success", "Return Policy updated successfully", "success");
+          toast.success("Return Policy updated successfully");
         } else {
-          Swal.fire("Error", "Something went wrong", "error");
+          toast.error(res?.data?.message || "Something went wrong");
+          console.log(res);
         }
       } else {
         const res = await addReturnPlocy(info);
         if (res?.data?.success) {
-          Swal.fire("Success", "Return Policy created successfully", "success");
+          toast.success("Return Policy added successfully");
         } else {
-          Swal.fire("Error", "Something went wrong", "error");
+          toast.error(res?.data?.message || "Something went wrong");
+          console.log(res);
         }
       }
     } catch (error) {
-      Swal.fire("Error", "Something went wrong", "error");
+      toast.error(error?.data?.error);
       console.log(error);
     }
   };

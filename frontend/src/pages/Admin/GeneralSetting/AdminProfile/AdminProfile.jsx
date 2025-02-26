@@ -1,7 +1,7 @@
-import Swal from "sweetalert2";
+import EditAdminPassword from "@/components/AdminComponents/EditAdminPassword/EditAdminPassword";
+import { useUpdateAdminProfileMutation } from "@/Redux/admin/adminApi";
+import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
-import { useUpdateAdminProfileMutation } from "../../../../Redux/admin/adminApi";
-import EditAdminPassword from "../../../../components/AdminComponents/EditAdminPassword/EditAdminPassword";
 
 export default function AdminProfile() {
   const { loggedUser } = useSelector((state) => state.user);
@@ -28,18 +28,14 @@ export default function AdminProfile() {
       const res = await updateAdminProfile({ id, info }).unwrap();
 
       if (res?.success) {
-        Swal.fire("", "Profile update success", "success");
+        toast.success("Profile updated successfully");
         setTimeout(() => {
           location.reload();
         }, 1000);
       }
     } catch (error) {
       console.log(error);
-      Swal.fire(
-        "",
-        error?.data?.error ? error?.data?.error : "Something went wrong",
-        "error",
-      );
+      toast.error("Failed to update profile");
     }
   };
 
@@ -92,10 +88,7 @@ export default function AdminProfile() {
               </div>
 
               <div>
-                <button
-                  disabled={isLoading && "disabled"}
-                  className="primary_btn"
-                >
+                <button disabled={isLoading} className="primary_btn">
                   {isLoading ? "Loading..." : "Update Profile"}
                 </button>
               </div>

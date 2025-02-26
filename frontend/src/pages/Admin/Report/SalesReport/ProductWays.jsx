@@ -1,7 +1,7 @@
+import Pagination from "@/components/Pagination/Pagination";
+import Spinner from "@/components/shared/Spinner/Spinner";
+import { useGetReportProductWayQuery } from "@/Redux/order/orderApi";
 import { useState } from "react";
-import Spinner from "../../../../components/Spinner/Spinner";
-import { useGetReportProductWayQuery } from "../../../../Redux/order/orderApi";
-import Pagination from "../../../../components/Pagination/Pagination";
 
 export default function ProductWays() {
   const query = {};
@@ -9,10 +9,8 @@ export default function ProductWays() {
   query["page"] = currentPage;
   query["limit"] = 10;
 
-  const { data, isLoading } = useGetReportProductWayQuery({ ...query });
+  const { data, isLoading } = useGetReportProductWayQuery(query);
   const products = data?.data;
-
-  console.log(data);
 
   if (isLoading) return <Spinner />;
 

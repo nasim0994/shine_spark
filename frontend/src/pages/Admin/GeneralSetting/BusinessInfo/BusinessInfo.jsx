@@ -1,34 +1,19 @@
-import { useEffect } from "react";
 import {
   useAddBusinessInfoMutation,
   useGetBusinessInfoQuery,
   useUpdateBusinessInfoMutation,
-} from "../../../../Redux/businessInfoApi/businessInfoApi";
-import Swal from "sweetalert2";
+} from "@/Redux/businessInfoApi/businessInfoApi";
+import toast from "react-hot-toast";
 
 export default function BusinessInfo() {
   const { data } = useGetBusinessInfoQuery();
   const businessInfo = data?.data[0];
   const id = businessInfo?._id;
 
-  const [
-    addBusinessInfo,
-    {
-      isLoading: addIsLoading,
-      isError: addIsError,
-      error: addError,
-      isSuccess: addIsSuccess,
-    },
-  ] = useAddBusinessInfoMutation();
-  const [
-    updateBusinessInfo,
-    {
-      isLoading: upIsLoading,
-      isError: updateIsError,
-      error: updateError,
-      isSuccess: updateIsSuccess,
-    },
-  ] = useUpdateBusinessInfoMutation();
+  const [addBusinessInfo, { isLoading: addIsLoading }] =
+    useAddBusinessInfoMutation();
+  const [updateBusinessInfo, { isLoading: upIsLoading }] =
+    useUpdateBusinessInfoMutation();
 
   const handleBusinessInfo = async (e) => {
     e.preventDefault();
@@ -46,50 +31,21 @@ export default function BusinessInfo() {
     };
 
     if (id) {
-      await updateBusinessInfo({ id, data });
+      const res = await updateBusinessInfo({ id, data });
+      if (res?.data?.success) {
+        toast.success("Business info updated successfully");
+      } else {
+        toast.error(res?.data?.message || "Failed to update business info");
+      }
     } else {
-      await addBusinessInfo(data);
+      const res = await addBusinessInfo(data);
+      if (res?.data?.success) {
+        toast.success("Business info added successfully");
+      } else {
+        toast.error(res?.data?.message || "Failed to add business info");
+      }
     }
   };
-
-  useEffect(() => {
-    if (addIsError) {
-      Swal.fire(
-        "",
-        addError?.data?.error ? addError?.data?.error : "Something went wrong",
-        "error",
-      );
-      return;
-    }
-    if (addIsSuccess && !id) {
-      Swal.fire("", "Business Info Added Successfully", "success");
-
-      return;
-    }
-    if (updateIsError) {
-      Swal.fire(
-        "",
-        updateError?.data?.error
-          ? updateError?.data?.error
-          : "Something went wrong",
-        "error",
-      );
-      return;
-    }
-    if (updateIsSuccess && id) {
-      Swal.fire("", "Business Info Updated Successfully", "success");
-
-      return;
-    }
-  }, [
-    addIsError,
-    addIsSuccess,
-    updateIsError,
-    updateIsSuccess,
-    addError,
-    updateError,
-    id,
-  ]);
 
   return (
     <section className="rounded bg-base-100 shadow">
@@ -147,7 +103,7 @@ export default function BusinessInfo() {
         <div className="mt-5">
           <div className="flex gap-2">
             <button
-              disabled={(addIsLoading || upIsLoading) && "disabled"}
+              disabled={addIsLoading || upIsLoading}
               className="primary_btn"
             >
               {addIsLoading || upIsLoading

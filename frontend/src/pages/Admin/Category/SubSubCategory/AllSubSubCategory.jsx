@@ -1,12 +1,12 @@
-import { BiSolidPencil } from "react-icons/bi";
-import { MdOutlineDelete } from "react-icons/md";
-import { Link } from "react-router-dom";
-import Spinner from "../../../../components/Spinner/Spinner";
+import Spinner from "@/components/shared/Spinner/Spinner";
 import {
   useDeleteSubSubCategoryMutation,
   useGetSubSubCategoriesQuery,
-} from "../../../../Redux/subSubCategory/subSubCategoryApi";
-import Swal from "sweetalert2";
+} from "@/Redux/subSubCategory/subSubCategoryApi";
+import toast from "react-hot-toast";
+import { BiSolidPencil } from "react-icons/bi";
+import { MdOutlineDelete } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 export default function AllSubSubCategory() {
   const { data, isLoading, isError, error } = useGetSubSubCategoriesQuery();
@@ -22,17 +22,19 @@ export default function AllSubSubCategory() {
     if (isConfirm) {
       const result = await deleteSubSubCategory({ id, subCategoryId });
       if (result?.data?.success) {
-        Swal.fire("", "Delete Success", "success");
+        toast.success("Sub Sub Category deleted successfully");
       } else {
-        Swal.fire("", "Somethin went worng", "error");
+        toast.error(
+          result?.data?.message || "Failed to delete sub sub category",
+        );
+        console.log(result);
       }
     }
   };
 
   let content = null;
-  if (isLoading) {
-    return (content = <Spinner />);
-  }
+  if (isLoading) return (content = <Spinner />);
+
   if (!isLoading && isError) {
     content = <p>{error?.data?.error}</p>;
   }
@@ -48,7 +50,7 @@ export default function AllSubSubCategory() {
                 subSubCategory?.category?.icon
               }`}
               alt=""
-              className="w-10 h-10 rounded-full"
+              className="h-10 w-10 rounded-full"
             />
             {subSubCategory?.category?.name}
           </div>
@@ -58,7 +60,7 @@ export default function AllSubSubCategory() {
           <div className="flex items-center gap-2">
             <Link
               to={`/admin/category/edit-sub-sub-category/${subSubCategory?._id}`}
-              className="flex gap-1 items-center hover:text-green-700 duration-300"
+              className="flex items-center gap-1 duration-300 hover:text-green-700"
             >
               <BiSolidPencil />
             </Link>
@@ -76,7 +78,7 @@ export default function AllSubSubCategory() {
 
   return (
     <div>
-      <div className="flex justify-end mb-2">
+      <div className="mb-2 flex justify-end">
         <Link
           to="/admin/category/add-sub-sub-category"
           className="primary_btn text-sm"
@@ -101,7 +103,7 @@ export default function AllSubSubCategory() {
               content
             ) : (
               <tr>
-                <td colSpan={4} className="text-center text-red-500 text-sm">
+                <td colSpan={4} className="text-center text-sm text-red-500">
                   No sub subcategory found!
                 </td>
               </tr>

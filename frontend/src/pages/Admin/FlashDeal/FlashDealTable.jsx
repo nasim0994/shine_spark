@@ -1,13 +1,12 @@
 import { BiSolidPencil } from "react-icons/bi";
 import { MdDeleteOutline } from "react-icons/md";
-import Swal from "sweetalert2";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   useDeleteFlashDealMutation,
   useToggleFlashDealStatusMutation,
-} from "../../../Redux/flashDeal/flashDeal";
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
+} from "@/Redux/flashDeal/flashDeal";
+import toast from "react-hot-toast";
 
 export default function FlashDealTable({ flashDeal, i }) {
   const [status, setStatus] = useState(null);
@@ -16,7 +15,7 @@ export default function FlashDealTable({ flashDeal, i }) {
     setStatus(flashDeal?.status);
   }, [flashDeal]);
 
-  const [deleteFlasgDeal] = useDeleteFlashDealMutation();
+  const [deleteFlashDeal] = useDeleteFlashDealMutation();
   const [toggleFlashDealStatus] = useToggleFlashDealStatusMutation();
 
   const handleUpdateStatus = async (id) => {
@@ -24,23 +23,24 @@ export default function FlashDealTable({ flashDeal, i }) {
     if (isConfirm) {
       const res = await toggleFlashDealStatus(id);
       if (res?.data?.success) {
-        toast.success(res?.data?.message);
+        toast.success("Status Updated Successfully");
       } else {
-        toast.error(res?.data?.error);
+        toast.error(res?.data?.message || "Something went wrong");
         console.log(res);
       }
     }
   };
 
-  // Delete FlasgDeal
+  // Delete FlashDeal
   const handleDeleteFlashDeal = async (id) => {
     const isConfirm = window.confirm("Are you sure delete this FlasgDeal");
     if (isConfirm) {
-      const result = await deleteFlasgDeal(id);
+      const result = await deleteFlashDeal(id);
       if (result?.data?.success) {
-        Swal.fire("", "FlasgDeal Delete Success", "success");
+        toast.success("FlashDeal Deleted Successfully");
       } else {
-        Swal.fire("", "Somethin went worng", "error");
+        toast.error(result?.data?.message || "Something went wrong");
+        console.log(result);
       }
     }
   };

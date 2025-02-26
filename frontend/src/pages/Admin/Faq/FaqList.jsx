@@ -1,10 +1,7 @@
+import { useDeleteFaqByIdMutation, useGetFaqQuery } from "@/Redux/faq/faq";
+import toast from "react-hot-toast";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import { Link } from "react-router-dom";
-import Swal from "sweetalert2";
-import {
-  useDeleteFaqByIdMutation,
-  useGetFaqQuery,
-} from "../../../Redux/faq/faq";
 
 export default function FaqList() {
   const { data, isLoading, isError, isSuccess } = useGetFaqQuery();
@@ -14,21 +11,12 @@ export default function FaqList() {
   const deleteFaqHandler = async (id) => {
     const isConfirm = window.confirm("Are you sure delete this Faq?");
     if (isConfirm) {
-      try {
-        const res = await deleteFaq(id).unwrap();
-        if (res?.success) {
-          Swal.fire({
-            title: "",
-            text: "Faq Deleted Successfully",
-            icon: "success",
-          });
-        }
-      } catch (error) {
-        Swal.fire({
-          title: "",
-          text: "Something went wrong",
-          icon: "error",
-        });
+      const res = await deleteFaq(id).unwrap();
+      if (res?.success) {
+        toast.success("FAQ deleted successfully");
+      } else {
+        toast.error(res?.error?.message || "Failed to delete FAQ");
+        console.log(res);
       }
     }
   };

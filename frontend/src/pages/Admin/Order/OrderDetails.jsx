@@ -1,14 +1,14 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import moment from "moment";
 import { FaPrint } from "react-icons/fa";
+import { IoMdArrowBack } from "react-icons/io";
 import {
   useDeleteOrderMutation,
   useGetOrderByIdQuery,
   useStatusUpdateMutation,
-} from "../../../Redux/order/orderApi";
-import Spinner from "../../../components/Spinner/Spinner";
-import { IoMdArrowBack } from "react-icons/io";
+} from "@/Redux/order/orderApi";
+import Spinner from "@/components/shared/Spinner/Spinner";
 
 export default function OrderDetails() {
   const params = useParams();
@@ -47,7 +47,7 @@ export default function OrderDetails() {
   if (isLoading) return <Spinner />;
 
   return (
-    <secction>
+    <section>
       <div className="flex items-start justify-between">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <Link
@@ -253,6 +253,6 @@ export default function OrderDetails() {
           </table>
         </div>
       </div>
-    </secction>
+    </section>
   );
 }

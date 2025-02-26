@@ -4,12 +4,12 @@ import {
   useUpdateCategoryMutation,
 } from "@/Redux/category/categoryApi";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { AiFillDelete } from "react-icons/ai";
 import ImageUploading from "react-images-uploading";
 import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
 
-export default function Editcategory() {
+export default function EditCategory() {
   const [icons, setIcons] = useState([]);
   const { id } = useParams();
   const { data, isLoading } = useGetCategoryQuery(id);
@@ -120,7 +120,7 @@ export default function Editcategory() {
       <div className="mt-4">
         <button
           className="rounded bg-primary px-6 py-1.5 text-base-100"
-          disabled={updateLoading && "disabled"}
+          disabled={updateLoading}
         >
           {updateLoading ? "Loading.." : "Update"}
         </button>

@@ -1,17 +1,17 @@
-import { useState } from "react";
-import { AiFillDelete } from "react-icons/ai";
-import ImageUploading from "react-images-uploading";
-import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
 import {
   useBrandByIdQuery,
   useEditBrandMutation,
-} from "../../../Redux/brand/brandApi";
+} from "@/Redux/brand/brandApi";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { AiFillDelete } from "react-icons/ai";
+import ImageUploading from "react-images-uploading";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function EditBrand() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [icons, seticons] = useState([]);
+  const [icons, setIcons] = useState([]);
   const { data } = useBrandByIdQuery(id);
   const [editBrand, { isLoading: editLoading }] = useEditBrandMutation();
 
@@ -37,14 +37,14 @@ export default function EditBrand() {
   return (
     <form
       onSubmit={handleAEditBrand}
-      className="shadhow rounded bg-base-100 p-4 sm:w-1/2"
+      className="rounded bg-base-100 p-4 shadow sm:w-1/2"
     >
       <div>
         <p className="text-neutral-content">Icon</p>
         <div className="flex items-start justify-between">
           <ImageUploading
             value={icons}
-            onChange={(icn) => seticons(icn)}
+            onChange={(icn) => setIcons(icn)}
             dataURLKey="data_url"
           >
             {({ onImageUpload, onImageRemove, dragProps }) => (
@@ -83,7 +83,7 @@ export default function EditBrand() {
           {data?.data?.icon && (
             <img
               src={`${import.meta.env.VITE_BACKEND_URL}/${data?.data?.icon}`}
-              alt=""
+              alt="brand"
               className="mt-4 w-20 rounded"
             />
           )}
@@ -96,10 +96,7 @@ export default function EditBrand() {
       </div>
 
       <div className="mt-4">
-        <button
-          className="primary_btn text-sm"
-          disabled={editLoading && "disabled"}
-        >
+        <button className="primary_btn text-sm" disabled={editLoading}>
           {editLoading ? "Loading" : "Edit Brand"}
         </button>
       </div>

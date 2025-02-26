@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import JoditEditor from "jodit-react";
-import Swal from "sweetalert2";
 import {
   useAddTermsConditionMutation,
   useGetTermsConditionQuery,
   useUpdateTermsConditionMutation,
-} from "../../../Redux/termscondition/termsconditionApi";
+} from "@/Redux/termscondition/termsconditionApi";
+import toast from "react-hot-toast";
 
 export default function AdminTermsCondition() {
   const editor = useRef(null);
@@ -35,28 +35,22 @@ export default function AdminTermsCondition() {
       if (id) {
         const res = await updatePrivacy({ id, data: info });
         if (res?.data?.success) {
-          Swal.fire(
-            "Success",
-            "Terms & Conditions updated successfully",
-            "success",
-          );
+          toast.success("Terms & Conditions updated successfully");
         } else {
-          Swal.fire("Error", "Something went wrong", "error");
+          toast.error(res?.data?.message || "Something went wrong");
+          console.log(res);
         }
       } else {
         const res = await addPrivacy(info);
         if (res?.data?.success) {
-          Swal.fire(
-            "Success",
-            "Terms & Conditions created successfully",
-            "success",
-          );
+          toast.success("Terms & Conditions added successfully");
         } else {
-          Swal.fire("Error", "Something went wrong", "error");
+          toast.error(res?.data?.message || "Something went wrong");
+          console.log(res);
         }
       }
     } catch (error) {
-      Swal.fire("Error", "Something went wrong", "error");
+      toast.error(error?.data?.error);
       console.log(error);
     }
   };

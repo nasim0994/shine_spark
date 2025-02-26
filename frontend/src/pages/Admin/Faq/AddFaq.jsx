@@ -1,6 +1,6 @@
+import { useCreateFaqMutation } from "@/Redux/faq/faq";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
-import { useCreateFaqMutation } from "../../../Redux/faq/faq";
 
 export default function AddFaq() {
   const navigate = useNavigate();
@@ -20,11 +20,11 @@ export default function AddFaq() {
     const res = await addFaq(data).unwrap();
 
     if (res?.success) {
-      Swal.fire("", "Faq add success", "success");
+      toast.success("FAQ added successfully");
       e.target.reset();
       navigate("/admin/front-end/faq/all");
     } else {
-      Swal.fire("", "something went wrong!", "error");
+      toast.error(res?.error?.message || "Failed to add FAQ");
       console.log(res);
     }
   };

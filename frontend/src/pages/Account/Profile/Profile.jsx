@@ -154,7 +154,7 @@ export default function Profile() {
                     <button
                       onClick={handleUploadImage}
                       className="rounded bg-primary px-6 py-1.5 text-base-100"
-                      disabled={loading && "disabled"}
+                      disabled={loading}
                     >
                       {loading ? "Loading.." : "Upload"}
                     </button>

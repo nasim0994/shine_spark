@@ -1,9 +1,9 @@
 import Select from "react-dropdown-select";
-import { useGetAllProductsQuery } from "../../../Redux/product/productApi";
 import { useState } from "react";
-import { useAddFlashDealMutation } from "../../../Redux/flashDeal/flashDeal";
-import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { useGetAllProductsQuery } from "@/Redux/product/productApi";
+import { useAddFlashDealMutation } from "@/Redux/flashDeal/flashDeal";
+import toast from "react-hot-toast";
 
 export default function AddFlashDeal() {
   const navigate = useNavigate();
@@ -52,13 +52,14 @@ export default function AddFlashDeal() {
     const res = await addFlashDeal(flashProductsInfo);
 
     if (res?.data?.success) {
-      Swal.fire("", "Flash deal add success", "success");
+      toast.success("Flash Deal added successfully");
       setSelectedProducts([]);
       form.reset();
       setFlashProducts([]);
       navigate("/admin/flash-deal");
     } else {
-      Swal.fire("", "Something went wrong", "error");
+      toast.error(res?.data?.message || "Failed to add flash deal");
+      console.log(res);
     }
   };
 
@@ -186,7 +187,7 @@ export default function AddFlashDeal() {
         )}
 
         <div>
-          <button disabled={isLoading && "disabled"} className="primary_btn">
+          <button disabled={isLoading} className="primary_btn">
             {isLoading ? "Loading..." : "Save"}
           </button>
         </div>

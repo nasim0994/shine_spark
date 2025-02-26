@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import TagsInput from "react-tagsinput";
 import "react-tagsinput/react-tagsinput.css";
-
 import {
   useAddSEOMutation,
   useGetSEOQuery,
   useUpdateSEOMutation,
-} from "../../../Redux/seoApi";
+} from "@/Redux/seoApi";
 
 export default function SEOSetting() {
   const [keywords, setKeywords] = useState([]);
@@ -239,10 +238,7 @@ export default function SEOSetting() {
         </div>
 
         <div className="mt-4">
-          <button
-            disabled={(isLoading || updateLoading) && "disabled"}
-            className="primary_btn"
-          >
+          <button disabled={isLoading || updateLoading} className="primary_btn">
             {isLoading || updateLoading ? "laoding..." : "Submit"}
           </button>
         </div>

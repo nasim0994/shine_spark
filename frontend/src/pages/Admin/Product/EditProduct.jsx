@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { AiFillDelete } from "react-icons/ai";
 import JoditEditor from "jodit-react";
 import ImageUploading from "react-images-uploading";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { MdDeleteForever } from "react-icons/md";
 import {
   useGetProductByIdQuery,
@@ -542,7 +542,7 @@ export default function EditProduct() {
             <button
               onClick={handleEditProduct}
               type="submit"
-              disabled={isLoading && "disabled"}
+              disabled={isLoading}
               className="rounded bg-primary px-10 py-2 text-base-100"
             >
               {isLoading ? "Loading..." : "Edit Product"}

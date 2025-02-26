@@ -2,15 +2,15 @@ import { useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { GrView } from "react-icons/gr";
 import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
+import moment from "moment";
 import {
   useDeleteOrderMutation,
   useGetAllOrdersQuery,
   useStatusUpdateMutation,
-} from "../../../Redux/order/orderApi";
-import Spinner from "../../../components/Spinner/Spinner";
-import Pagination from "../../../components/Pagination/Pagination";
-import moment from "moment";
+} from "@/Redux/order/orderApi";
+import toast from "react-hot-toast";
+import Spinner from "@/components/shared/Spinner/Spinner";
+import Pagination from "@/components/Pagination/Pagination";
 
 export default function AllOrders() {
   const query = {};
@@ -18,9 +18,7 @@ export default function AllOrders() {
   query["page"] = currentPage;
   query["limit"] = 10;
 
-  const { data, isLoading, isError, error } = useGetAllOrdersQuery({
-    ...query,
-  });
+  const { data, isLoading, isError, error } = useGetAllOrdersQuery(query);
 
   const [deleteOrder] = useDeleteOrderMutation();
   const [statusUpdate, { isLoading: statusLoading }] =
@@ -45,9 +43,8 @@ export default function AllOrders() {
   };
 
   let content = null;
-  if (isLoading) {
-    return (content = <Spinner />);
-  }
+  if (isLoading) return (content = <Spinner />);
+
   if (!isLoading && isError) {
     content = <p>{error.error}</p>;
   }

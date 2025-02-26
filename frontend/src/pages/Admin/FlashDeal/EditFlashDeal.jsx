@@ -1,17 +1,17 @@
 import { useNavigate, useParams } from "react-router-dom";
 import Select from "react-dropdown-select";
-import { useGetAllProductsQuery } from "../../../Redux/product/productApi";
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import {
   useGetFlashDealByIdQuery,
   useUpdateFlashDealMutation,
-} from "../../../Redux/flashDeal/flashDeal";
+} from "@/Redux/flashDeal/flashDeal";
+import { useGetAllProductsQuery } from "@/Redux/product/productApi";
+import toast from "react-hot-toast";
 
 export default function EditFlashDeal() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { data: deal, isLoading: dealIslOading } = useGetFlashDealByIdQuery(id);
+  const { data: deal, isLoading: dealIsLoading } = useGetFlashDealByIdQuery(id);
 
   const [selectedProducts, setSelectedProducts] = useState([]);
 
@@ -82,7 +82,7 @@ export default function EditFlashDeal() {
     }
   };
 
-  if (dealIslOading) return <p>Loading...</p>;
+  if (dealIsLoading) return <p>Loading...</p>;
 
   return (
     <section className="rounded bg-base-100 p-3 text-neutral">
@@ -206,7 +206,7 @@ export default function EditFlashDeal() {
         )}
 
         <div>
-          <button disabled={isLoading && "disabled"} className="primary_btn">
+          <button disabled={isLoading} className="primary_btn">
             {isLoading ? "Loading..." : "Save"}
           </button>
         </div>

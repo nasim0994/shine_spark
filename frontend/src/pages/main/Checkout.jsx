@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 import { clearCart } from "../../Redux/cart/cartSlice";
 import { useAddOrderMutation } from "../../Redux/order/orderApi";
@@ -300,7 +300,7 @@ export default function Checkout() {
                     onClick={handelDiscount}
                     className="primary_btn cursor-pointer"
                     style={{ fontSize: "13px" }}
-                    disabled={couponLoading && "disabled"}
+                    disabled={couponLoading}
                   >
                     {couponLoading ? "Loading..." : "Apply"}
                   </div>

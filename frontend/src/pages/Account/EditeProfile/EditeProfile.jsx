@@ -119,7 +119,7 @@ export default function EditeProfile() {
           <button
             type="submite"
             className="w-full scale-[1] rounded bg-primary py-2 text-center text-base-100 duration-300 hover:scale-[.99]"
-            disabled={isLoading && "disabled"}
+            disabled={isLoading}
           >
             {isLoading ? "Loading..." : "Update Profile"}
           </button>

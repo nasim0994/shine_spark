@@ -14,7 +14,7 @@ import { useAllColorsQuery } from "@/Redux/color/colorApi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import TagsInput from "react-tagsinput";
 import "react-tagsinput/react-tagsinput.css";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 
 export default function VariantCom({

@@ -1,7 +1,7 @@
-import { toast } from "react-toastify";
 import { useUpdateAdminPasswordMutation } from "../../../Redux/admin/adminApi";
 import { useDispatch } from "react-redux";
 import { userLogout } from "../../../Redux/user/userSlice";
+import toast from "react-hot-toast";
 
 export default function EditAdminPassword({ id }) {
   const [updateAdminPassword, { isLoading }] = useUpdateAdminPasswordMutation();

@@ -1,13 +1,13 @@
 import { Link } from "react-router-dom";
 import { AiOutlineDelete } from "react-icons/ai";
 import { FaEdit } from "react-icons/fa";
-import { toast } from "react-toastify";
-import Spinner from "../../../components/Spinner/Spinner";
+import { useSelector } from "react-redux";
 import {
   useDeleteAdminMutation,
   useGetAllAdminsQuery,
-} from "../../../Redux/admin/adminApi";
-import { useSelector } from "react-redux";
+} from "@/Redux/admin/adminApi";
+import toast from "react-hot-toast";
+import Spinner from "@/components/shared/Spinner/Spinner";
 
 export default function Administrator() {
   const { data, isLoading, isError, error } = useGetAllAdminsQuery();
@@ -16,7 +16,7 @@ export default function Administrator() {
 
   const [deleteAdmin] = useDeleteAdminMutation();
 
-  const handleDlete = async (id) => {
+  const handleDelete = async (id) => {
     if (loggedUser?.data?._id === id) {
       return toast.error("You can't delete yourself");
     }
@@ -63,7 +63,7 @@ export default function Administrator() {
                 <FaEdit className="text-[17px] text-gray-700 duration-200 hover:text-green-500" />
               </Link>
             )}
-            <button onClick={() => handleDlete(user?._id)}>
+            <button onClick={() => handleDelete(user?._id)}>
               <AiOutlineDelete className="text-lg hover:text-red-500" />
             </button>
           </div>

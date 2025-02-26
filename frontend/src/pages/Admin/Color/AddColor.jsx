@@ -1,6 +1,6 @@
 import { useAddColorMutation } from "@/Redux/color/colorApi";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 
 export default function AddColor() {
   const navigate = useNavigate();
@@ -44,10 +44,7 @@ export default function AddColor() {
       </div>
 
       <div className="mt-4">
-        <button
-          className="primary_btn text-sm"
-          disabled={isLoading && "disabled"}
-        >
+        <button className="primary_btn text-sm" disabled={isLoading}>
           {isLoading ? "Loading.." : "Submit"}
         </button>
       </div>

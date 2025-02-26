@@ -62,15 +62,15 @@ export default function Signup() {
       Swal.fire(
         "",
         error?.data?.message ? error?.data?.message : "register fail",
-        "error"
+        "error",
       );
     }
   }, [isError, isSuccess, error, navigate]);
 
   return (
-    <div className="py-6 bg-gray-50">
+    <div className="bg-gray-50 py-6">
       <div className="container">
-        <div className="sm:w-[420px] mx-auto bg-base-100 shadow-lg rounded-lg p-6">
+        <div className="mx-auto rounded-lg bg-base-100 p-6 shadow-lg sm:w-[420px]">
           <img
             src={
               logo?.data[0]?.logo === ""
@@ -80,15 +80,15 @@ export default function Signup() {
                   }`
             }
             alt=""
-            className="w-32 mx-auto"
+            className="mx-auto w-32"
           />
-          <h6 className="text-xl font-medium mt-2 text-center text-neutral/80">
+          <h6 className="mt-2 text-center text-xl font-medium text-neutral/80">
             Signup
           </h6>
 
           <form onSubmit={handleRegister} className="mt-10 text-neutral">
             <div>
-              <div className="mb-6 relative">
+              <div className="relative mb-6">
                 <span className="absolute bottom-2 text-neutral/80">
                   <HiUser />
                 </span>
@@ -96,13 +96,13 @@ export default function Signup() {
                   name="name"
                   type="text"
                   placeholder="Full Name *"
-                  className="w-full border-b focus:border-b-primary outline-none pl-6 pb-1 placeholder:font-light"
+                  className="w-full border-b pb-1 pl-6 outline-none placeholder:font-light focus:border-b-primary"
                   required
                 />
               </div>
 
               {/* Phone */}
-              <div className="mb-6 relative">
+              <div className="relative mb-6">
                 <span className="absolute bottom-2 text-neutral/80">
                   <AiTwotonePhone className="text-lg" />
                 </span>
@@ -110,13 +110,13 @@ export default function Signup() {
                   name="phone"
                   type="text"
                   placeholder="Number *"
-                  className="w-full border-b focus:border-b-primary outline-none pl-6 pb-1 placeholder:font-light"
+                  className="w-full border-b pb-1 pl-6 outline-none placeholder:font-light focus:border-b-primary"
                   required
                 />
               </div>
 
               {/* Email */}
-              <div className="mb-6 relative">
+              <div className="relative mb-6">
                 <span className="absolute bottom-2 text-neutral/80">
                   <MdEmail />
                 </span>
@@ -124,12 +124,12 @@ export default function Signup() {
                   name="email"
                   type="email"
                   placeholder="Email"
-                  className="w-full border-b focus:border-b-primary outline-none pl-6 pb-1 placeholder:font-light"
+                  className="w-full border-b pb-1 pl-6 outline-none placeholder:font-light focus:border-b-primary"
                 />
               </div>
 
               {/* Password */}
-              <div className="mb-6 relative">
+              <div className="relative mb-6">
                 <span className="absolute bottom-2 text-neutral/80">
                   <AiFillLock />
                 </span>
@@ -137,13 +137,13 @@ export default function Signup() {
                   name="password"
                   type="password"
                   placeholder="Password *"
-                  className="w-full border-b focus:border-b-primary outline-none pl-6 pb-1 placeholder:font-light"
+                  className="w-full border-b pb-1 pl-6 outline-none placeholder:font-light focus:border-b-primary"
                   required
                 />
               </div>
 
               {/* RePassword */}
-              <div className="mb-2 relative">
+              <div className="relative mb-2">
                 <span className="absolute bottom-2 text-neutral/80">
                   <AiFillLock />
                 </span>
@@ -151,29 +151,29 @@ export default function Signup() {
                   name="re_password"
                   type="password"
                   placeholder="Re-Password *"
-                  className="w-full border-b focus:border-b-primary outline-none pl-6 pb-1 placeholder:font-light"
+                  className="w-full border-b pb-1 pl-6 outline-none placeholder:font-light focus:border-b-primary"
                   required
                 />
               </div>
             </div>
 
-            <p className="text-sm text-red-500 mb-4">{errorMesssage}</p>
+            <p className="mb-4 text-sm text-red-500">{errorMesssage}</p>
 
-            <div className="flex flex-col w-full border-opacity-50">
+            <div className="flex w-full flex-col border-opacity-50">
               <button
                 type="submit"
-                className="w-full py-2 font-semibold text-base-100 bg-primary rounded hover:bg-opacity-90 duration-300 flex justify-center"
-                disabled={isLoading && "disabled"}
+                className="flex w-full justify-center rounded bg-primary py-2 font-semibold text-base-100 duration-300 hover:bg-opacity-90"
+                disabled={isLoading}
               >
                 {isLoading ? <ButtonSpinner /> : "Create my account"}
               </button>
             </div>
           </form>
 
-          <div className="border-t border-neutral/20 mt-6 pt-4 text-center">
+          <div className="mt-6 border-t border-neutral/20 pt-4 text-center">
             <p className="text-sm text-neutral/70">
               Already have an account?
-              <Link to="/login" className="text-blue-500  pl-2 hover:underline">
+              <Link to="/login" className="pl-2 text-blue-500 hover:underline">
                 Login
               </Link>
             </p>

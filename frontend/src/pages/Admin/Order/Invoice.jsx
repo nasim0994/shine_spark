@@ -1,10 +1,10 @@
 import { useParams } from "react-router-dom";
 import moment from "moment";
-import { useGetOrderByIdQuery } from "../../../Redux/order/orderApi";
-import Spinner from "../../../components/Spinner/Spinner";
-import { useGetMainLogoQuery } from "../../../Redux/logo/logoApi";
-import { useGetContactQuery } from "../../../Redux/contact/contactApi";
 import { useEffect } from "react";
+import { useGetMainLogoQuery } from "@/Redux/logo/logoApi";
+import { useGetContactQuery } from "@/Redux/contact/contactApi";
+import { useGetOrderByIdQuery } from "@/Redux/order/orderApi";
+import Spinner from "@/components/shared/Spinner/Spinner";
 
 export default function Invoice() {
   const params = useParams();

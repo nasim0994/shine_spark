@@ -1,15 +1,14 @@
+import { useAddBrandMutation } from "@/Redux/brand/brandApi";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { AiFillDelete } from "react-icons/ai";
 import ImageUploading from "react-images-uploading";
 import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
-import { toast } from "react-toastify";
-import { useAddBrandMutation } from "../../../Redux/brand/brandApi";
 
 export default function AddBrand() {
   const navigate = useNavigate();
 
-  const [icons, seticons] = useState([]);
+  const [icons, setIcons] = useState([]);
   const [name, setName] = useState("");
 
   const [addBrand, { isLoading }] = useAddBrandMutation();
@@ -32,22 +31,22 @@ export default function AddBrand() {
     const res = await addBrand(formData);
     if (res?.data?.success) {
       toast.success("Brand added successfully");
-      seticons([]);
+      setIcons([]);
       setName("");
       navigate("/admin/brands");
     } else {
-      Swal.fire("", res?.data?.message || "something went wrong", "error");
+      toast.error("Something went wrong");
       console.log(res);
     }
   };
 
   return (
-    <div className="shadhow rounded bg-base-100 p-4 sm:w-1/2">
+    <div className="rounded bg-base-100 p-4 shadow sm:w-1/2">
       <div>
         <p className="text-neutral-content">Icon</p>
         <ImageUploading
           value={icons}
-          onChange={(icn) => seticons(icn)}
+          onChange={(icn) => setIcons(icn)}
           dataURLKey="data_url"
         >
           {({ onImageUpload, onImageRemove, dragProps }) => (
@@ -93,7 +92,7 @@ export default function AddBrand() {
         <button
           onClick={handleAddBrand}
           className="primary_btn text-sm"
-          disabled={isLoading && "disabled"}
+          disabled={isLoading}
         >
           {isLoading ? "Loading..." : "Add Brand"}
         </button>

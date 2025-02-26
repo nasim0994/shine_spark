@@ -1,9 +1,6 @@
+import { useGetFaqByIdQuery, useUpdateFaqMutation } from "@/Redux/faq/faq";
+import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
-import Swal from "sweetalert2";
-import {
-  useGetFaqByIdQuery,
-  useUpdateFaqMutation,
-} from "../../../Redux/faq/faq";
 
 export default function UpdateFaq() {
   const navigate = useNavigate();
@@ -28,11 +25,11 @@ export default function UpdateFaq() {
     const res = await updateFaq({ id, data });
 
     if (res?.data?.success) {
-      Swal.fire("", "Faq update success", "success");
+      toast.success("FAQ updated successfully");
       e.target.reset();
       navigate("/admin/front-end/faq/all");
     } else {
-      Swal.fire("", "something went wrong!", "error");
+      toast.error(res?.data?.error?.message || "Failed to update FAQ");
       console.log(res);
     }
   };

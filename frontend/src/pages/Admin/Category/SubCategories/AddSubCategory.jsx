@@ -1,7 +1,7 @@
+import { useGetCategoriesQuery } from "@/Redux/category/categoryApi";
+import { useAddSubCategoryMutation } from "@/Redux/subCategory/subCategoryApi";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
-import { useGetCategoriesQuery } from "../../../../Redux/category/categoryApi";
-import { useAddSubCategoryMutation } from "../../../../Redux/subCategory/subCategoryApi";
 
 export default function AddSubCategory() {
   const navigate = useNavigate();
@@ -14,7 +14,7 @@ export default function AddSubCategory() {
     const categoryId = e.target.category.value;
 
     if (!categoryId) {
-      return Swal.fire("", "Category is required", "warning");
+      return toast.error("Category is required");
     }
 
     const subCategory = {
@@ -24,17 +24,18 @@ export default function AddSubCategory() {
 
     const result = await addSubCategory(subCategory);
     if (result?.data?.success) {
-      Swal.fire("", "add success", "success");
+      toast.success("Sub Category added successfully");
       navigate("/admin/category/sub-categories");
     } else {
-      Swal.fire("", "Somethin went wrong", "error");
+      toast.error(result?.data?.message || "Failed to add sub category");
+      console.log(result);
     }
   };
 
   return (
     <form
       onSubmit={handleAddCategory}
-      className="p-4 bg-base-100 shadhow rounded sm:w-1/2"
+      className="rounded bg-base-100 p-4 shadow sm:w-1/2"
     >
       <div className="form_group mt-2">
         <p className="text-neutral-content">Sub Category name</p>
@@ -54,10 +55,7 @@ export default function AddSubCategory() {
       </div>
 
       <div className="mt-4">
-        <button
-          className="primary_btn text-sm"
-          disabled={isLoading && "disabled"}
-        >
+        <button className="primary_btn text-sm" disabled={isLoading}>
           {isLoading ? "Loading.." : "Add Sub Category"}
         </button>
       </div>

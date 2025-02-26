@@ -11,7 +11,7 @@ import { useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { BiSolidPencil } from "react-icons/bi";
 import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 export default function ProductList() {
   const [currentPage, setCurrentPage] = useState(1);

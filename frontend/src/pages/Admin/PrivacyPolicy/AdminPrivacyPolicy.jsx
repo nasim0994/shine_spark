@@ -4,8 +4,8 @@ import {
   useAddPrivacyMutation,
   useGetPrivacyQuery,
   useUpdatePrivacyMutation,
-} from "../../../Redux/privacy/privacyApi";
-import Swal from "sweetalert2";
+} from "@/Redux/privacy/privacyApi";
+import toast from "react-hot-toast";
 
 export default function AdminPrivacyPolicy() {
   const editor = useRef(null);
@@ -34,28 +34,22 @@ export default function AdminPrivacyPolicy() {
       if (id) {
         const res = await updatePrivacy({ id, data: info });
         if (res?.data?.success) {
-          Swal.fire(
-            "Success",
-            "Privacy Policy updated successfully",
-            "success",
-          );
+          toast.success("Privacy Policy updated successfully");
         } else {
-          Swal.fire("Error", "Something went wrong", "error");
+          toast.error(res?.data?.message || "Something went wrong");
+          console.log(res);
         }
       } else {
         const res = await addPrivacy(info);
         if (res?.data?.success) {
-          Swal.fire(
-            "Success",
-            "Privacy Policy created successfully",
-            "success",
-          );
+          toast.success("Privacy Policy added successfully");
         } else {
-          Swal.fire("Error", "Something went wrong", "error");
+          toast.error(res?.data?.message || "Something went wrong");
+          console.log(res);
         }
       }
     } catch (error) {
-      Swal.fire("Error", "Something went wrong", "error");
+      toast.error(error?.data?.error);
       console.log(error);
     }
   };

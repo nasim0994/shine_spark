@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
+import MultiSocial from "./MultiSocial";
 import {
   useAddContactMutation,
   useGetContactQuery,
   useUpdateContactMutation,
-} from "../../../../Redux/contact/contactApi";
-import Spinner from "../../../../components/Spinner/Spinner";
-import MultiSocial from "./MultiSocial";
-import { toast } from "react-toastify";
+} from "@/Redux/contact/contactApi";
+import toast from "react-hot-toast";
+import Spinner from "@/components/shared/Spinner/Spinner";
 
 export default function Contact() {
   const [socials, setSocials] = useState([]);
@@ -48,9 +48,7 @@ export default function Contact() {
       if (res?.data?.success) {
         toast.success("Contact updated successfully");
       } else {
-        toast.error(
-          res?.data?.message ? res?.data?.message : "Something went wrong",
-        );
+        toast.error(res?.data?.message || "Something went wrong");
         console.log(res);
       }
     } else {
@@ -58,9 +56,7 @@ export default function Contact() {
       if (res?.data?.success) {
         toast.success("Contact add successfully");
       } else {
-        toast.error(
-          res?.data?.message ? res?.data?.message : "Something went wrong",
-        );
+        toast.error(res?.data?.message || "Something went wrong");
         console.log(res);
       }
     }
@@ -130,10 +126,7 @@ export default function Contact() {
         <MultiSocial socials={socials} setSocials={setSocials} />
 
         <div className="flex justify-end">
-          <button
-            disabled={updateLoading && "disabled"}
-            className="primary_btn"
-          >
+          <button disabled={updateLoading} className="primary_btn">
             {updateLoading || addLoading ? "Loading..." : id ? "Update" : "Add"}
           </button>
         </div>

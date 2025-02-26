@@ -1,15 +1,15 @@
 import { useNavigate, useParams } from "react-router-dom";
-import Spinner from "../../../../components/Spinner/Spinner";
-import Swal from "sweetalert2";
-import {
-  useGetSubSubCategoryQuery,
-  useUpdateSubSubCategoryMutation,
-} from "../../../../Redux/subSubCategory/subSubCategoryApi";
 import { useEffect, useState } from "react";
 import {
   useGetCategoriesQuery,
   useGetCategoryQuery,
-} from "../../../../Redux/category/categoryApi";
+} from "@/Redux/category/categoryApi";
+import {
+  useGetSubSubCategoryQuery,
+  useUpdateSubSubCategoryMutation,
+} from "@/Redux/subSubCategory/subSubCategoryApi";
+import Spinner from "@/components/shared/Spinner/Spinner";
+import toast from "react-hot-toast";
 
 export default function EditSubSubCategory() {
   const { id } = useParams();
@@ -34,9 +34,7 @@ export default function EditSubSubCategory() {
   const [updateSubSubCategory, { isLoading: updateLoading }] =
     useUpdateSubSubCategoryMutation();
 
-  if (isLoading) {
-    return <Spinner />;
-  }
+  if (isLoading) return <Spinner />;
 
   const handleUpdateCategory = async (e) => {
     e.preventDefault();
@@ -52,10 +50,10 @@ export default function EditSubSubCategory() {
 
     const res = await updateSubSubCategory({ id, data });
     if (res?.data?.success) {
-      Swal.fire("", "Update Success", "success");
+      toast.success("Sub SubCategory updated successfully");
       navigate("/admin/category/sub-sub-categories");
     } else {
-      Swal.fire("", "Somethin went worng", "error");
+      toast.error(res?.data?.message || "Failed to update sub subcategory");
       console.log(res);
     }
   };
@@ -63,7 +61,7 @@ export default function EditSubSubCategory() {
   return (
     <form
       onSubmit={handleUpdateCategory}
-      className="p-4 bg-base-100 shadhow rounded sm:w-1/2"
+      className="rounded bg-base-100 p-4 shadow sm:w-1/2"
     >
       <div className="form_group mt-2">
         <p>Sub SubCategory Name</p>
@@ -113,8 +111,8 @@ export default function EditSubSubCategory() {
 
       <div className="mt-4">
         <button
-          className="bg-primary text-base-100 px-6 py-1.5 rounded"
-          disabled={updateLoading && "disabled"}
+          className="rounded bg-primary px-6 py-1.5 text-base-100"
+          disabled={updateLoading}
         >
           {updateLoading ? "Loading.." : "Update"}
         </button>

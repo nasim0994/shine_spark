@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import { useAddAdminMutation } from "../../../Redux/admin/adminApi";
+import { useAddAdminMutation } from "@/Redux/admin/adminApi";
+import toast from "react-hot-toast";
 
 export default function AddAdministrator() {
   const [addAdmin, { isLoading, isError, error, isSuccess }] =
@@ -67,7 +67,7 @@ export default function AddAdministrator() {
           )}
 
           <div>
-            <button disabled={isLoading && "disabled"} className="primary_btn">
+            <button disabled={isLoading} className="primary_btn">
               {isLoading ? "Loading..." : "Add Administrator"}
             </button>
           </div>

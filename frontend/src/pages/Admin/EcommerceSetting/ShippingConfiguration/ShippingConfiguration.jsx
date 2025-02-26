@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import {
   useAddShippingConfigMutation,
   useGetShippingConfigQuery,
@@ -42,7 +42,7 @@ export default function ShippingConfiguration() {
         toast.success("Shipping Configuration updated successfully");
       } else {
         toast.error(
-          res?.data?.message || "Failed to update Shipping Configuration"
+          res?.data?.message || "Failed to update Shipping Configuration",
         );
         console.log(res);
       }
@@ -52,7 +52,7 @@ export default function ShippingConfiguration() {
         toast.success("Shipping Configuration added successfully");
       } else {
         toast.error(
-          res?.data?.message || "Failed to add Shipping Configuration"
+          res?.data?.message || "Failed to add Shipping Configuration",
         );
         console.log(res);
       }
@@ -62,13 +62,13 @@ export default function ShippingConfiguration() {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <section className="rounded shadow bg-base-100 text-neutral">
-      <div className="p-3 border-b">
+    <section className="rounded bg-base-100 text-neutral shadow">
+      <div className="border-b p-3">
         <h1>Shipping Configuration</h1>
       </div>
 
       <div className="p-3 text-neutral-content">
-        <form onSubmit={handleShipping} className="text-sm form_group">
+        <form onSubmit={handleShipping} className="form_group text-sm">
           <ShippingInput shipping={shipping} setShipping={setShipping} />
 
           <div className="mt-4">

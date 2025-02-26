@@ -2,15 +2,15 @@ import { useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { GrView } from "react-icons/gr";
 import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
+import moment from "moment";
 import {
   useDeleteOrderMutation,
   useGetTodayOrdersQuery,
   useStatusUpdateMutation,
-} from "../../../Redux/order/orderApi";
-import Spinner from "../../../components/Spinner/Spinner";
-import Pagination from "../../../components/Pagination/Pagination";
-import moment from "moment";
+} from "@/Redux/order/orderApi";
+import toast from "react-hot-toast";
+import Spinner from "@/components/shared/Spinner/Spinner";
+import Pagination from "@/components/Pagination/Pagination";
 
 export default function TodaysOrders() {
   const query = {};
@@ -45,9 +45,8 @@ export default function TodaysOrders() {
   };
 
   let content = null;
-  if (isLoading) {
-    return (content = <Spinner />);
-  }
+  if (isLoading) return (content = <Spinner />);
+
   if (!isLoading && isError) {
     content = <p>{error.error}</p>;
   }

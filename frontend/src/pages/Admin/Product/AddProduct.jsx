@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useRef, useState } from "react";
 import JoditEditor from "jodit-react";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { MdDeleteForever } from "react-icons/md";
 import {
   useGetCategoriesQuery,
@@ -435,7 +435,7 @@ export default function AddProduct() {
             <button
               onClick={handleAddProduct}
               type="submit"
-              disabled={isLoading && "disabled"}
+              disabled={isLoading}
               className="rounded bg-primary px-10 py-2 text-base-100"
             >
               {isLoading ? "Loading..." : "Add Product"}

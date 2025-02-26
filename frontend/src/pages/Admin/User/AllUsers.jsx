@@ -1,13 +1,12 @@
-import Spinner from "../../../components/Spinner/Spinner";
-import { useAllCustomersQuery } from "../../../Redux/user/userApi";
+import Spinner from "@/components/shared/Spinner/Spinner";
+import { useAllCustomersQuery } from "@/Redux/user/userApi";
 
 export default function AllUsers() {
   const { data, isLoading, isError, error } = useAllCustomersQuery();
 
   let content = null;
-  if (isLoading) {
-    return (content = <Spinner />);
-  }
+  if (isLoading) return (content = <Spinner />);
+
   if (!isLoading && isError) {
     content = <p>{error.error}</p>;
   }
@@ -18,8 +17,8 @@ export default function AllUsers() {
           <div className="flex items-center gap-2">
             <img
               src={`${import.meta.env.VITE_BACKEND_URL}/users/${user?.image}`}
-              alt=""
-              className="w-10 h-10 rounded-full"
+              alt="user"
+              className="h-10 w-10 rounded-full"
             />
             {user?.firstName} {user?.lastName}
           </div>

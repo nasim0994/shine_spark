@@ -1,12 +1,12 @@
 import { BiSolidPencil } from "react-icons/bi";
 import { MdOutlineDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
-import Swal from "sweetalert2";
+import Spinner from "@/components/shared/Spinner/Spinner";
 import {
   useAllColorsQuery,
   useDeleteColorMutation,
-} from "../../../Redux/color/colorApi";
-import Spinner from "@/components/shared/Spinner/Spinner";
+} from "@/Redux/color/colorApi";
+import toast from "react-hot-toast";
 
 export default function AllColor() {
   const { data, isLoading, isError, error } = useAllColorsQuery();
@@ -23,9 +23,10 @@ export default function AllColor() {
     if (isConfirm) {
       const result = await deleteColor(id);
       if (result?.data?.success) {
-        Swal.fire("", "Delete Success", "success");
+        toast.success("Color deleted successfully");
       } else {
-        Swal.fire("", "Somethin went worng", "error");
+        toast.error(result?.data?.message || "Failed to delete color");
+        console.log(result);
       }
     }
   };

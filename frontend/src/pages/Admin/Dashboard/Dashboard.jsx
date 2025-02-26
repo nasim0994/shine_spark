@@ -1,21 +1,21 @@
 import { Link } from "react-router-dom";
-import { useAllBrandsQuery } from "../../../Redux/brand/brandApi";
-import { useGetCategoriesQuery } from "../../../Redux/category/categoryApi";
-import {
-  useGetAllOrdersQuery,
-  useGetTodayOrdersQuery,
-} from "../../../Redux/order/orderApi";
-import { useGetAllProductsQuery } from "../../../Redux/product/productApi";
-import { useGetSubCategoriesQuery } from "../../../Redux/subCategory/subCategoryApi";
-import { useGetSubSubCategoriesQuery } from "../../../Redux/subSubCategory/subSubCategoryApi";
-import { useAllUsersQuery } from "../../../Redux/user/userApi";
-import { useGetAllAdminsQuery } from "../../../Redux/admin/adminApi";
 import { FaBoxOpen, FaUsers, FaUserShield, FaCartPlus } from "react-icons/fa";
 import { GrView } from "react-icons/gr";
 import { FaMoneyBillTransfer, FaMoneyBillTrendUp } from "react-icons/fa6";
 import { SiBrandfolder } from "react-icons/si";
 import { MdOutlineCategory } from "react-icons/md";
 import moment from "moment";
+import { useGetAllProductsQuery } from "@/Redux/product/productApi";
+import {
+  useGetAllOrdersQuery,
+  useGetTodayOrdersQuery,
+} from "@/Redux/order/orderApi";
+import { useAllUsersQuery } from "@/Redux/user/userApi";
+import { useGetAllAdminsQuery } from "@/Redux/admin/adminApi";
+import { useGetCategoriesQuery } from "@/Redux/category/categoryApi";
+import { useGetSubCategoriesQuery } from "@/Redux/subCategory/subCategoryApi";
+import { useGetSubSubCategoriesQuery } from "@/Redux/subSubCategory/subSubCategoryApi";
+import { useAllBrandsQuery } from "@/Redux/brand/brandApi";
 
 export default function Dashboard() {
   const { data: products } = useGetAllProductsQuery();

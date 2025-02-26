@@ -17,7 +17,7 @@ import { loginZodValidation } from "./loginZodValidation";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useLoginMutation } from "@/Redux/user/authApi";
 import { useSelector } from "react-redux";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 export default function LoginForm() {
   const [showPass, setShowPass] = useState(false);

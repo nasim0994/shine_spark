@@ -1,12 +1,12 @@
-import { BiSolidPencil } from "react-icons/bi";
-import { MdDeleteOutline } from "react-icons/md";
-import { Link } from "react-router-dom";
-import Spinner from "../../../components/Spinner/Spinner";
-import { toast } from "react-toastify";
+import Spinner from "@/components/shared/Spinner/Spinner";
 import {
   useAllBrandsQuery,
   useDeleteBrandMutation,
-} from "../../../Redux/brand/brandApi";
+} from "@/Redux/brand/brandApi";
+import toast from "react-hot-toast";
+import { BiSolidPencil } from "react-icons/bi";
+import { MdDeleteOutline } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 export default function AllBrands() {
   const { data, isLoading, isError, error } = useAllBrandsQuery();
@@ -27,9 +27,7 @@ export default function AllBrands() {
   };
 
   let content = null;
-  if (isLoading) {
-    return (content = <Spinner />);
-  }
+  if (isLoading) return (content = <Spinner />);
 
   if (!isLoading && isError) {
     content = <p>{error?.data?.error}</p>;

@@ -1,4 +1,4 @@
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { userLogout } from "../../../Redux/user/userSlice";
 import { useUpdateUserPasswordMutation } from "../../../Redux/user/userApi";

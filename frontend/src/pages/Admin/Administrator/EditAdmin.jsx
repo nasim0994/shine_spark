@@ -1,10 +1,10 @@
-import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
+import EditAdminPassword from "@/components/AdminComponents/EditAdminPassword/EditAdminPassword";
 import {
   useGetAdminByIdQuery,
   useUpdateAdminProfileMutation,
-} from "../../../Redux/admin/adminApi";
-import EditAdminPassword from "../../../components/AdminComponents/EditAdminPassword/EditAdminPassword";
+} from "@/Redux/admin/adminApi";
+import toast from "react-hot-toast";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function EditAdministrator() {
   const navigate = useNavigate();
@@ -92,10 +92,7 @@ export default function EditAdministrator() {
             </div>
 
             <div>
-              <button
-                disabled={isLoading && "disabled"}
-                className="primary_btn my-4"
-              >
+              <button disabled={isLoading} className="primary_btn my-4">
                 {isLoading ? "Loading..." : "Update Administrator"}
               </button>
             </div>

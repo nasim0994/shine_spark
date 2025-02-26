@@ -3,10 +3,10 @@ import {
   useGetCategoriesQuery,
 } from "@/Redux/category/categoryApi";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { AiFillDelete } from "react-icons/ai";
 import ImageUploading from "react-images-uploading";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 
 export default function AddCategory() {
   const navigate = useNavigate();

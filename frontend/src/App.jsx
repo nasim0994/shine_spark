@@ -83,7 +83,7 @@ export default function App() {
         {seo?.custom?.google_site_verification && (
           <meta
             name="google-site-verification"
-            content={seo?.custom?.google_site_verificatio}
+            content={seo?.custom?.google_site_verification}
           />
         )}
       </Helmet>

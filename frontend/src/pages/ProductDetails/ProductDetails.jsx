@@ -6,20 +6,92 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useGetProductBySlugQuery } from "@/Redux/product/productApi";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import parser from "html-react-parser";
 import SimilarProducts from "@/components/shared/main/ProductDetails/SimilarProducts";
 import BreadcrumbCom from "@/components/shared/main/ProductDetails/BreadcrumbCom";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { addToCart } from "@/Redux/cart/cartSlice";
+import { currencyFormatter } from "@/lib/currencyFormatter";
 
 export default function ProductDetails() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
   const { slug } = useParams();
-
   const { data, isLoading } = useGetProductBySlugQuery(slug);
   const product = data?.data;
+
+  const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedColor, setSelectedColor] = useState(null);
+  const [selectedPrice, setSelectedPrice] = useState(product?.sellingPrice);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    setSelectedPrice(product?.sellingPrice);
+  }, [product]);
+
+  const handelSelectSize = (size) => {
+    if (selectedSize === size) {
+      setSelectedSize("");
+    } else {
+      setSelectedSize(size);
+    }
+  };
+
+  const handelColorSelect = (clr) => {
+    if (selectedColor === clr?.color) {
+      setSelectedColor("");
+    } else {
+      setSelectedColor(clr?.color);
+    }
+  };
+
+  useEffect(() => {
+    let sku = "";
+    let color = "";
+    let size = "";
+
+    if (selectedColor) color = selectedColor;
+    if (selectedSize) size = selectedSize;
+
+    if (color && size) {
+      sku = `${color}-${size}`.toLowerCase();
+    } else if (color) {
+      sku = `${color}`.toLowerCase();
+    } else if (size) {
+      sku = `${size}`.toLowerCase();
+    }
+
+    const findVariant = product?.variants?.find((item) => item.sku == sku);
+
+    if (findVariant) {
+      setSelectedPrice(findVariant?.sellingPrice);
+    } else {
+      setSelectedPrice(product?.sellingPrice);
+    }
+  }, [selectedSize, selectedColor, product]);
+
+  const handleAddToCart = (product) => {
+    const isSizes = product?.sizes?.length > 0;
+    const isColors = product?.colors?.length > 0;
+
+    if (isSizes && !selectedSize) return toast.error("Please select a size");
+    if (isColors && !selectedColor) return toast.error("Please select a color");
+
+    dispatch(
+      addToCart({
+        product,
+        selectedSize,
+        selectedColor,
+        quantity: 1,
+        price: selectedPrice,
+        discount: product?.discount,
+      }),
+    );
+  };
 
   if (isLoading) return <div>Loading...</div>;
 
@@ -71,20 +143,20 @@ export default function ProductDetails() {
                 {product?.discount > 0 ? (
                   <>
                     <p className="text-lg">
-                      {parseInt(
-                        product?.sellingPrice -
-                          (product?.sellingPrice * product?.discount) / 100,
+                      {currencyFormatter(
+                        selectedPrice -
+                          (selectedPrice * product?.discount) / 100,
                       )}
                     </p>
-                    <del className="text-neutral-content opacity-80">
-                      {product?.sellingPrice}
+                    <del className="text-[15px] text-neutral-content opacity-80">
+                      {currencyFormatter(selectedPrice)}
                     </del>
                     <p className="text-[15px] text-red-500">
                       {product?.discount}% off
                     </p>
                   </>
                 ) : (
-                  <p>{product?.sellingPrice}</p>
+                  <p>{currencyFormatter(selectedPrice)}</p>
                 )}
               </div>
 
@@ -107,7 +179,8 @@ export default function ProductDetails() {
                   {product?.sizes?.map((size, i) => (
                     <button
                       key={i}
-                      className="rounded-xl border px-4 py-1.5 duration-300 hover:bg-gray-100"
+                      onClick={() => handelSelectSize(size)}
+                      className={`${size === selectedSize && "bg-primary text-base-100"} rounded-xl border px-4 py-1.5 duration-300 ${size !== selectedSize && "hover:bg-gray-100 hover:text-primary"}`}
                     >
                       {size}
                     </button>
@@ -128,14 +201,22 @@ export default function ProductDetails() {
                     <TooltipProvider key={i}>
                       <Tooltip delayDuration={0}>
                         <TooltipTrigger asChild>
-                          <img
-                            src={`${import.meta.env.VITE_BACKEND_URL}/products/${color?.image}`}
-                            alt={`primport { parser } from 'html-react-parser';
-oduct`}
-                            width={20}
-                            height={20}
-                            className="h-12 w-12 cursor-pointer rounded"
-                          />
+                          <div className="h-13 relative w-12 cursor-pointer">
+                            <img
+                              src={`${import.meta.env.VITE_BACKEND_URL}/products/${color?.image}`}
+                              alt={color?.color}
+                              onClick={() => handelColorSelect(color)}
+                              width={20}
+                              height={20}
+                              className="h-full w-full rounded"
+                            />
+
+                            {selectedColor === color?.color && (
+                              <p className="absolute bottom-0 w-full bg-gray-100/80 text-center text-xs">
+                                {color?.color}
+                              </p>
+                            )}
+                          </div>
                         </TooltipTrigger>
                         <TooltipContent>
                           <p>{color?.color}</p>
@@ -149,7 +230,10 @@ oduct`}
 
             {/* Buttons */}
             <div className="mt-6 flex flex-col gap-3 uppercase">
-              <button className="rounded border border-primary py-2 text-primary duration-300 hover:bg-primary hover:text-base-100">
+              <button
+                onClick={() => handleAddToCart(product)}
+                className="rounded border border-primary py-2 text-primary duration-300 hover:bg-primary hover:text-base-100"
+              >
                 Add to Cart
               </button>
               <button className="rounded border border-primary bg-primary py-2 text-base-100 duration-300 hover:bg-transparent hover:text-primary">

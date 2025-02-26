@@ -72,7 +72,7 @@ export default function MainHeader() {
             </Link>
             <Sheet>
               <SheetTrigger asChild>
-                <button className="relative">
+                <button className="relative -mt-1">
                   <ICart width={24} height={24} />
                   {carts.length > 0 && (
                     <span className="absolute -right-3 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-base-100">

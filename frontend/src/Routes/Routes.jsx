@@ -5,6 +5,7 @@ import React, { Suspense } from "react";
 import MainLayout from "../Layout/MainLayout";
 import Home from "../pages/Home/Home";
 import Spinner from "@/components/shared/Spinner/Spinner";
+import Cart from "@/pages/main/Cart";
 
 // lazy import
 const AboutUs = React.lazy(() => import("../pages/AboutUs/AboutUs"));
@@ -50,7 +51,7 @@ const AddFaq = React.lazy(() => import("../pages/Admin/Faq/addFaq"));
 const UpdateFaq = React.lazy(() => import("../pages/Admin/Faq/updateFaq"));
 
 // Main pages
-const Cart = React.lazy(() => import("../pages/Cart/Cart"));
+// const Cart = React.lazy(() => import("../pages/Cart/Cart"));
 const Login = React.lazy(() => import("../pages/Login/Login"));
 const ProductDetails = React.lazy(
   () => import("@/pages/ProductDetails/ProductDetails"),

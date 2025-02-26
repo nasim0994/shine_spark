@@ -15,6 +15,7 @@ import { useDispatch } from "react-redux";
 import { addToCart } from "@/Redux/cart/cartSlice";
 import { currencyFormatter } from "@/lib/currencyFormatter";
 import WishlistBtn from "@/components/shared/main/WishlistBtn";
+import { FiMinusCircle, FiPlusCircle } from "react-icons/fi";
 
 export default function ProductDetails() {
   useEffect(() => {
@@ -29,10 +30,13 @@ export default function ProductDetails() {
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedPrice, setSelectedPrice] = useState(product?.sellingPrice);
   const [showImage, setShowImage] = useState(product?.thumbnail);
+  const [selectedQuantity, setSelectedQuantity] = useState(1);
+  const [selectedStock, setSelectedStock] = useState(product?.totalStock);
 
   useEffect(() => {
     setSelectedPrice(product?.sellingPrice);
     setShowImage(product?.thumbnail);
+    setSelectedStock(product?.totalStock);
   }, [product]);
 
   const handelSelectSize = (size) => {
@@ -73,6 +77,7 @@ export default function ProductDetails() {
 
     if (findVariant) {
       setSelectedPrice(findVariant?.sellingPrice);
+      setSelectedStock(findVariant?.stock);
     } else {
       setSelectedPrice(product?.sellingPrice);
     }
@@ -90,11 +95,28 @@ export default function ProductDetails() {
         product,
         selectedSize,
         selectedColor,
-        quantity: 1,
+        quantity: selectedQuantity || 1,
         price: selectedPrice,
         discount: product?.discount,
+        stock: selectedStock,
       }),
     );
+  };
+
+  const handelDecrease = () => {
+    if (selectedQuantity > 1) {
+      setSelectedQuantity(selectedQuantity - 1);
+    } else {
+      toast.error("Minimum quantity is 1");
+    }
+  };
+
+  const handelIncrease = () => {
+    if (selectedStock > selectedQuantity) {
+      setSelectedQuantity(selectedQuantity + 1);
+    } else {
+      toast.error("Maximum quantity reached");
+    }
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -178,6 +200,31 @@ export default function ProductDetails() {
               <small className="block text-xs text-neutral-content opacity-60">
                 Inclusive of all taxes
               </small>
+            </div>
+
+            {/* Quantity */}
+            <div className="mt-4 flex items-center gap-4 border-y py-3">
+              <h3 className="text-neutral-content">Quantity: </h3>
+
+              <div className="flex gap-2">
+                <button
+                  onClick={handelDecrease}
+                  className="text-2xl duration-200 hover:text-neutral"
+                >
+                  <FiMinusCircle />
+                </button>
+                <div>
+                  <p className="w-10 text-center font-semibold">
+                    {selectedQuantity}
+                  </p>
+                </div>
+                <button
+                  onClick={handelIncrease}
+                  className="text-2xl duration-200 hover:text-neutral"
+                >
+                  <FiPlusCircle />
+                </button>
+              </div>
             </div>
 
             {/* Sizes */}

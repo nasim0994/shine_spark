@@ -7,14 +7,15 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { subTotalSelector } from "@/Redux/cart/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { removeFromCart, subTotalSelector } from "@/Redux/cart/cartSlice";
 import { currencyFormatter } from "@/lib/currencyFormatter";
 import WishlistBtn from "../WishlistBtn";
 
 export default function CartSidebar() {
   const { carts } = useSelector((state) => state.cart);
   const subTotal = useSelector(subTotalSelector);
+  const dispatch = useDispatch();
 
   return (
     <SheetContent>
@@ -82,7 +83,7 @@ export default function CartSidebar() {
               <div className="flex flex-col items-center justify-center gap-1">
                 <WishlistBtn product={product} />
                 <p>-</p>
-                <button>
+                <button onClick={() => dispatch(removeFromCart(product))}>
                   <AiOutlineDelete className="text-xl opacity-60" />
                 </button>
               </div>

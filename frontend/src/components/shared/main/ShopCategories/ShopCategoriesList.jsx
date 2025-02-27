@@ -18,7 +18,7 @@ export default function ShopCategoriesList({ category }) {
       <li className="dropdown_item relative">
         <div className="flex items-center justify-between p-1">
           <Link
-            to={`/shop/${category?.slug}`}
+            to={`/shops?category=${category?.slug}`}
             className="flex items-center gap-2"
           >
             {category?.name}
@@ -46,7 +46,7 @@ export default function ShopCategoriesList({ category }) {
     return (
       <li>
         <Link
-          to={`/shop/${category?.slug}`}
+          to={`/shops?category=${category?.slug}`}
           className="flex items-center gap-2 p-1"
         >
           <p>{category?.name}</p>

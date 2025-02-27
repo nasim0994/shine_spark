@@ -1,6 +1,6 @@
 import { CgMenuLeftAlt } from "react-icons/cg";
 import { BiSearch } from "react-icons/bi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Search from "./Search";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import CartSidebar from "./CartSidebar";
@@ -14,9 +14,19 @@ import { useSelector } from "react-redux";
 export default function MainHeader() {
   const { data } = useGetCategoriesQuery();
   const categories = data?.data;
+  const navigate = useNavigate();
 
   const { carts } = useSelector((state) => state.cart);
   const { wishlists } = useSelector((state) => state.wishlist);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const search = e.target.search.value;
+    if (search) {
+      navigate(`/shops?search=${search}`);
+      e.target.search.value = "";
+    }
+  };
 
   return (
     <section className="py-3 shadow">
@@ -88,7 +98,7 @@ export default function MainHeader() {
         </div>
 
         <div className="mt-3 md:hidden">
-          <div className="relative w-full">
+          <form onSubmit={handleSearch} className="relative w-full">
             <input
               type="text"
               name="search"
@@ -98,7 +108,7 @@ export default function MainHeader() {
             <button className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral opacity-50">
               <BiSearch className="text-lg" />
             </button>
-          </div>
+          </form>
         </div>
       </div>
     </section>

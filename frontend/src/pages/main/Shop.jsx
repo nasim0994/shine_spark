@@ -65,7 +65,9 @@ export default function Shop() {
 
         <div className="mt-2 flex items-start gap-4 md:mt-4">
           <>
-            <div className={`shop_sidebar ${sidebar && "shop_sidebar_show"}`}>
+            <div
+              className={`shop_sidebar ${sidebar && "shop_sidebar_show"}`}
+            >
               <div className="flex items-center justify-between">
                 <h2 className="text-lg uppercase">Filter</h2>
                 <button className="md:hidden" onClick={() => setSidebar(false)}>

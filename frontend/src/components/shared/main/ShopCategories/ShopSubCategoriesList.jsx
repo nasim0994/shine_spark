@@ -10,7 +10,7 @@ export default function ShopSubCategoriesList({ category, subCategory }) {
       <li className="relative text-neutral-content">
         <div className="flex items-center justify-between p-1">
           <Link
-            to={`/shop/${category?.slug}/${subCategory?.slug}`}
+            to={`/shops?category=${category?.slug}&subCategory=${subCategory?.slug}`}
             className="flex items-center gap-2"
           >
             {subCategory?.name}
@@ -28,7 +28,7 @@ export default function ShopSubCategoriesList({ category, subCategory }) {
           {subCategory?.subSubCategories?.map((subSubCategory) => (
             <li key={subSubCategory?._id}>
               <Link
-                to={`/shop/${category?.slug}/${subCategory?.slug}/${subSubCategory?.slug}`}
+                to={`/shops?category=${category?.slug}&subCategory=${subCategory?.slug}&subSubCategory=${subSubCategory?.slug}`}
                 className="flex p-1"
               >
                 {subSubCategory?.name}
@@ -42,7 +42,7 @@ export default function ShopSubCategoriesList({ category, subCategory }) {
     return (
       <li>
         <Link
-          to={`/shop/${category?.slug}/${subCategory?.slug}`}
+          to={`/shops?category=${category?.slug}&subCategory=${subCategory?.slug}`}
           className="flex p-2"
         >
           {subCategory?.name}

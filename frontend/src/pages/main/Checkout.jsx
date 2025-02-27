@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
+import usePageView from "@/hooks/usePageView";
+import { useAddOrderMutation } from "@/Redux/order/orderApi";
+import { useApplyCouponMutation } from "@/Redux/coupon/couponApi";
+import { useGetShippingConfigQuery } from "@/Redux/shippingConfigApi";
 import Swal from "sweetalert2";
-import { clearCart } from "../../Redux/cart/cartSlice";
-import { useAddOrderMutation } from "../../Redux/order/orderApi";
-import ButtonSpinner from "../../components/ButtonSpinner/ButtonSpinner";
-import { useApplyCouponMutation } from "../../Redux/coupon/couponApi";
-import { useGetShippingConfigQuery } from "../../Redux/shippingConfigApi";
-import usePageView from "../../hooks/usePageView";
+import { clearCart } from "@/Redux/cart/cartSlice";
+import ButtonSpinner from "@/components/shared/ButtonSpinner";
 
 export default function Checkout() {
   usePageView("Checkout");

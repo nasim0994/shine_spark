@@ -55,7 +55,7 @@ export default function MainHeader() {
 
             <Link to="/">
               <img
-                src="https://www.kalkifashion.com/static/version1739875152/frontend/Aureatelabs/kalki/en_US/images/logo.svg"
+                src="/images/logo.png"
                 alt="logo"
                 width={200}
                 height={60}

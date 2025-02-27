@@ -7,11 +7,11 @@ export default {
 		extend: {
 			colors: {
 				primary: {
-					DEFAULT: '#223330',
+					DEFAULT: '#540c34',
 					foreground: '#fff'
 				},
 				secondary: {
-					DEFAULT: '#000',
+					DEFAULT: '#3d3c24',
 					foreground: '#fff'
 				},
 				accent: {

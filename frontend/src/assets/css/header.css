@@ -12,7 +12,6 @@
 .menu_items a {
   padding: 8px 10px;
   display: block;
-  position: relative;
   font-size: 15px;
   color: var(--neutral);
   transition: all 0.5s ease;
@@ -22,4 +21,40 @@
 .menu_items a:hover {
   color: var(--primary);
   border-color: var(--primary);
+}
+
+.menu_items .menu_subCategory_item {
+  transition: all 0.5s ease;
+}
+
+.menu_subCategory_dropdown {
+  width: 100%;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #fffdfd;
+  z-index: 999;
+  padding: 20px;
+  min-height: 300px;
+
+  opacity: 0;
+  visibility: hidden;
+}
+
+.menu_items .menu_subCategory_item:hover .menu_subCategory_dropdown {
+  opacity: 1;
+  visibility: visible;
+  transition: all 0.5s ease;
+}
+
+.menu_subCategory_dropdown a {
+  border-bottom: none !important;
+  padding: 6px 10px;
+  transition: all 0.3s ease;
+  color: var(--neutral);
+}
+
+.menu_subCategory_dropdown a:hover {
+  border-bottom: none !important;
+  color: var(--primary);
 }

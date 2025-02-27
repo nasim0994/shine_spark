@@ -1,3 +1,4 @@
+import { AiOutlineStar } from "react-icons/ai";
 import { RiAdminFill, RiCouponLine, RiPagesLine } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import { BiCategory } from "react-icons/bi";
@@ -60,21 +61,12 @@ const adminSidebarItems = [
           },
           {
             title: "Product",
-            subSubMenu: [
-              {
-                title: "Add New Product",
-                path: "/admin/product/add",
-              },
-              {
-                title: "All Products",
-                path: "/admin/product/all",
-              },
-            ],
+            path: "/admin/product/all",
           },
         ],
       },
       {
-        icon: <LuFileBox />,
+        icon: <AiOutlineStar />,
         title: "Review",
         path: "/admin/review/all",
       },

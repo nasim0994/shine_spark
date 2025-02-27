@@ -35,51 +35,65 @@ export default function AllSubSubCategory() {
   let content = null;
   if (isLoading) content = <TableSkeleton />;
 
-  if (!isLoading && isError) {
-    content = <p>{error?.data?.error}</p>;
-  }
+  if (!isLoading && isError) content = <p>{error?.data?.error}</p>;
+
   if (!isLoading && !isError && data?.data?.length > 0) {
-    content = data?.data?.map((subSubCategory, i) => (
-      <tr key={subSubCategory?._id}>
-        <td>{i + 1}</td>
-        <td>{subSubCategory?.name}</td>
-        <td>
-          <div className="flex items-center gap-2">
-            <img
-              src={`${import.meta.env.VITE_BACKEND_URL}/${
-                subSubCategory?.category?.icon
-              }`}
-              alt=""
-              className="h-10 w-10 rounded-full"
-            />
-            {subSubCategory?.category?.name}
-          </div>
-        </td>
-        <td>{subSubCategory?.subCategory?.name}</td>
-        <td>
-          <div className="flex items-center gap-2">
-            <Link
-              to={`/admin/product/category/sub-sub-category/edit/${subSubCategory?._id}`}
-              className="flex items-center gap-1 duration-300 hover:text-green-700"
-            >
-              <BiSolidPencil />
-            </Link>
-            <button
-              onClick={() => handleDeleteSubSubCategory(subSubCategory)}
-              className="hover:text-red-500"
-            >
-              <MdOutlineDelete />
-            </button>
-          </div>
-        </td>
-      </tr>
-    ));
+    content = (
+      <table className="dashboard_table">
+        <thead>
+          <tr>
+            <th>SL</th>
+            <th>Sub SubCategory</th>
+            <th>Category</th>
+            <th>Sub Category</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data?.data?.map((subSubCategory, i) => (
+            <tr key={subSubCategory?._id}>
+              <td>{i + 1}</td>
+              <td>{subSubCategory?.name}</td>
+              <td>
+                <div className="flex items-center gap-2">
+                  <img
+                    src={`${import.meta.env.VITE_BACKEND_URL}/${
+                      subSubCategory?.category?.icon
+                    }`}
+                    alt=""
+                    className="h-10 w-10 rounded-full"
+                  />
+                  {subSubCategory?.category?.name}
+                </div>
+              </td>
+              <td>{subSubCategory?.subCategory?.name}</td>
+              <td>
+                <div className="flex items-center gap-2">
+                  <Link
+                    to={`/admin/product/category/sub-sub-category/edit/${subSubCategory?._id}`}
+                    className="flex items-center gap-1 duration-300 hover:text-green-700"
+                  >
+                    <BiSolidPencil />
+                  </Link>
+                  <button
+                    onClick={() => handleDeleteSubSubCategory(subSubCategory)}
+                    className="hover:text-red-500"
+                  >
+                    <MdOutlineDelete />
+                  </button>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
   }
 
   return (
     <div>
-      <div className="mb-2 flex items-center justify-between">
-        <h2 className="text-lg">All Sub Sub Categories</h2>
+      <div className="flex items-center justify-between rounded bg-base-100 p-3">
+        <h2>All Sub Sub Categories</h2>
         <Link
           to="/admin/product/category/sub-sub-category/add"
           className="primary_btn text-sm"
@@ -88,29 +102,11 @@ export default function AllSubSubCategory() {
         </Link>
       </div>
 
-      <div className="relative overflow-x-auto shadow-lg">
-        <table className="dashboard_table">
-          <thead>
-            <tr>
-              <th>SL</th>
-              <th>Sub SubCategory</th>
-              <th>Category</th>
-              <th>Sub Category</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {content ? (
-              content
-            ) : (
-              <tr>
-                <td colSpan={4} className="text-center text-sm text-red-500">
-                  No sub subcategory found!
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+      <div className="relative mt-1 overflow-x-auto rounded bg-base-100 shadow-lg">
+        {content}
+        {data?.data?.length === 0 && !isLoading && (
+          <p className="p-3 text-sm text-neutral-content">No data found</p>
+        )}
       </div>
     </div>
   );

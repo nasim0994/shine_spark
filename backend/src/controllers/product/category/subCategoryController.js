@@ -1,6 +1,8 @@
 const SubCategory = require("../../../models/subCategoryModel");
 const Category = require("../../../models/categoriesModel");
 const makeSlug = require("../../../utils/makeSlug");
+const { pick } = require("../../../utils/pick");
+const { calculatePagination } = require("../../../utils/calculatePagination");
 
 exports.insert = async (req, res) => {
   try {
@@ -42,19 +44,39 @@ exports.insert = async (req, res) => {
 };
 
 exports.get = async (req, res) => {
+  const paginationOptions = pick(req.query, ["page", "limit"]);
+  const { page, limit, skip } = calculatePagination(paginationOptions);
+  const { category } = req?.query;
+
   try {
-    const subCategories = await SubCategory.find({}).populate(
-      "category subSubCategories"
-    );
+    let query = {};
+    if (category && category != "undefined" && category != "null")
+      query.category = category;
+
+    const result = await SubCategory.find(query)
+      .populate("category subSubCategories", "name slug",)
+      .skip(skip)
+      .limit(limit);
+
+    const total = await SubCategory.countDocuments(query);
+    const pages = Math.ceil(parseInt(total) / parseInt(limit));
+
     res.status(200).json({
       success: true,
-      data: subCategories,
+      message: "Sub Category get success",
+      meta: {
+        total,
+        pages,
+        page,
+        limit,
+      },
+      data: result,
     });
   } catch (error) {
     res.json({
       success: false,
-      message: "Error retrieving subcategories",
       message: error.message,
+      error
     });
   }
 };

@@ -4,8 +4,9 @@ export const subCategoryApi = apiSlice.injectEndpoints({
   tagTypes: ["sub_category"],
   endpoints: (builder) => ({
     getSubCategories: builder.query({
-      query: () => ({
+      query: (query) => ({
         url: "/subCategory/all",
+        params: query,
       }),
       providesTags: ["sub_category"],
     }),

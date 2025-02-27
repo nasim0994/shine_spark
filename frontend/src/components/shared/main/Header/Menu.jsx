@@ -5,8 +5,6 @@ export default function Menu() {
   const { data } = useGetSubCategoriesQuery({ limit: 7 });
   const subCategories = data?.data;
 
-  console.log(subCategories);
-
   return (
     <section className="hidden shadow lg:block">
       <div className="container">
@@ -19,27 +17,25 @@ export default function Menu() {
                 {subCategory?.name}
               </Link>
 
-              <div className="menu_subCategory_dropdown">
-                <div className="flex">
-                  <div className="w-72 bg-primary/5 p-2 pr-0">
-                    <p className="bg-base-100 p-2 font-medium text-neutral">
-                      STYLE
-                    </p>
-                  </div>
-                  <div className="w-[calc(100%-288px)]">
-                    <ul>
-                      <h3 className="p-3">See All {subCategory?.name}</h3>
-                      {subCategory?.subSubCategories?.map((subSUbCategory) => (
-                        <li key={subSUbCategory?._id}>
-                          <Link
-                            to={`/shops?category=${subCategory?.category?.slug}&subCategory=${subCategory?.slug}&subSubCategory=${subSUbCategory?.slug}`}
-                          >
-                            {subSUbCategory?.name}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+              <div className="menu_subCategory_dropdown flex">
+                <div className="min-h-full w-72 bg-primary/5 p-2 pr-0">
+                  <p className="bg-base-100 p-2 font-medium text-neutral">
+                    STYLE
+                  </p>
+                </div>
+                <div className="w-[calc(100%-288px)]">
+                  <ul>
+                    <h3 className="p-3">See All {subCategory?.name}</h3>
+                    {subCategory?.subSubCategories?.map((subSUbCategory) => (
+                      <li key={subSUbCategory?._id}>
+                        <Link
+                          to={`/shops?category=${subCategory?.category?.slug}&subCategory=${subCategory?.slug}&subSubCategory=${subSUbCategory?.slug}`}
+                        >
+                          {subSUbCategory?.name}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
             </li>

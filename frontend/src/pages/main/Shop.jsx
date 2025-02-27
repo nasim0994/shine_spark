@@ -1,6 +1,6 @@
 import "@/assets/css/shop.css";
 import { AiOutlineClose } from "react-icons/ai";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { BiFilterAlt } from "react-icons/bi";
 import ProductCard from "@/components/shared/main/ProductCard";
 import ShopCategories from "@/components/shared/main/ShopCategories/ShopCategories";
@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useGetAllProductsQuery } from "@/Redux/product/productApi";
 import ProductCards from "@/components/shared/Skeleton/ProductCards/ProductCards";
 
@@ -28,13 +28,24 @@ export default function Shop() {
   }, []);
   const [sidebar, setSidebar] = useState(false);
   const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
+  const navigate = useNavigate();
+  const queryParams = useMemo(
+    () => new URLSearchParams(location.search),
+    [location.search],
+  );
   const category = queryParams.get("category");
   const subCategory = queryParams.get("subCategory");
   const subSubCategory = queryParams.get("subSubCategory");
   const brand = queryParams.get("brand");
   const search = queryParams.get("search");
   const sort = queryParams.get("sort");
+  const [minPrice, setMinPrice] = useState(queryParams.get("minPrice") || "");
+  const [maxPrice, setMaxPrice] = useState(queryParams.get("maxPrice") || "");
+
+  useEffect(() => {
+    setMinPrice(queryParams.get("minPrice") || "");
+    setMaxPrice(queryParams.get("maxPrice") || "");
+  }, [queryParams]);
 
   let query = {};
   if (category) query.category = category;
@@ -43,10 +54,22 @@ export default function Shop() {
   if (brand) query.brand = brand;
   if (search) query.search = search;
   if (sort) query.sort = sort;
+  if (minPrice && maxPrice)
+    query["range"] = JSON.stringify([minPrice, maxPrice]);
 
   const { data, isLoading } = useGetAllProductsQuery(query);
   const products = data?.data;
   const meta = data?.meta;
+
+  const handlePriceChange = (key, value) => {
+    const searchParams = new URLSearchParams(location.search);
+    if (value) {
+      searchParams.set(key, value);
+    } else {
+      searchParams.delete(key);
+    }
+    navigate(`/shops?${searchParams.toString()}`);
+  };
 
   return (
     <section className="py-2">
@@ -65,9 +88,7 @@ export default function Shop() {
 
         <div className="mt-2 flex items-start gap-4 md:mt-4">
           <>
-            <div
-              className={`shop_sidebar ${sidebar && "shop_sidebar_show"}`}
-            >
+            <div className={`shop_sidebar ${sidebar && "shop_sidebar_show"}`}>
               <div className="flex items-center justify-between">
                 <h2 className="text-lg uppercase">Filter</h2>
                 <button className="md:hidden" onClick={() => setSidebar(false)}>
@@ -79,9 +100,25 @@ export default function Shop() {
                 <p>Price</p>
                 <div className="mt-2 flex items-center gap-2">
                   $
-                  <input type="text" className="w-20 py-1" placeholder="From" />
+                  <input
+                    type="number"
+                    className="w-20 py-1"
+                    placeholder="From"
+                    value={minPrice}
+                    onChange={(e) =>
+                      handlePriceChange("minPrice", e.target.value)
+                    }
+                  />
                   -
-                  <input type="text" className="w-20 py-1" placeholder="To" />
+                  <input
+                    type="number"
+                    className="w-20 py-1"
+                    placeholder="To"
+                    value={maxPrice}
+                    onChange={(e) =>
+                      handlePriceChange("maxPrice", e.target.value)
+                    }
+                  />
                 </div>
               </div>
 

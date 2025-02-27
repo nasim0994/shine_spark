@@ -123,7 +123,7 @@ export const mainRoutes = {
       ),
     },
     {
-      path: "/signup",
+      path: "/register",
       element: (
         <Suspense fallback={<Spinner />}>
           <Signup />

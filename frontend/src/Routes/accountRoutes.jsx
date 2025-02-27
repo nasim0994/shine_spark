@@ -25,27 +25,27 @@ export const accountRoutes = {
   ),
   children: [
     {
-      path: "/account/profile",
+      path: "profile",
       element: <Profile />,
     },
     {
-      path: "/account/profile/edit",
+      path: "profile/edit",
       element: <EditProfile />,
     },
     {
-      path: "/account/orders",
+      path: "orders",
       element: <Orders />,
     },
     {
-      path: "/account/orders/:id",
+      path: "orders/:id",
       element: <OrderDetailsPage />,
     },
     {
-      path: "/account/reviews",
+      path: "reviews",
       element: <MyReviews />,
     },
     {
-      path: "/account/setting",
+      path: "setting",
       element: <Setting />,
     },
   ],

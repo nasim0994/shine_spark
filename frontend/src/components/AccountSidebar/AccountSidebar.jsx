@@ -1,4 +1,4 @@
-import { AiOutlineHeart, AiOutlineSetting } from "react-icons/ai";
+import { AiOutlineSetting } from "react-icons/ai";
 import { FiMonitor } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { BiLogOutCircle } from "react-icons/bi";
@@ -37,14 +37,6 @@ export default function AccountSidebar() {
               <span className="flex items-center gap-2 duration-300 hover:text-primary">
                 <FiMonitor className="text-lg" />
                 View Profile
-              </span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/account/wishlist">
-              <span className="flex items-center gap-2 duration-300 hover:text-primary">
-                <AiOutlineHeart className="text-xl" />
-                My Wishlist
               </span>
             </NavLink>
           </li>

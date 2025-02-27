@@ -12,6 +12,7 @@ import { useGetCategoriesQuery } from "@/Redux/category/categoryApi";
 import { useSelector } from "react-redux";
 
 export default function MainHeader() {
+  const { loggedUser } = useSelector((state) => state.user);
   const { data } = useGetCategoriesQuery();
   const categories = data?.data;
   const navigate = useNavigate();
@@ -69,9 +70,20 @@ export default function MainHeader() {
             <Link to={`https://wa.me/${`8801706260994`}`} target="_blank">
               <IWhatsapp width={23} height={23} />
             </Link>
-            <Link to="/login">
-              <IUser width={26} height={26} />
-            </Link>
+            {loggedUser?.success && loggedUser?.data?.role ? (
+              <Link to="/account/profile">
+                <img
+                  src="/images/demo_user.jpg"
+                  alt="user"
+                  className="h-7 w-7 rounded-full"
+                />
+              </Link>
+            ) : (
+              <Link to="/login">
+                <IUser width={26} height={26} />
+              </Link>
+            )}
+
             <Link to="/wishlist" className="relative">
               <IHeart width={25} height={25} />
               {wishlists.length > 0 && (

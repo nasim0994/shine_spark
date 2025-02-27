@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { userLoggedIn } from "../Redux/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { userLoggedIn, userLogout } from "../Redux/user/userSlice";
 import { useJwt } from "react-jwt";
 
 export default async function useAuthCheck() {
   const dispatch = useDispatch();
   const [authChecked, setAuthChecked] = useState(false);
-  const token = localStorage?.getItem("token");
+  const { token } = useSelector((state) => state.user);
   const { isExpired } = useJwt(token);
-  if (isExpired) {
-    localStorage.removeItem("token");
-  }
+  if (isExpired) dispatch(userLogout());
 
   useEffect(() => {
     if (token) {
@@ -26,7 +24,6 @@ export default async function useAuthCheck() {
               userLoggedIn({
                 token: token,
                 data: data,
-                loading: false,
               }),
             );
           }
@@ -36,13 +33,7 @@ export default async function useAuthCheck() {
         });
     } else {
       setAuthChecked(true);
-      dispatch(
-        userLoggedIn({
-          token: "",
-          data: undefined,
-          loading: false,
-        }),
-      );
+      dispatch(userLogout());
     }
   }, [dispatch, setAuthChecked, token]);
 

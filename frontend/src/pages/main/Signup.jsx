@@ -1,20 +1,19 @@
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { HiUser } from "react-icons/hi";
 import { MdEmail } from "react-icons/md";
 import { AiFillLock, AiTwotonePhone } from "react-icons/ai";
-import { useState } from "react";
-import ButtonSpinner from "../../components/ButtonSpinner/ButtonSpinner";
-import Swal from "sweetalert2";
-import { useRegisterMutation } from "../../Redux/user/authApi";
-import { useEffect } from "react";
-import { useGetMainLogoQuery } from "../../Redux/logo/logoApi";
+import { useGetFaviconQuery } from "@/Redux/favicon/faviconApi";
+import toast from "react-hot-toast";
+import ButtonSpinner from "@/components/shared/ButtonSpinner";
+import { useRegisterMutation } from "@/Redux/user/authApi";
 
 export default function Signup() {
   window.scroll(0, 0);
-  const { data: logo } = useGetMainLogoQuery();
-  const [errorMesssage, setErrorMessage] = useState("");
-  const [register, { isSuccess, isLoading, isError, error }] =
-    useRegisterMutation();
+  const { data } = useGetFaviconQuery();
+  const icon = data?.data?.icon;
+  const [errorMessage, setErrorMessage] = useState("");
+  const [register, { isLoading }] = useRegisterMutation();
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
@@ -29,9 +28,7 @@ export default function Signup() {
 
     const phoneRegex = /^\d{11}$/;
     const isValidPhoneNumber = phoneRegex.test(phone);
-    if (!isValidPhoneNumber) {
-      return Swal.fire("", "Please give valid phone number!", "error");
-    }
+    if (!isValidPhoneNumber) return setErrorMessage("Invalid phone number");
 
     if (password.length < 8) {
       return setErrorMessage("Password must be 8 character");
@@ -49,38 +46,24 @@ export default function Signup() {
       role: "user",
     };
 
-    await register(userInfo);
-  };
-
-  useEffect(() => {
-    if (isSuccess) {
-      Swal.fire("", "Register success, Please Login now", "success");
+    const res = await register(userInfo);
+    if (res?.data?.success) {
+      toast.success("Registration successful, please login now");
       navigate("/login");
+    } else {
+      setErrorMessage(res?.data?.message);
+      console.log(res);
     }
-
-    if (isError) {
-      Swal.fire(
-        "",
-        error?.data?.message ? error?.data?.message : "register fail",
-        "error",
-      );
-    }
-  }, [isError, isSuccess, error, navigate]);
+  };
 
   return (
     <div className="bg-gray-50 py-6">
       <div className="container">
         <div className="mx-auto rounded-lg bg-base-100 p-6 shadow-lg sm:w-[420px]">
           <img
-            src={
-              logo?.data[0]?.logo === ""
-                ? "/images/logo/logo.png"
-                : `${import.meta.env.VITE_BACKEND_URL}/logo/${
-                    logo?.data[0]?.logo
-                  }`
-            }
-            alt=""
-            className="mx-auto w-32"
+            src={`${import.meta.env.VITE_BACKEND_URL}/favicon/${icon}`}
+            alt="icon"
+            className="w-10"
           />
           <h6 className="mt-2 text-center text-xl font-medium text-neutral/80">
             Signup
@@ -157,7 +140,7 @@ export default function Signup() {
               </div>
             </div>
 
-            <p className="mb-4 text-sm text-red-500">{errorMesssage}</p>
+            <p className="mb-4 text-sm text-red-500">{errorMessage}</p>
 
             <div className="flex w-full flex-col border-opacity-50">
               <button

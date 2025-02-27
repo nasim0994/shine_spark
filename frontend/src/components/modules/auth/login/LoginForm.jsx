@@ -12,7 +12,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AiFillEyeInvisible } from "react-icons/ai";
 import { AiFillEye } from "react-icons/ai";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { loginZodValidation } from "./loginZodValidation";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useLoginMutation } from "@/Redux/user/authApi";
@@ -31,9 +31,17 @@ export default function LoginForm() {
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
 
-  if (loggedUser?.success || loggedUser !== undefined) {
-    navigate(from, { replace: true });
-  }
+  let admin =
+    loggedUser?.data?.role === "admin" ||
+    loggedUser?.data?.role === "superAdmin";
+
+  useEffect(() => {
+    if (from.startsWith("/admin") && !admin) return;
+
+    if (loggedUser?.success || loggedUser !== undefined) {
+      navigate(from, { replace: true });
+    }
+  }, [loggedUser, from, navigate, admin]);
 
   const onSubmit = async (data) => {
     setError(null);

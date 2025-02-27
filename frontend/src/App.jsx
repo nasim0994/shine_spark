@@ -4,7 +4,6 @@ import { Helmet } from "react-helmet";
 import { useGetFaviconQuery } from "./Redux/favicon/faviconApi";
 import { useGetSEOQuery } from "./Redux/seoApi";
 import { useEffect } from "react";
-import Spinner from "./components/shared/Spinner/Spinner";
 import { mainRoutes } from "./Routes/mainRoutes";
 import { accountRoutes } from "./Routes/accountRoutes";
 import { rootRoutes } from "./Routes/rootRoutes";
@@ -18,7 +17,7 @@ const router = createBrowserRouter([
 ]);
 
 export default function App() {
-  const authChecked = useAuthCheck();
+  useAuthCheck();
 
   const { data: favicon } = useGetFaviconQuery();
   const icon = favicon?.data?.icon;
@@ -44,8 +43,6 @@ export default function App() {
     // Append the script to the head
     if (seo?.custom?.google_tag_manager) document.head.appendChild(script);
   }, [seo]);
-
-  if (!authChecked) return <Spinner />;
 
   return (
     <>

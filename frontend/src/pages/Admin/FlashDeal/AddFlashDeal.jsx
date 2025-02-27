@@ -56,7 +56,7 @@ export default function AddFlashDeal() {
       setSelectedProducts([]);
       form.reset();
       setFlashProducts([]);
-      navigate("/admin/flash-deal");
+      navigate("/admin/promo/flash-sale/all");
     } else {
       toast.error(res?.data?.message || "Failed to add flash deal");
       console.log(res);

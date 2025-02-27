@@ -162,7 +162,7 @@ export default function AddProduct() {
       setFeatured(false);
       setVariants("");
       setDetails("");
-      navigate("/admin/product/all-products");
+      navigate("/admin/product/all");
     } else {
       toast.error(res?.data?.message || "Failed to add product");
       console.log(res);

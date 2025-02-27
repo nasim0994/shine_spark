@@ -33,7 +33,7 @@ export default function AddBrand() {
       toast.success("Brand added successfully");
       setIcons([]);
       setName("");
-      navigate("/admin/brands");
+      navigate("/admin/product/brand/all");
     } else {
       toast.error("Something went wrong");
       console.log(res);

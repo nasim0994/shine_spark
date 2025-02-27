@@ -1,13 +1,13 @@
 import { Link } from "react-router-dom";
 import FlashDealTable from "./FlashDealTable";
 import { useGetFlashDealQuery } from "@/Redux/flashDeal/flashDeal";
-import Spinner from "@/components/shared/Spinner/Spinner";
+import TableSkeleton from "@/components/shared/Skeleton/TableSkeleton";
 
 export default function FlashDealList() {
   const { data, isLoading, isError, error } = useGetFlashDealQuery();
 
   let content = null;
-  if (isLoading) return (content = <Spinner />);
+  if (isLoading) return (content = <TableSkeleton />);
 
   if (!isLoading && isError) {
     content = <p>{error?.data?.error}</p>;
@@ -22,7 +22,7 @@ export default function FlashDealList() {
     <div>
       <div className="mb-3 flex items-end justify-between">
         <h1 className="text-lg text-neutral-content">Flash Deal</h1>
-        <Link to="/admin/flash-deal/add" className="primary_btn text-sm">
+        <Link to="/admin/promo/flash-sale/add" className="primary_btn text-sm">
           Add New Flash Deal
         </Link>
       </div>

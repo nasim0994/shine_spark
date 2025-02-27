@@ -29,7 +29,7 @@ export default function AddSubSubCategory() {
 
     if (result?.data?.success) {
       toast.success("Sub SubCategory added successfully");
-      navigate("/admin/category/sub-sub-categories");
+      navigate("/admin/product/category/sub-sub-category/all");
     } else {
       toast.error(result?.data?.message || "Failed to add sub subcategory");
       console.log(result);

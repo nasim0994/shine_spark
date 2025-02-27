@@ -27,7 +27,7 @@ export default function EditColor() {
     const res = await editColor({ id, data });
     if (res?.data?.success) {
       toast.success("Color Updated Successfully");
-      navigate("/admin/colors");
+      navigate("/admin/product/color/all");
     } else {
       toast.error(res?.data?.message || "Something went wrong");
       console.log(res);

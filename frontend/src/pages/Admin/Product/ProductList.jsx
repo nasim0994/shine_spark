@@ -1,6 +1,5 @@
 import Pagination from "@/components/Pagination/Pagination";
 import ButtonSpinner from "@/components/shared/ButtonSpinner";
-import Spinner from "@/components/shared/Spinner/Spinner";
 import {
   useDeleteProductMutation,
   useGetAllProductsQuery,
@@ -12,6 +11,7 @@ import { AiOutlineDelete } from "react-icons/ai";
 import { BiSolidPencil } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
+import TableSkeleton from "@/components/shared/Skeleton/TableSkeleton";
 
 export default function ProductList() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -71,11 +71,9 @@ export default function ProductList() {
   };
 
   let content = null;
-  if (isLoading) return (content = <Spinner />);
+  if (isLoading) return (content = <TableSkeleton />);
+  if (!isLoading && isError) content = <p>{error?.error}</p>;
 
-  if (!isLoading && isError) {
-    content = <p>{error?.error}</p>;
-  }
   if (!isLoading && !isError && data?.data?.length > 0) {
     content = data?.data?.map((product) => (
       <tr key={product?._id}>
@@ -132,7 +130,7 @@ export default function ProductList() {
         <td>
           <div className="flex items-center gap-2">
             <Link
-              to={`/admin/product/edit-product/${product?._id}`}
+              to={`/admin/product/edit/${product?._id}`}
               className="duration-300 hover:text-green-700"
             >
               <BiSolidPencil />
@@ -154,7 +152,7 @@ export default function ProductList() {
       <div className="mb-3 flex items-center justify-between">
         <h2 className="text-[17px]">All Products</h2>
         <Link
-          to="/admin/product/add-product"
+          to="/admin/product/add"
           className="rounded bg-primary px-6 py-2 text-sm text-base-100"
         >
           Add New Product

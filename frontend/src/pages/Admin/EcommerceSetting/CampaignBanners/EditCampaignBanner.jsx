@@ -34,7 +34,7 @@ export default function EditCampaignBanner() {
     const res = await editCampaignBanner({ formData, id });
     if (res?.data?.success) {
       toast.success("Campaign Banner Updated Successfully");
-      navigate("/admin/banner/campaign-banners");
+      navigate("/admin/business/section/campaign-banner/all");
     }
   };
 

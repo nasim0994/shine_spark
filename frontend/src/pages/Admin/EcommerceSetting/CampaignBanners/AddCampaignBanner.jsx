@@ -36,7 +36,7 @@ export default function AddCampaignBanner() {
     const res = await addBanner(formData);
     if (res?.data?.success) {
       toast.success("Campaign Banner Added Successfully");
-      navigate("/admin/banner/campaign-banners");
+      navigate("/admin/business/section/campaign-banner/all");
       setImages([]);
       form.reset();
     }

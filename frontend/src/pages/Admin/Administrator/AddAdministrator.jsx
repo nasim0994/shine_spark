@@ -26,7 +26,7 @@ export default function AddAdministrator() {
     const res = await addAdmin(info);
     if (isSuccess) {
       toast.success("Administrator added successfully");
-      navigate("/admin/administrators");
+      navigate("/admin/administrator/all");
     } else {
       toast.error(res?.data?.message || "An error occurred");
       console.log(res);

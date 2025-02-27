@@ -7,7 +7,7 @@ import {
   useGetAllAdminsQuery,
 } from "@/Redux/admin/adminApi";
 import toast from "react-hot-toast";
-import Spinner from "@/components/shared/Spinner/Spinner";
+import TableSkeleton from "@/components/shared/Skeleton/TableSkeleton";
 
 export default function Administrator() {
   const { data, isLoading, isError, error } = useGetAllAdminsQuery();
@@ -33,23 +33,23 @@ export default function Administrator() {
   };
 
   let content = null;
-  if (isLoading) {
-    return (content = <Spinner />);
-  }
-  if (!isLoading && isError) {
-    content = <p>{error.error}</p>;
-  }
+  if (isLoading) content = <TableSkeleton />;
+  if (!isLoading && isError) content = <p>{error.error}</p>;
+
   if (!isLoading && !isError && data?.data?.length > 0) {
-    content = data?.data?.map((user) => (
+    content = data?.data?.map((user, i) => (
       <tr key={user?._id}>
+        <td>{i + 1}</td>
         <td>
           <div className="flex items-center gap-2">
-            <img
-              src={`${import.meta.env.VITE_BACKEND_URL}/user/${user?.image}`}
-              alt={user?.name}
-              className="h-10 w-10 rounded-full"
-              loading="lazy"
-            />
+            {user?.image && (
+              <img
+                src={`${import.meta.env.VITE_BACKEND_URL}/user/${user?.image}`}
+                alt={user?.name}
+                className="h-10 w-10 rounded-full"
+                loading="lazy"
+              />
+            )}
             {user?.name}
           </div>
         </td>
@@ -59,7 +59,7 @@ export default function Administrator() {
         <td>
           <div className="flex items-center gap-2">
             {role === "superAdmin" && (
-              <Link to={`/admin/administrator/edit-administrator/${user?._id}`}>
+              <Link to={`/admin/administrator/edit/${user?._id}`}>
                 <FaEdit className="text-[17px] text-gray-700 duration-200 hover:text-green-500" />
               </Link>
             )}
@@ -74,11 +74,9 @@ export default function Administrator() {
 
   return (
     <section>
-      <div className="mb-2 flex justify-end">
-        <Link
-          to="/admin/administrator/add-administrator"
-          className="primary_btn"
-        >
+      <div className="mb-2 flex items-center justify-between">
+        <h2 className="text-lg">All Admin</h2>
+        <Link to="/admin/administrator/add" className="primary_btn">
           Add Administrator
         </Link>
       </div>
@@ -86,7 +84,8 @@ export default function Administrator() {
         <table className="dashboard_table">
           <thead>
             <tr>
-              <th>User name</th>
+              <th>SL</th>
+              <th>User</th>
               <th>Email</th>
               <th>Phone</th>
               <th>Role</th>

@@ -5,7 +5,7 @@ import {
   useGetBannersQuery,
 } from "@/Redux/banner/bannerApi";
 import toast from "react-hot-toast";
-import Spinner from "@/components/shared/Spinner/Spinner";
+import TableSkeleton from "@/components/shared/Skeleton/TableSkeleton";
 
 export default function Banner() {
   const { data, isLoading, isError } = useGetBannersQuery();
@@ -25,15 +25,14 @@ export default function Banner() {
     }
   };
 
-  if (isLoading) return <Spinner />;
-
+  if (isLoading) return <TableSkeleton />;
   if (isError) return <p>Fail fetch </p>;
 
   return (
     <section className="rounded bg-base-100 shadow">
       <div className="flex items-center justify-between border-b p-4 font-medium text-neutral">
         <h3>Banner Lists</h3>
-        <Link to="/admin/banner/main/add" className="primary_btn">
+        <Link to="/admin/business/section/banner/add" className="primary_btn">
           Add Banner
         </Link>
       </div>
@@ -67,7 +66,7 @@ export default function Banner() {
                   <td>
                     <div className="flex items-center gap-2 text-lg">
                       <Link
-                        to={`/admin/banner/main/edit/${banner?._id}`}
+                        to={`/admin/business/section/banner/edit/${banner?._id}`}
                         className="duration-200 hover:text-red-500"
                       >
                         <MdEdit />

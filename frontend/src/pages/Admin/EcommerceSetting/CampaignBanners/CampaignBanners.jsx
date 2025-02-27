@@ -4,8 +4,8 @@ import {
   useDeleteCampaignBannerMutation,
   useGetCampaignBannersQuery,
 } from "@/Redux/campaignBanner/campaignBannerApi";
-import Spinner from "@/components/shared/Spinner/Spinner";
 import toast from "react-hot-toast";
+import TableSkeleton from "@/components/shared/Skeleton/TableSkeleton";
 
 export default function CampaignBanners() {
   const { data, isLoading } = useGetCampaignBannersQuery();
@@ -19,13 +19,16 @@ export default function CampaignBanners() {
     }
   };
 
-  if (isLoading) return <Spinner />;
+  if (isLoading) return <TableSkeleton />;
 
   return (
     <section className="rounded bg-base-100 shadow">
       <div className="flex items-center justify-between border-b p-4 font-medium text-neutral">
         <h3>Campaign Banner Lists</h3>
-        <Link to="/admin/banner/campaign-banners/add" className="primary_btn">
+        <Link
+          to="/admin/business/section/campaign-banner/add"
+          className="primary_btn"
+        >
           Add Campaign Banner
         </Link>
       </div>
@@ -60,7 +63,7 @@ export default function CampaignBanners() {
                     <td>
                       <div className="flex items-center gap-2 text-lg">
                         <Link
-                          to={`/admin/banner/campaign-banners/edit/${banner?._id}`}
+                          to={`/admin/business/section/campaign-banner/edit/${banner?._id}`}
                           className="duration-200 hover:text-red-500"
                         >
                           <MdEdit />

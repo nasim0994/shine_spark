@@ -1,4 +1,4 @@
-import Spinner from "@/components/shared/Spinner/Spinner";
+import TableSkeleton from "@/components/shared/Skeleton/TableSkeleton";
 import {
   useDeleteCategoryMutation,
   useGetCategoriesQuery,
@@ -27,8 +27,8 @@ export default function AllCategories() {
   };
 
   let content = null;
+  if (isLoading) content = <TableSkeleton />;
 
-  if (isLoading) content = <Spinner />;
   if (!isLoading && isError) {
     content = <p>{error?.data?.error}</p>;
   }
@@ -41,7 +41,7 @@ export default function AllCategories() {
           <div className="flex items-center gap-2">
             <img
               src={`${import.meta.env.VITE_BACKEND_URL}/${category?.icon}`}
-              alt=""
+              alt={category?.name}
               className="h-10 w-10 rounded-full border"
             />
             {category?.name}
@@ -51,7 +51,7 @@ export default function AllCategories() {
         <td>
           <div className="flex items-center gap-2">
             <Link
-              to={`/admin/category/edit/${category?._id}`}
+              to={`/admin/product/category/edit/${category?._id}`}
               className="duration-200 hover:text-green-700"
             >
               <BiSolidPencil />
@@ -72,7 +72,7 @@ export default function AllCategories() {
     <div>
       <div className="mb-2 flex items-center justify-between">
         <h1 className="text-lg">All Categories</h1>
-        <Link to="/admin/category/add-category" className="primary_btn text-sm">
+        <Link to="/admin/product/category/add" className="primary_btn text-sm">
           Add New Category
         </Link>
       </div>

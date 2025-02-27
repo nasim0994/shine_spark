@@ -19,7 +19,7 @@ export default function AddColor() {
     const result = await addColor(data);
     if (result?.data?.success) {
       toast.success("Color Added Successfully");
-      navigate("/admin/colors");
+      navigate("/admin/product/color/all");
     } else {
       toast.error("Something went wrong");
       console.log(result);

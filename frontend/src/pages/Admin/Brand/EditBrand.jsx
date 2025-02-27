@@ -27,7 +27,7 @@ export default function EditBrand() {
     const res = await editBrand({ formData, id });
     if (res?.data?.success) {
       toast.success("Brand Edited Successfully");
-      navigate("/admin/brands");
+      navigate("/admin/product/brand/all");
     } else {
       toast.error(res?.data?.message || "An error occurred");
       console.log(res);

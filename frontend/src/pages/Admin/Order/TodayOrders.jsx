@@ -9,8 +9,8 @@ import {
   useStatusUpdateMutation,
 } from "@/Redux/order/orderApi";
 import toast from "react-hot-toast";
-import Spinner from "@/components/shared/Spinner/Spinner";
 import Pagination from "@/components/Pagination/Pagination";
+import TableSkeleton from "@/components/shared/Skeleton/TableSkeleton";
 
 export default function TodaysOrders() {
   const query = {};
@@ -45,11 +45,9 @@ export default function TodaysOrders() {
   };
 
   let content = null;
-  if (isLoading) return (content = <Spinner />);
+  if (isLoading) return (content = <TableSkeleton />);
+  if (!isLoading && isError) content = <p>{error.error}</p>;
 
-  if (!isLoading && isError) {
-    content = <p>{error.error}</p>;
-  }
   if (!isLoading && !isError && data?.data?.length > 0) {
     content = data?.data?.map((order, i) => (
       <tr key={order?._id}>
@@ -142,7 +140,7 @@ export default function TodaysOrders() {
   return (
     <section>
       <div className="mb-2 rounded bg-base-100 p-3">
-        <h2 className="text-xl text-neutral">Today&apos;s Orders</h2>
+        <h2 className="text-neutral">Today&apos;s Orders</h2>
       </div>
       <div className="relative flex flex-col justify-between overflow-x-auto pb-4 shadow-lg">
         <table>

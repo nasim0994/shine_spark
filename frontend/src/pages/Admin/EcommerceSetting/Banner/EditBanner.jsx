@@ -34,7 +34,7 @@ export default function EditBanner() {
     const res = await editCampaignBanner({ formData, id });
     if (res?.data?.success) {
       toast.success(res?.data?.message || "Banner updated successfully");
-      navigate("/admin/banner/main/all");
+      navigate("/admin/business/section/banner/all");
     } else {
       toast.error(
         res?.data?.message || "Something went wrong, please try again",

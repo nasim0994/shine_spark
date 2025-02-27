@@ -38,7 +38,7 @@ export default function EditCategory() {
     const res = await updateCategory({ id, formData });
     if (res?.data?.success) {
       toast.success("Category updated successfully");
-      navigate("/admin/categories");
+      navigate("/admin/product/category/all");
     }
   };
 

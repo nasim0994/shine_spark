@@ -1,4 +1,4 @@
-import Spinner from "@/components/shared/Spinner/Spinner";
+import TableSkeleton from "@/components/shared/Skeleton/TableSkeleton";
 import {
   useAllBrandsQuery,
   useDeleteBrandMutation,
@@ -27,7 +27,7 @@ export default function AllBrands() {
   };
 
   let content = null;
-  if (isLoading) return (content = <Spinner />);
+  if (isLoading) content = <TableSkeleton />;
 
   if (!isLoading && isError) {
     content = <p>{error?.data?.error}</p>;
@@ -47,7 +47,7 @@ export default function AllBrands() {
         <td>
           <div className="flex items-center gap-2">
             <Link
-              to={`/admin/edit-brand/${brand?._id}`}
+              to={`/admin/product/brand/edit/${brand?._id}`}
               className="duration-200 hover:text-green-700"
             >
               <BiSolidPencil />
@@ -66,8 +66,9 @@ export default function AllBrands() {
 
   return (
     <div>
-      <div className="mb-3 flex justify-end">
-        <Link to="/admin/add-brand" className="primary_btn text-sm">
+      <div className="mb-3 flex items-center justify-between">
+        <h2 className="text-lg">All Brands</h2>
+        <Link to="/admin/product/brand/add" className="primary_btn text-sm">
           Add New Brand
         </Link>
       </div>

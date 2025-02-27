@@ -1,4 +1,4 @@
-import Spinner from "@/components/shared/Spinner/Spinner";
+import TableSkeleton from "@/components/shared/Skeleton/TableSkeleton";
 import {
   useDeleteSubSubCategoryMutation,
   useGetSubSubCategoriesQuery,
@@ -33,7 +33,7 @@ export default function AllSubSubCategory() {
   };
 
   let content = null;
-  if (isLoading) return (content = <Spinner />);
+  if (isLoading) content = <TableSkeleton />;
 
   if (!isLoading && isError) {
     content = <p>{error?.data?.error}</p>;
@@ -59,7 +59,7 @@ export default function AllSubSubCategory() {
         <td>
           <div className="flex items-center gap-2">
             <Link
-              to={`/admin/category/edit-sub-sub-category/${subSubCategory?._id}`}
+              to={`/admin/product/category/sub-sub-category/edit/${subSubCategory?._id}`}
               className="flex items-center gap-1 duration-300 hover:text-green-700"
             >
               <BiSolidPencil />
@@ -78,9 +78,10 @@ export default function AllSubSubCategory() {
 
   return (
     <div>
-      <div className="mb-2 flex justify-end">
+      <div className="mb-2 flex items-center justify-between">
+        <h2 className="text-lg">All Sub Sub Categories</h2>
         <Link
-          to="/admin/category/add-sub-sub-category"
+          to="/admin/product/category/sub-sub-category/add"
           className="primary_btn text-sm"
         >
           Add New Sub Category

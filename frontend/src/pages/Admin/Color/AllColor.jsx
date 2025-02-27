@@ -1,12 +1,12 @@
 import { BiSolidPencil } from "react-icons/bi";
 import { MdOutlineDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
-import Spinner from "@/components/shared/Spinner/Spinner";
 import {
   useAllColorsQuery,
   useDeleteColorMutation,
 } from "@/Redux/color/colorApi";
 import toast from "react-hot-toast";
+import TableSkeleton from "@/components/shared/Skeleton/TableSkeleton";
 
 export default function AllColor() {
   const { data, isLoading, isError, error } = useAllColorsQuery();
@@ -32,7 +32,7 @@ export default function AllColor() {
   };
 
   let content = null;
-  if (isLoading) return (content = <Spinner />);
+  if (isLoading) content = <TableSkeleton />;
 
   if (!isLoading && isError) {
     content = <p>{error?.data?.error}</p>;
@@ -46,7 +46,7 @@ export default function AllColor() {
         <td>
           <div className="flex items-center gap-2">
             <Link
-              to={`/admin/color/edit/${color?._id}`}
+              to={`/admin/product/color/edit/${color?._id}`}
               className="flex items-center gap-1 duration-300 hover:text-green-700"
             >
               <BiSolidPencil />
@@ -66,7 +66,7 @@ export default function AllColor() {
   return (
     <div>
       <div className="mb-2 flex justify-end">
-        <Link to="/admin/color/add" className="primary_btn text-sm">
+        <Link to="/admin/product/color/add" className="primary_btn text-sm">
           Add New
         </Link>
       </div>

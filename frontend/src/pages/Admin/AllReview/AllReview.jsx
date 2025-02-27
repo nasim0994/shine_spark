@@ -1,5 +1,6 @@
 import Pagination from "@/components/Pagination/Pagination";
 import Rating from "@/components/Rating/Rating";
+import TableSkeleton from "@/components/shared/Skeleton/TableSkeleton";
 import {
   useDeleteReviewMutation,
   useGetAllReviewsQuery,
@@ -20,7 +21,7 @@ export default function AllReview() {
   query["limit"] = 5;
   query["page"] = currentPage;
   query["description"] = description;
-  const { data } = useGetAllReviewsQuery({ ...query });
+  const { data, isLoading } = useGetAllReviewsQuery({ ...query });
   const [deleteReview] = useDeleteReviewMutation();
 
   const pages = Math.ceil(
@@ -40,17 +41,21 @@ export default function AllReview() {
     toast.success("Review deleted successfully");
   };
 
+  if (isLoading) return <TableSkeleton />;
+
   return (
     <div>
       <div className="mb-1 flex items-center justify-between rounded-md bg-base-100 p-3 shadow-lg">
         <h1 className="text-lg">AllReview</h1>
-        <input
-          type="text"
-          className="rounded-md border px-2.5 py-1.5 placeholder:text-sm"
-          placeholder="Search by description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
+        <div>
+          <input
+            type="text"
+            className="rounded-md border px-2.5 py-1.5 placeholder:text-sm"
+            placeholder="Search by description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
       </div>
 
       <div className="rounded bg-base-100 p-3 shadow-lg">
@@ -67,7 +72,7 @@ export default function AllReview() {
                             user?.image
                           }`
                     }
-                    alt=""
+                    alt="user"
                     className="h-9 w-9 rounded-full"
                   />
                   <div>

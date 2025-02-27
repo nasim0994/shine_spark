@@ -41,7 +41,7 @@ export default function EditSubCategory() {
     const result = await updateSubCategory({ id, data });
     if (result?.data?.success) {
       toast.success("Sub Category updated successfully");
-      navigate("/admin/category/sub-categories");
+      navigate("/admin/product/category/sub-category/all");
     } else {
       toast.error(result?.data?.message || "Failed to update sub category");
       console.log(result);

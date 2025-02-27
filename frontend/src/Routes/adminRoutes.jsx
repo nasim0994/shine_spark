@@ -298,7 +298,7 @@ export const adminRoutes = {
 
     //--------------Review
     {
-      path: "/admin/reviews",
+      path: "/admin/review/all",
       element: <AllReview />,
     },
 

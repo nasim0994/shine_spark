@@ -35,7 +35,7 @@ export default function EditAdministrator() {
       if (res?.data?.success) {
         toast.success("Admin updated successfully");
         form.reset();
-        navigate("/admin/administrator/all-administrator");
+        navigate("/admin/administrator/all");
       } else {
         toast.error(res?.data?.message || "An error occurred");
         console.log(res);

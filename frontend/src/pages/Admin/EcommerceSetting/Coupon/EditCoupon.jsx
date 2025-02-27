@@ -1,9 +1,9 @@
-import { useNavigate, useParams } from "react-router-dom";
 import {
   useEditCouponMutation,
   useGetCouponByIdQuery,
-} from "../../../../Redux/coupon/couponApi";
-import Swal from "sweetalert2";
+} from "@/Redux/coupon/couponApi";
+import toast from "react-hot-toast";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function EditCoupon() {
   const { id } = useParams();
@@ -36,10 +36,11 @@ export default function EditCoupon() {
     const res = await editCoupon({ id, coupon });
 
     if (res?.data?.success) {
-      Swal.fire("", "Update Success", "success");
-      navigate("/admin/ecommerce-setting/coupons");
+      toast.success("Coupon Updated Successfully");
+      navigate("/admin/promo/coupon/all");
     } else {
-      Swal.fire("", "Something went wrong", "error");
+      toast.error(res?.data?.message || "Something went wrong");
+      console.log(res);
     }
   };
 
@@ -66,7 +67,7 @@ export default function EditCoupon() {
           <input
             type="number"
             name="minimumShopping"
-            placeholder="Enter Minimum Shopping Ammount"
+            placeholder="Enter Minimum Shopping Amount"
             className="w-full rounded border px-3 py-2 text-sm outline-none"
             required
             defaultValue={data?.data?.minimumShopping}

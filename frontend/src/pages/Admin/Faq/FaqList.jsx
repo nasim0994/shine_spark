@@ -1,3 +1,4 @@
+import TableSkeleton from "@/components/shared/Skeleton/TableSkeleton";
 import { useDeleteFaqByIdMutation, useGetFaqQuery } from "@/Redux/faq/faq";
 import toast from "react-hot-toast";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
@@ -22,7 +23,7 @@ export default function FaqList() {
   };
 
   let content = null;
-  if (isLoading) return (content = <p>Loading...</p>);
+  if (isLoading) return (content = <TableSkeleton />);
 
   if (isError) {
     content = (
@@ -40,7 +41,7 @@ export default function FaqList() {
             <td>{faq?.ans}</td>
             <td>
               <div className="flex items-center gap-3">
-                <Link to={`/admin/front-end/faq/edit/${faq?._id}`}>
+                <Link to={`/admin/pages/faq/edit/${faq?._id}`}>
                   <AiOutlineEdit className="text-lg hover:text-red-500" />
                 </Link>
                 <button onClick={() => deleteFaqHandler(faq?._id)}>
@@ -58,7 +59,7 @@ export default function FaqList() {
       <div className="rounded border-b bg-base-100 p-4">
         <div className="flex items-center justify-between">
           <h1 className="font-medium text-neutral">FAQ</h1>
-          <Link to="/admin/front-end/faq/add" className="primary_btn text-sm">
+          <Link to="/admin/pages/faq/add" className="primary_btn text-sm">
             Add FAQ
           </Link>
         </div>

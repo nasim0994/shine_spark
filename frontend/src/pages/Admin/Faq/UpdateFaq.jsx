@@ -27,7 +27,7 @@ export default function UpdateFaq() {
     if (res?.data?.success) {
       toast.success("FAQ updated successfully");
       e.target.reset();
-      navigate("/admin/front-end/faq/all");
+      navigate("/admin/pages/faq/all");
     } else {
       toast.error(res?.data?.error?.message || "Failed to update FAQ");
       console.log(res);

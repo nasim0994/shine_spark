@@ -75,6 +75,11 @@ const adminSidebarItems = [
       },
       {
         icon: <LuFileBox />,
+        title: "Review",
+        path: "/admin/review/all",
+      },
+      {
+        icon: <LuFileBox />,
         title: "Stock",
         path: "/admin/stock/all",
       },

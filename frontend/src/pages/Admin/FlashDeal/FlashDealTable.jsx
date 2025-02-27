@@ -33,7 +33,7 @@ export default function FlashDealTable({ flashDeal, i }) {
 
   // Delete FlashDeal
   const handleDeleteFlashDeal = async (id) => {
-    const isConfirm = window.confirm("Are you sure delete this FlasgDeal");
+    const isConfirm = window.confirm("Are you sure delete this FlashDeal");
     if (isConfirm) {
       const result = await deleteFlashDeal(id);
       if (result?.data?.success) {
@@ -68,7 +68,7 @@ export default function FlashDealTable({ flashDeal, i }) {
       <td>
         <div className="flex items-center gap-2">
           <Link
-            to={`/admin/flash-deal/edit/${flashDeal?._id}`}
+            to={`/admin/promo/flash-sale/edit/${flashDeal?._id}`}
             className="duration-200 hover:text-green-700"
           >
             <BiSolidPencil />

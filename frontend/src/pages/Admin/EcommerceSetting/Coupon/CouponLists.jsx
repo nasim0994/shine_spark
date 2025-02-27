@@ -6,7 +6,7 @@ import {
   useUpdateStatusMutation,
 } from "@/Redux/coupon/couponApi";
 import toast from "react-hot-toast";
-import Spinner from "@/components/shared/Spinner/Spinner";
+import TableSkeleton from "@/components/shared/Skeleton/TableSkeleton";
 
 export default function CouponLists() {
   const { data, isLoading } = useGetCouponsQuery();
@@ -45,16 +45,13 @@ export default function CouponLists() {
     }
   };
 
-  if (isLoading) return <Spinner />;
+  if (isLoading) return <TableSkeleton />;
 
   return (
     <section className="rounded bg-base-100 shadow">
       <div className="flex items-center justify-between border-b p-4 font-medium text-neutral">
         <h3>Coupon Lists</h3>
-        <Link
-          to="/admin/ecommerce-setting/coupons/add-coupon"
-          className="primary_btn"
-        >
+        <Link to="/admin/promo/coupon/add" className="primary_btn">
           Add New Coupon
         </Link>
       </div>
@@ -99,7 +96,7 @@ export default function CouponLists() {
                     <td>
                       <div className="flex items-center gap-2 text-lg">
                         <Link
-                          to={`/admin/ecommerce-setting/coupons/edit-coupon/${coupon?._id}`}
+                          to={`/admin/promo/coupon/edit/${coupon?._id}`}
                           className="duration-200 hover:text-red-500"
                         >
                           <MdEdit />

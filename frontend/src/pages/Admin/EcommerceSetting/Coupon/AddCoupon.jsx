@@ -1,6 +1,6 @@
+import { useAddCouponMutation } from "@/Redux/coupon/couponApi";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { useAddCouponMutation } from "../../../../Redux/coupon/couponApi";
-import Swal from "sweetalert2";
 
 export default function AddCoupon() {
   const navigate = useNavigate();
@@ -29,14 +29,14 @@ export default function AddCoupon() {
     };
 
     const res = await addCoupon(coupon);
-    console.log(res);
 
     if (res?.data?.success) {
-      Swal.fire("", "Coupon add success", "success");
+      toast.success("Coupon Added Successfully");
       form.reset();
-      navigate("/admin/ecommerce-setting/coupons");
+      navigate("/admin/promo/coupon/all");
     } else {
-      Swal.fire("", "something went wrong", "error");
+      toast.error(res?.data?.message || "Something went wrong");
+      console.log(res);
     }
   };
 
@@ -62,7 +62,7 @@ export default function AddCoupon() {
           <input
             type="number"
             name="minimumShopping"
-            placeholder="Enter Minimum Shopping Ammount"
+            placeholder="Enter Minimum Shopping Amount"
             className="w-full rounded border px-3 py-2 text-sm outline-none"
             required
           />

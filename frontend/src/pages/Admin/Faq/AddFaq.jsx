@@ -22,7 +22,7 @@ export default function AddFaq() {
     if (res?.success) {
       toast.success("FAQ added successfully");
       e.target.reset();
-      navigate("/admin/front-end/faq/all");
+      navigate("/admin/pages/faq/all");
     } else {
       toast.error(res?.error?.message || "Failed to add FAQ");
       console.log(res);

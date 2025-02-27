@@ -75,7 +75,7 @@ export default function EditFlashDeal() {
       setSelectedProducts([]);
       form.reset();
       setFlashProducts([]);
-      navigate("/admin/flash-deal");
+      navigate("/admin/promo/flash-sale/all");
     } else {
       toast.error("Failed to update flash deal");
       console.log(res);

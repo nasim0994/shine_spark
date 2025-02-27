@@ -39,7 +39,7 @@ export default function AddBanner() {
 
     if (res?.data?.success) {
       toast.success(res?.data?.message || "Banner added successfully");
-      navigate("/admin/banner/main/all");
+      navigate("/admin/business/section/banner/all");
     } else {
       toast.error(
         res?.data?.message || "Something went wrong, please try again",

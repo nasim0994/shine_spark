@@ -9,6 +9,7 @@ import {
   useStatusUpdateMutation,
 } from "@/Redux/order/orderApi";
 import Spinner from "@/components/shared/Spinner/Spinner";
+import { currencyFormatter } from "@/lib/currencyFormatter";
 
 export default function OrderDetails() {
   const params = useParams();
@@ -18,6 +19,14 @@ export default function OrderDetails() {
   const { data, isLoading } = useGetOrderByIdQuery(id);
   const order = data?.data;
   const products = data?.data?.products;
+
+  const subTotal = products?.reduce((acc, item) => {
+    const price = item?.price;
+    const discount = item?.discount;
+    const discountPrice = price - (price * discount) / 100;
+    const totalPrice = item?.quantity * discountPrice;
+    return acc + totalPrice;
+  }, 0);
 
   const [deleteOrder] = useDeleteOrderMutation();
 
@@ -143,7 +152,7 @@ export default function OrderDetails() {
 
           <div className="mt-3 flex flex-col gap-1 text-[15px] text-neutral">
             <p>Name: {order?.user?.name}</p>
-            <p>Email: {order?.userId?.email}</p>
+            <p>Email: {order?.user?.email}</p>
             <p>Phone: {order?.user?.phone}</p>
             <p>Payment: {order?.paymentMethod}</p>
           </div>
@@ -184,18 +193,18 @@ export default function OrderDetails() {
             </thead>
             <tbody>
               {products?.map((product, i) => {
-                const sku = product?.sku;
-                const variants = product?.productId?.variant?.variants;
-
-                const variant = variants?.find((v) => v.sku == sku);
-                const price = product?.isVariant
-                  ? variant?.sellingPrice
-                  : product?.productId?.sellingPrice;
-                const discountPrice = parseInt(
-                  price - (price * product?.discount) / 100,
-                );
-
+                const price = product?.price;
+                const discount = product?.discount;
+                const discountPrice = price - (price * discount) / 100;
                 const totalPrice = product?.quantity * discountPrice;
+
+                // const variants = product?.productId?.variants;
+                // const variant = variants?.find((v) => v.sku == sku);
+                // const price = product?.productId?.isVariant
+                //   ? variant?.sellingPrice
+                //   : product?.productId?.sellingPrice;
+                // const discountPrice = price - (price * product?.discount) / 100;
+                // const totalPrice = product?.quantity * discountPrice;
 
                 return (
                   <tr key={order?._id}>
@@ -219,11 +228,13 @@ export default function OrderDetails() {
                     <td>{product?.discount}%</td>
                     <td>
                       <p>
-                        {discountPrice}
-                        TK <del className="text-sm text-red-500">{price}TK</del>
+                        {currencyFormatter(discountPrice)}
+                        <del className="text-sm text-red-500">
+                          {currencyFormatter(price)}
+                        </del>
                       </p>
                     </td>
-                    <td>{totalPrice}TK</td>
+                    <td>{currencyFormatter(totalPrice)}</td>
                   </tr>
                 );
               })}
@@ -231,23 +242,32 @@ export default function OrderDetails() {
             <tfoot>
               <tr>
                 <td colSpan={6} className="text-end">
-                  SubTotal
+                  Subtotal
                 </td>
-                <td>{order?.totalPrice - order?.shippingCharge}TK</td>
+                <td>{currencyFormatter(subTotal)}</td>
+              </tr>
+
+              <tr>
+                <td colSpan={6} className="text-end text-red-500">
+                  Discount
+                </td>
+                <td className="text-red-500">
+                  {currencyFormatter(order?.couponDiscountTK)}
+                </td>
               </tr>
 
               <tr>
                 <td colSpan={6} className="text-end">
                   Shipping Charge
                 </td>
-                <td>{order?.shippingCharge}TK</td>
+                <td>{currencyFormatter(order?.shippingCharge)}</td>
               </tr>
 
               <tr>
                 <th colSpan={6} className="text-end">
                   Total
                 </th>
-                <th>{order?.totalPrice}TK</th>
+                <th>{currencyFormatter(order?.totalPrice)}</th>
               </tr>
             </tfoot>
           </table>

@@ -118,8 +118,7 @@ export default function Checkout() {
         discount: product?.discount,
         quantity: product.quantity,
         price: product.price,
-        color: product.color || "",
-        size: product.size || "",
+        sku: product.sku,
       }),
     );
 
@@ -138,6 +137,7 @@ export default function Checkout() {
       products,
       totalPrice: grandTotal,
       shippingCharge: shipping,
+      couponDiscountTK: discountTk,
     };
 
     if (paymentMethod === "cod") {

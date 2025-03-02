@@ -4,8 +4,7 @@ import { Link } from "react-router-dom";
 import { BiCategory } from "react-icons/bi";
 import { IoFlashOutline, IoStorefrontOutline } from "react-icons/io5";
 import { BsBoxes } from "react-icons/bs";
-import { TbShoppingBagCheck, TbReportMoney } from "react-icons/tb";
-import { LuFileBox } from "react-icons/lu";
+import { TbShoppingBagCheck } from "react-icons/tb";
 import { CgSearchFound } from "react-icons/cg";
 import { MdMonitor } from "react-icons/md";
 
@@ -28,7 +27,7 @@ const adminSidebarItems = [
     ],
   },
   {
-    title: "Product & Stock",
+    title: "Product",
     menu: [
       {
         icon: <BsBoxes />,
@@ -70,15 +69,15 @@ const adminSidebarItems = [
         title: "Review",
         path: "/admin/review/all",
       },
-      {
-        icon: <LuFileBox />,
-        title: "Stock",
-        path: "/admin/stock/all",
-      },
+      // {
+      //   icon: <LuFileBox />,
+      //   title: "Stock",
+      //   path: "/admin/stock/all",
+      // },
     ],
   },
   {
-    title: "Orders & Reports",
+    title: "Orders",
     menu: [
       {
         icon: <TbShoppingBagCheck />,
@@ -94,29 +93,29 @@ const adminSidebarItems = [
           },
         ],
       },
-      {
-        icon: <TbReportMoney />,
-        title: "Report",
-        subMenu: [
-          {
-            title: "Sales Report",
-            subSubMenu: [
-              {
-                title: "Product Ways",
-                path: "/admin/report/sales-report/product-ways",
-              },
-              {
-                title: "Invoice Ways",
-                path: "/admin/report/sales-report/invoice-ways",
-              },
-              {
-                title: "Date Ways",
-                path: "/admin/report/sales-report/date-ways",
-              },
-            ],
-          },
-        ],
-      },
+      // {
+      //   icon: <TbReportMoney />,
+      //   title: "Report",
+      //   subMenu: [
+      //     {
+      //       title: "Sales Report",
+      //       subSubMenu: [
+      //         {
+      //           title: "Product Ways",
+      //           path: "/admin/report/sales-report/product-ways",
+      //         },
+      //         {
+      //           title: "Invoice Ways",
+      //           path: "/admin/report/sales-report/invoice-ways",
+      //         },
+      //         {
+      //           title: "Date Ways",
+      //           path: "/admin/report/sales-report/date-ways",
+      //         },
+      //       ],
+      //     },
+      //   ],
+      // },
     ],
   },
   {
@@ -266,7 +265,7 @@ export default function Sidebar() {
   return (
     <div className="flex h-full flex-col justify-between">
       <div className="sidebar_menu">
-        <Link to="/">
+        <Link to="/admin/dashboard">
           <img
             src="/images/logo.png"
             alt="logo"

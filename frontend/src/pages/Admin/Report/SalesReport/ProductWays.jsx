@@ -12,6 +12,8 @@ export default function ProductWays() {
   const { data, isLoading } = useGetReportProductWayQuery(query);
   const products = data?.data;
 
+  console.log(data);
+
   if (isLoading) return <Spinner />;
 
   return (

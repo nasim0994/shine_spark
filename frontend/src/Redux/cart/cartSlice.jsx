@@ -20,6 +20,7 @@ export const cartSlice = createSlice({
         price,
         discount,
         stock,
+        sku,
       } = action.payload;
 
       const cartProduct = {
@@ -33,6 +34,7 @@ export const cartSlice = createSlice({
         size: selectedSize,
         color: selectedColor,
         stock: stock,
+        sku,
       };
 
       state.carts = [cartProduct];
@@ -48,6 +50,7 @@ export const cartSlice = createSlice({
         price,
         discount,
         stock,
+        sku,
       } = action.payload;
 
       // Check if the product is already in the cart
@@ -78,6 +81,7 @@ export const cartSlice = createSlice({
         size: selectedSize,
         color: selectedColor,
         stock: stock,
+        sku,
       };
 
       state.carts.push(cartProduct);

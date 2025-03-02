@@ -5,6 +5,7 @@ import { useGetMainLogoQuery } from "@/Redux/logo/logoApi";
 import { useGetContactQuery } from "@/Redux/contact/contactApi";
 import { useGetOrderByIdQuery } from "@/Redux/order/orderApi";
 import Spinner from "@/components/shared/Spinner/Spinner";
+import { currencyFormatter } from "@/lib/currencyFormatter";
 
 export default function Invoice() {
   const params = useParams();
@@ -25,6 +26,14 @@ export default function Invoice() {
       window.print();
     }
   }, [isLoading]);
+
+  const subTotal = products?.reduce((acc, item) => {
+    const price = item?.price;
+    const discount = item?.discount;
+    const discountPrice = price - (price * discount) / 100;
+    const totalPrice = item?.quantity * discountPrice;
+    return acc + totalPrice;
+  }, 0);
 
   if (isLoading) return <Spinner />;
 
@@ -85,7 +94,7 @@ export default function Invoice() {
         </div>
 
         {/* <!--Customer Info --> */}
-        <div className="text-title p-4 pt-1">
+        <div className="text-title py-4 pt-1">
           <h2 className="mb-1 text-xl font-medium">Bill to</h2>
 
           <div>
@@ -115,18 +124,18 @@ export default function Invoice() {
             </thead>
             <tbody>
               {products?.map((product, i) => {
-                const sku = product?.sku;
-                const variants = product?.productId?.variant?.variants;
-
-                const variant = variants?.find((v) => v.sku == sku);
-                const price = product?.isVariant
-                  ? variant?.sellingPrice
-                  : product?.productId?.sellingPrice;
-                const discountPrice = parseInt(
-                  price - (price * product?.discount) / 100,
-                );
-
+                const price = product?.price;
+                const discount = product?.discount;
+                const discountPrice = price - (price * discount) / 100;
                 const totalPrice = product?.quantity * discountPrice;
+
+                // const variants = product?.productId?.variants;
+                // const variant = variants?.find((v) => v.sku == sku);
+                // const price = product?.productId?.isVariant
+                //   ? variant?.sellingPrice
+                //   : product?.productId?.sellingPrice;
+                // const discountPrice = price - (price * product?.discount) / 100;
+                // const totalPrice = product?.quantity * discountPrice;
 
                 return (
                   <tr key={order?._id}>
@@ -150,11 +159,13 @@ export default function Invoice() {
                     <td>{product?.discount}%</td>
                     <td>
                       <p>
-                        {discountPrice}
-                        TK <del className="text-sm text-red-500">{price}TK</del>
+                        {currencyFormatter(discountPrice)}
+                        <del className="text-sm text-red-500">
+                          {currencyFormatter(price)}
+                        </del>
                       </p>
                     </td>
-                    <td>{totalPrice}TK</td>
+                    <td>{currencyFormatter(totalPrice)}</td>
                   </tr>
                 );
               })}
@@ -162,23 +173,32 @@ export default function Invoice() {
             <tfoot>
               <tr>
                 <td colSpan={6} className="text-end">
-                  SubTotal
+                  Subtotal
                 </td>
-                <td>{order?.totalPrice - order?.shippingCharge}TK</td>
+                <td>{currencyFormatter(subTotal)}</td>
+              </tr>
+
+              <tr>
+                <td colSpan={6} className="text-end text-red-500">
+                  Discount
+                </td>
+                <td className="text-red-500">
+                  {currencyFormatter(order?.couponDiscountTK)}
+                </td>
               </tr>
 
               <tr>
                 <td colSpan={6} className="text-end">
                   Shipping Charge
                 </td>
-                <td>{order?.shippingCharge}TK</td>
+                <td>{currencyFormatter(order?.shippingCharge)}</td>
               </tr>
 
               <tr>
                 <th colSpan={6} className="text-end">
                   Total
                 </th>
-                <th>{order?.totalPrice}TK</th>
+                <th>{currencyFormatter(order?.totalPrice)}</th>
               </tr>
             </tfoot>
           </table>

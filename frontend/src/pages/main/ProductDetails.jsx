@@ -33,6 +33,7 @@ export default function ProductDetails() {
   const [showImage, setShowImage] = useState(product?.thumbnail);
   const [selectedQuantity, setSelectedQuantity] = useState(1);
   const [selectedStock, setSelectedStock] = useState(product?.totalStock);
+  const [selectedSku, setSelectedSku] = useState("");
 
   useEffect(() => {
     setSelectedPrice(product?.sellingPrice);
@@ -77,6 +78,7 @@ export default function ProductDetails() {
     const findVariant = product?.variants?.find((item) => item.sku == sku);
 
     if (findVariant) {
+      setSelectedSku(findVariant?.sku);
       setSelectedPrice(findVariant?.sellingPrice);
       setSelectedStock(findVariant?.stock);
     } else {
@@ -100,6 +102,7 @@ export default function ProductDetails() {
         price: selectedPrice,
         discount: product?.discount,
         stock: selectedStock,
+        sku: selectedSku,
       }),
     );
   };
@@ -136,6 +139,7 @@ export default function ProductDetails() {
         price: selectedPrice,
         discount: product?.discount,
         stock: selectedStock,
+        sku: selectedSku,
       }),
     );
     navigate("/checkout");

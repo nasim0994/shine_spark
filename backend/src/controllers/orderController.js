@@ -127,7 +127,7 @@ exports.getOrderById = async (req, res) => {
   try {
     const order = await Order.findById(id).populate({
       path: "products.productId",
-      select: "title thumbnail sellingPrice isVariant variant.variants",
+      select: "title thumbnail sellingPrice isVariant variants",
 
       populate: {
         path: "category",

@@ -16,6 +16,7 @@ import { useGetCategoriesQuery } from "@/Redux/category/categoryApi";
 import { useGetSubCategoriesQuery } from "@/Redux/subCategory/subCategoryApi";
 import { useGetSubSubCategoriesQuery } from "@/Redux/subSubCategory/subSubCategoryApi";
 import { useAllBrandsQuery } from "@/Redux/brand/brandApi";
+import { currencyFormatter } from "@/lib/currencyFormatter";
 
 export default function Dashboard() {
   const { data: products } = useGetAllProductsQuery();
@@ -155,9 +156,8 @@ export default function Dashboard() {
               <p className="font-dinMedium text-neutral">Today Sales</p>
               <div className="flex items-end gap-1">
                 <h3 className="font-bold text-green-600">
-                  {tOrders?.totalSale}
+                  {currencyFormatter(tOrders?.totalSale)}
                 </h3>
-                <small>tk</small>
               </div>
             </div>
             <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-green-600 text-base-100">
@@ -169,8 +169,9 @@ export default function Dashboard() {
             <div>
               <p className="font-dinMedium text-neutral">Total Sales</p>
               <div className="flex items-end gap-1">
-                <h3 className="font-bold text-blue-600">{orders?.totalSale}</h3>
-                <small>tk</small>
+                <h3 className="font-bold text-blue-600">
+                  {currencyFormatter(orders?.totalSale)}
+                </h3>
               </div>
             </div>
             <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-blue-600 text-base-100">
@@ -184,7 +185,7 @@ export default function Dashboard() {
       <div className="mt-4 rounded bg-base-100 p-4 shadow">
         <div className="flex items-center justify-between">
           <p>Latest Orders</p>
-          <Link to="/admin/order/all-orders" className="primary_btn text-sm">
+          <Link to="/admin/order/all" className="primary_btn text-sm">
             All Orders
           </Link>
         </div>

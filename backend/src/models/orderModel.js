@@ -17,10 +17,7 @@ const productSchema = {
     type: Number,
     required: true,
   },
-  color: {
-    type: String,
-  },
-  size: {
+  sku: {
     type: String,
   }
 };
@@ -69,6 +66,9 @@ const OrderSchema = new mongoose.Schema(
     shippingCharge: {
       type: Number,
       required: true,
+    },
+    couponDiscountTK: {
+      type: Number,
     },
     products: [productSchema],
     status: {

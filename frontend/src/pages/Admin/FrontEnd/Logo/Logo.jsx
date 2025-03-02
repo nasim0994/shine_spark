@@ -42,6 +42,7 @@ export default function Logo() {
       const res = await addLogo(formData);
       if (res?.data?.success) {
         toast.success("Logo added successfully");
+        setLogos([]);
       } else {
         toast.error(res?.data?.message || "Failed to update logo");
         console.log(res);

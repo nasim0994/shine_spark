@@ -10,12 +10,20 @@ import IHeart from "@/components/shared/icons/IHeart";
 import ICart from "@/components/shared/icons/ICart";
 import { useGetCategoriesQuery } from "@/Redux/category/categoryApi";
 import { useSelector } from "react-redux";
+import { useGetMainLogoQuery } from "@/Redux/logo/logoApi";
+import { useGetContactQuery } from "@/Redux/contact/contactApi";
 
 export default function MainHeader() {
   const { loggedUser } = useSelector((state) => state.user);
+  const navigate = useNavigate();
   const { data } = useGetCategoriesQuery();
   const categories = data?.data;
-  const navigate = useNavigate();
+
+  const { data: logoData, isLoading } = useGetMainLogoQuery();
+  const logo = logoData?.data && logoData?.data[0]?.logo;
+
+  const { data: contactData } = useGetContactQuery();
+  const whatsapp = contactData?.data[0]?.whatsapp;
 
   const { carts } = useSelector((state) => state.cart);
   const { wishlists } = useSelector((state) => state.wishlist);
@@ -54,20 +62,30 @@ export default function MainHeader() {
             </div>
 
             <Link to="/">
-              <img
-                src="/images/logo.png"
-                alt="logo"
-                width={200}
-                height={60}
-                className="w-32 lg:w-44"
-              />
+              {isLoading ? (
+                <img
+                  src="/images/logo.png"
+                  alt="logo"
+                  width={200}
+                  height={60}
+                  className="w-32 lg:w-44"
+                />
+              ) : (
+                <img
+                  src={`${import.meta.env.VITE_BACKEND_URL}/logo/${logo}`}
+                  alt="logo"
+                  width={200}
+                  height={60}
+                  className="w-32 lg:w-44"
+                />
+              )}
             </Link>
           </div>
 
           {/*  */}
           <div className="flex items-center justify-end gap-5 text-neutral-content lg:w-2/5">
             <Search />
-            <Link to={`https://wa.me/${`8801706260994`}`} target="_blank">
+            <Link to={`https://wa.me/${whatsapp}`} target="_blank">
               <IWhatsapp width={23} height={23} />
             </Link>
             {loggedUser?.success && loggedUser?.data?.role ? (

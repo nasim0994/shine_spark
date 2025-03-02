@@ -14,6 +14,7 @@ import { userLogout } from "@/Redux/user/userSlice";
 import { FaUsers } from "react-icons/fa";
 import { PiFlagBannerFill } from "react-icons/pi";
 import { IoMdSettings } from "react-icons/io";
+import { useGetMainLogoQuery } from "@/Redux/logo/logoApi";
 
 const adminSidebarItems = [
   {
@@ -259,15 +260,17 @@ const adminSidebarItems = [
 export default function Sidebar() {
   const { loggedUser } = useSelector((state) => state.user);
   const user = loggedUser?.data;
-
   const dispatch = useDispatch();
+
+  const { data: logoData } = useGetMainLogoQuery();
+  const logo = logoData?.data && logoData?.data[0]?.logo;
 
   return (
     <div className="flex h-full flex-col justify-between">
       <div className="sidebar_menu">
         <Link to="/admin/dashboard">
           <img
-            src="/images/logo.png"
+            src={`${import.meta.env.VITE_BACKEND_URL}/logo/${logo}`}
             alt="logo"
             className="mx-auto my-3 w-24 sm:w-32"
           />
@@ -292,7 +295,7 @@ export default function Sidebar() {
           <div className="flex items-center gap-2">
             <img
               src="/images/demo_user.jpg"
-              alt="demouser"
+              alt="user"
               className="h-8 w-8 rounded-full"
             />
             <div>

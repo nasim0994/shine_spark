@@ -9,7 +9,7 @@ import { AiFillDelete } from "react-icons/ai";
 import ImageUploading from "react-images-uploading";
 import { useNavigate, useParams } from "react-router-dom";
 
-export default function EditCategory() {
+export default function Editcategory() {
   const [icons, setIcons] = useState([]);
   const { id } = useParams();
   const { data, isLoading } = useGetCategoryQuery(id);

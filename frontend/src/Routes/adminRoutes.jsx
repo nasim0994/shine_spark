@@ -2,7 +2,7 @@
 import React, { Suspense } from "react";
 import Spinner from "@/components/shared/Spinner/Spinner";
 import { Navigate } from "react-router-dom";
-import EditCategory from "@/pages/Admin/Category/Categories/EditCategory";
+import Editcategory from "@/pages/Admin/Category/Categories/EditCategory";
 
 const AdminLayout = React.lazy(() => import("@/Layout/AdminLayout"));
 const AdminRoute = React.lazy(() => import("@/PrivateRoute/AdminRoute"));
@@ -172,7 +172,7 @@ export const adminRoutes = {
     },
     {
       path: "/admin/product/category/edit/:id",
-      element: <EditCategory />,
+      element: <Editcategory />,
     },
     {
       path: "/admin/product/category/sub-category/all",

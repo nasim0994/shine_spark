@@ -11,6 +11,34 @@ export const cartSlice = createSlice({
   name: "cart",
   initialState: initialState,
   reducers: {
+    buyNow: (state, action) => {
+      const {
+        product,
+        selectedSize,
+        selectedColor,
+        quantity,
+        price,
+        discount,
+        stock,
+      } = action.payload;
+
+      const cartProduct = {
+        _id: product._id,
+        slug: product?.slug,
+        title: product?.title,
+        price,
+        discount,
+        thumbnail: product?.thumbnail,
+        quantity: quantity,
+        size: selectedSize,
+        color: selectedColor,
+        stock: stock,
+      };
+
+      state.carts = [cartProduct];
+      toast.success("Product added to cart");
+    },
+
     addToCart: (state, action) => {
       const {
         product,
@@ -132,7 +160,7 @@ export const discountAmountSelector = (state) => {
   return discountAmount;
 };
 
-export const { addToCart, removeFromCart, clearCart, changeQuantity } =
+export const { addToCart, removeFromCart, clearCart, changeQuantity, buyNow } =
   cartSlice.actions;
 
 export default cartSlice.reducer;

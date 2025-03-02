@@ -13,13 +13,16 @@ const productSchema = {
     type: Number,
     required: true,
   },
-  sku: {
-    type: String,
-  },
   price: {
     type: Number,
     required: true,
   },
+  color: {
+    type: String,
+  },
+  size: {
+    type: String,
+  }
 };
 
 const OrderSchema = new mongoose.Schema(

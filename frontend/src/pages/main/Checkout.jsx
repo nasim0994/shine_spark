@@ -7,15 +7,17 @@ import { useAddOrderMutation } from "@/Redux/order/orderApi";
 import { useApplyCouponMutation } from "@/Redux/coupon/couponApi";
 import { useGetShippingConfigQuery } from "@/Redux/shippingConfigApi";
 import Swal from "sweetalert2";
-import { clearCart } from "@/Redux/cart/cartSlice";
+import { clearCart, subTotalSelector } from "@/Redux/cart/cartSlice";
 import ButtonSpinner from "@/components/shared/ButtonSpinner";
+import { currencyFormatter } from "@/lib/currencyFormatter";
 
 export default function Checkout() {
   usePageView("Checkout");
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const subTotal = useSelector(subTotalSelector);
 
-  const carts = useSelector((state) => state.cart.carts);
+  const { carts } = useSelector((state) => state.cart);
 
   useEffect(() => {
     window.scroll(0, 0);
@@ -63,24 +65,37 @@ export default function Checkout() {
   const { data } = useGetShippingConfigQuery();
   const shippingConfig = data?.data?.shipping;
 
+  const [coupon, setCoupon] = useState("");
   const [couponCode, setCouponCode] = useState("");
+  const [couponError, setCouponError] = useState("");
   const [discount, setDiscount] = useState(0);
   const [shipping, setShipping] = useState(0);
-  const [couponError, setCouponError] = useState("");
 
   const [paymentMethod, setPaymentMethod] = useState("cod");
-
-  // Subtotal - discount amount
-  const subTotal = carts?.reduce(
-    (price, item) =>
-      price +
-      item.quantity * parseInt(item.price - (item.price * item.discount) / 100),
-    0,
-  );
 
   const tax = 0;
   const discountTk = ((subTotal + tax + parseInt(shipping)) * discount) / 100;
   const grandTotal = subTotal + tax + parseInt(shipping) - discountTk;
+
+  const handelDiscount = async () => {
+    const couponInfo = {
+      coupon: couponCode,
+      totalShopping: subTotal,
+    };
+    const res = await applyCoupon(couponInfo);
+
+    if (res?.data?.success) {
+      const discountOnCoupon = res?.data?.data?.discount;
+      setDiscount(discountOnCoupon);
+      setCoupon(res?.data?.data?.code);
+      toast.success("Coupon add success");
+      setCouponCode("");
+      setCouponError("");
+    } else {
+      setCouponError(res?.data?.message);
+      console.log(res);
+    }
+  };
 
   const handelPlaceOrder = async (e) => {
     e.preventDefault();
@@ -93,7 +108,7 @@ export default function Checkout() {
     const name = form.name.value;
     const number = form.number.value;
     const email = form.email.value;
-    const address = form.fullAdress.value;
+    const address = form.fullAddress.value;
     const note = form.note.value;
 
     const products = [];
@@ -102,8 +117,9 @@ export default function Checkout() {
         productId: product._id,
         discount: product?.discount,
         quantity: product.quantity,
-        sku: product.sku,
         price: product.price,
+        color: product.color || "",
+        size: product.size || "",
       }),
     );
 
@@ -126,7 +142,6 @@ export default function Checkout() {
 
     if (paymentMethod === "cod") {
       const res = await addOrder(order);
-
       if (res?.data?.success) {
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({
@@ -143,7 +158,6 @@ export default function Checkout() {
             value: grandTotal,
             shipping: shipping,
             transaction_id: res?.data?.data?._id,
-
             items: [
               carts?.map((product) => ({
                 item_id: product?._id,
@@ -157,17 +171,15 @@ export default function Checkout() {
             ],
           },
         });
-
         Swal.fire({
-          title: '<h2 className="text-3xl">Order Success</h2>',
+          title: '<h2 class="text-3xl">Order Success</h2>',
           html: `
             <div>
-              <img src="/images/success.png" alt="success" className="mx-auto w-40" />
-              <p className="mt-4 text-center">Your order has been placed successfully</p>
-              <p className="text-center text-sm text-neutral-content/90">Your order id: #${res?.data?.data?._id}</p>
-
-              <div className="mt-4 flex justify-center gap-3">
-                <a href="/shops" className="primary_btn flex items-center gap-2 text-sm">
+              <img src="/images/success.png" alt="success" class="mx-auto w-40" />
+              <p class="mt-4 text-center">Your order has been placed successfully</p>
+              <p class="text-center text-sm text-neutral-content/90">Your order id: #${res?.data?.data?._id}</p>
+              <div class="mt-4 flex justify-center gap-3">
+                <a href="/shops" class="primary_btn flex items-center gap-2 text-sm">
                   Continue Shopping
                 </a>
               </div>
@@ -187,25 +199,6 @@ export default function Checkout() {
         toast.error("Something Wrong");
         console.log(res);
       }
-    }
-  };
-
-  const handelDiscount = async () => {
-    const couponInfo = {
-      coupon: couponCode,
-      totalShopping: subTotal,
-    };
-    const res = await applyCoupon(couponInfo);
-    if (res?.error) {
-      setCouponError(res?.error?.data?.error);
-    } else {
-      setCouponError("");
-    }
-
-    if (res?.data?.success) {
-      setDiscount(res?.data?.data?.discount);
-      toast.success("Coupon add success");
-      setCouponCode("");
     }
   };
 
@@ -256,11 +249,11 @@ export default function Checkout() {
               </div>
 
               <div className="mt-2 text-sm">
-                <h3>Full Adress</h3>
+                <h3>Full Address</h3>
                 <textarea
-                  name="fullAdress"
+                  name="fullAddress"
                   rows="3"
-                  placeholder="House number and fullAdress name"
+                  placeholder="House number and fullAddress name"
                   className="mt-2 w-full rounded border-2 p-2 outline-none"
                   required
                 ></textarea>
@@ -271,7 +264,7 @@ export default function Checkout() {
                 <textarea
                   name="note"
                   rows="4"
-                  placeholder="House number and fullAdress name"
+                  placeholder="House number and fullAddress name"
                   className="mt-2 w-full rounded border-2 p-2 outline-none"
                 ></textarea>
               </div>
@@ -288,28 +281,46 @@ export default function Checkout() {
                 <small className="text-xs text-neutral-content">
                   REFERRAL OR PROMO CODE
                 </small>
-                <div className="flex items-center gap-px">
-                  <input
-                    onChange={(e) => setCouponCode(e.target.value)}
-                    type="text"
-                    className="w-full rounded border px-3 py-[7px] text-sm outline-none"
-                    placeholder="Enter Code"
-                    value={couponCode}
-                  />
-                  <div
-                    onClick={handelDiscount}
-                    className="primary_btn cursor-pointer"
-                    style={{ fontSize: "13px" }}
-                    disabled={couponLoading}
-                  >
-                    {couponLoading ? "Loading..." : "Apply"}
+                {coupon ? (
+                  <div className="flex items-center justify-between">
+                    <p className="rounded bg-primary/10 px-4 py-1 text-sm text-primary">
+                      {coupon}-{currencyFormatter(discountTk)}
+                    </p>
+                    <div
+                      onClick={() => {
+                        setCoupon("");
+                        setDiscount(0);
+                      }}
+                      className="cursor-pointer text-sm text-red-500"
+                    >
+                      Remove
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <div className="flex items-center gap-px">
+                    <input
+                      onChange={(e) => setCouponCode(e.target.value)}
+                      type="text"
+                      className="w-full rounded border px-3 py-[7px] text-sm outline-none"
+                      placeholder="Enter Code"
+                      value={couponCode}
+                    />
+                    <div
+                      onClick={handelDiscount}
+                      className="primary_btn cursor-pointer"
+                      style={{ fontSize: "13px" }}
+                      disabled={couponLoading}
+                    >
+                      {couponLoading ? "Loading..." : "Apply"}
+                    </div>
+                  </div>
+                )}
+
                 <p className="text-xs text-red-500">{couponError}</p>
               </div>
             </div>
 
-            <div className="mb-4 border-b pb-4">
+            <div className="mb-2 border-b pb-4">
               <h3 className="font-medium text-neutral">Payment Method</h3>
 
               <ul className="mt-2 flex flex-col gap-1 pl-2 text-sm text-neutral-content">
@@ -354,31 +365,29 @@ export default function Checkout() {
                   </li> */}
               </ul>
             </div>
+
             <div>
-              <h3 className="tetx-xl font-medium text-neutral">
+              <h3 className="text-lg font-medium text-neutral">
                 Order Summary
               </h3>
 
               <div className="flex justify-between border-b py-1.5 text-sm">
                 <h3>Subtotal</h3>
-                <p>
-                  ৳<span>{subTotal}.00</span>
-                </p>
+                <p>{currencyFormatter(subTotal)}</p>
               </div>
 
               <div className="flex items-center justify-between border-b py-1.5 text-sm">
                 <h3>Shipping Area</h3>
                 <div className="text-end">
                   <select
-                    className="rounded border p-1 outline-none"
+                    className="rounded border p-1 text-end outline-none"
                     required
                     onChange={(e) => setShipping(parseInt(e.target.value))}
                   >
                     <option value="0">Select Shipping Area</option>
                     {shippingConfig?.map((shipping) => (
                       <option key={shipping?._id} value={shipping?.charge}>
-                        {shipping?.area} - {shipping?.charge}
-                        tk
+                        {shipping?.area}
                       </option>
                     ))}
                   </select>
@@ -387,24 +396,18 @@ export default function Checkout() {
 
               <div className="flex items-center justify-between border-b py-1.5 text-sm">
                 <h3>Shipping Charge</h3>
-                <div className="text-end">
-                  ৳<span>{shipping}.00</span>
-                </div>
+                <p className="text-end">{currencyFormatter(shipping)}</p>
               </div>
 
               <div className="flex items-center justify-between border-b py-1.5 text-sm text-red-500">
                 <h3>Discount</h3>
-                <div className="text-end">
-                  - ৳<span>{discountTk}.00</span>
-                </div>
+                <div className="text-end">-{currencyFormatter(discountTk)}</div>
               </div>
 
               {/* <!-- Total --> */}
               <div className="flex justify-between border-b py-2 text-lg font-medium">
                 <h3 className="text-title">Total</h3>
-                <p className="text-primary">
-                  ৳ <span>{grandTotal}.00 </span>
-                </p>
+                <p className="text-primary">{currencyFormatter(grandTotal)}</p>
               </div>
             </div>
 

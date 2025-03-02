@@ -6,13 +6,13 @@ import {
 } from "@/components/ui/tooltip";
 import { useGetProductBySlugQuery } from "@/Redux/product/productApi";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import parser from "html-react-parser";
 import SimilarProducts from "@/components/shared/main/ProductDetails/SimilarProducts";
 import BreadcrumbCom from "@/components/shared/main/ProductDetails/BreadcrumbCom";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
-import { addToCart } from "@/Redux/cart/cartSlice";
+import { addToCart, buyNow } from "@/Redux/cart/cartSlice";
 import { currencyFormatter } from "@/lib/currencyFormatter";
 import WishlistBtn from "@/components/shared/main/WishlistBtn";
 import { FiMinusCircle, FiPlusCircle } from "react-icons/fi";
@@ -25,6 +25,7 @@ export default function ProductDetails() {
   const { data, isLoading } = useGetProductBySlugQuery(slug);
   const product = data?.data;
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
@@ -117,6 +118,27 @@ export default function ProductDetails() {
     } else {
       toast.error("Maximum quantity reached");
     }
+  };
+
+  const handleBuyNow = () => {
+    const isSizes = product?.sizes?.length > 0;
+    const isColors = product?.colors?.length > 0;
+
+    if (isSizes && !selectedSize) return toast.error("Please select a size");
+    if (isColors && !selectedColor) return toast.error("Please select a color");
+
+    dispatch(
+      buyNow({
+        product,
+        selectedSize,
+        selectedColor,
+        quantity: selectedQuantity || 1,
+        price: selectedPrice,
+        discount: product?.discount,
+        stock: selectedStock,
+      }),
+    );
+    navigate("/checkout");
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -298,7 +320,10 @@ export default function ProductDetails() {
               >
                 Add to Cart
               </button>
-              <button className="rounded border border-primary bg-primary py-2 text-base-100 duration-300 hover:bg-transparent hover:text-primary">
+              <button
+                onClick={() => handleBuyNow(product)}
+                className="rounded border border-primary bg-primary py-2 text-base-100 duration-300 hover:bg-transparent hover:text-primary"
+              >
                 Buy Now
               </button>
             </div>

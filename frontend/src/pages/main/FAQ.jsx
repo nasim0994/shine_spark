@@ -1,6 +1,6 @@
+import usePageView from "@/hooks/usePageView";
+import { useGetFaqQuery } from "@/Redux/faq/faq";
 import { useEffect, useState } from "react";
-import usePageView from "../../hooks/usePageView";
-import { useGetFaqQuery } from "../../Redux/faq/faq";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 
 export default function FAQ() {

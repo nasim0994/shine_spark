@@ -1,6 +1,6 @@
+import usePageView from "@/hooks/usePageView";
+import { useGetPrivacyQuery } from "@/Redux/privacy/privacyApi";
 import parser from "html-react-parser";
-import { useGetPrivacyQuery } from "../Redux/privacy/privacyApi";
-import usePageView from "../hooks/usePageView";
 
 export default function PrivacyPolicy() {
   usePageView("Privacy Policy");

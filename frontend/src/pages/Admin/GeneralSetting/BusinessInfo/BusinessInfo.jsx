@@ -85,7 +85,6 @@ export default function BusinessInfo() {
               type="text"
               name="type"
               defaultValue={businessInfo?.companyType}
-              required
             />
           </div>
 
@@ -95,7 +94,6 @@ export default function BusinessInfo() {
               name="tagline"
               rows="2"
               defaultValue={businessInfo?.tagline}
-              required
             ></textarea>
           </div>
         </div>

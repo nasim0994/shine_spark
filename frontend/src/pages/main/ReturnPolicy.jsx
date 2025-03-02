@@ -1,6 +1,6 @@
+import usePageView from "@/hooks/usePageView";
+import { useGetReturnPolicyQuery } from "@/Redux/returnPolicy/returnPolicyApi";
 import parser from "html-react-parser";
-import { useGetReturnPolicyQuery } from "../Redux/returnPolicy/returnPolicyApi";
-import usePageView from "../hooks/usePageView";
 
 export default function ReturnPolicy() {
   usePageView("Return Policy");

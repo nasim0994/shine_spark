@@ -16,4 +16,7 @@ export default defineConfig({
   preview: {
     port: 1000,
   },
+  optimizeDeps: {
+    include: ["redux", "@reduxjs/toolkit"],
+  },
 });

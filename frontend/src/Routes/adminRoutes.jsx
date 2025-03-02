@@ -2,6 +2,7 @@
 import React, { Suspense } from "react";
 import Spinner from "@/components/shared/Spinner/Spinner";
 import { Navigate } from "react-router-dom";
+import EditCategory from "@/pages/Admin/Category/Categories/EditCategory";
 
 const AdminLayout = React.lazy(() => import("@/Layout/AdminLayout"));
 const AdminRoute = React.lazy(() => import("@/PrivateRoute/AdminRoute"));
@@ -12,9 +13,7 @@ const AllCategories = React.lazy(
 const AddCategory = React.lazy(
   () => import("@/pages/Admin/Category/Categories/AddCategory"),
 );
-const EditCategory = React.lazy(
-  () => import("@/pages/Admin/Category/Categories/EditCategory"),
-);
+
 const AllSubCategories = React.lazy(
   () => import("@/pages/Admin/Category/SubCategories/AllSubCategories"),
 );

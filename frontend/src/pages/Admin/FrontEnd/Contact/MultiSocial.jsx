@@ -25,15 +25,17 @@ export default function MultiSocial({
   socials: social,
   setSocials: setSocial,
 }) {
-  const handleInputChange = (index, event) => {
-    const values = [...social];
-    values[index].url = event.target.value;
+  const handleIconChange = (index, event) => {
+    const values = social.map((item, i) =>
+      i === index ? { ...item, icon: event.target.value } : item,
+    );
     setSocial(values);
   };
 
-  const handleIconChange = (index, event) => {
-    const values = [...social];
-    values[index].icon = event.target.value;
+  const handleInputChange = (index, event) => {
+    const values = social.map((item, i) =>
+      i === index ? { ...item, url: event.target.value } : item,
+    );
     setSocial(values);
   };
 
@@ -56,7 +58,7 @@ export default function MultiSocial({
   };
 
   return (
-    <div className="mt-3 flex flex-col gap-3 border rounded p-3">
+    <div className="mt-3 flex flex-col gap-3 rounded border p-3">
       {social?.map((input, index) => (
         <div key={index} className="flex gap-2 text-sm">
           <select
@@ -80,7 +82,7 @@ export default function MultiSocial({
           <button
             type="button"
             onClick={() => handleRemoveFields(index)}
-            className="w-20 bg-red-500 text-white rounded-md flex items-center justify-center"
+            className="flex w-20 items-center justify-center rounded-md bg-red-500 text-white"
           >
             <FaTrash />
           </button>
@@ -90,7 +92,7 @@ export default function MultiSocial({
         type="button"
         onClick={handleAddFields}
         disabled={social?.length > 0 && !isFormValid()}
-        className="w-max bg-gray-500 px-4 py-2 text-base-100 rounded text-sm flex items-center gap-2"
+        className="flex w-max items-center gap-2 rounded bg-gray-500 px-4 py-2 text-sm text-base-100"
       >
         <FaPlus className="text-xs" /> Add Social Link
       </button>

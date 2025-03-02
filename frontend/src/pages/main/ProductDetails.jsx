@@ -26,6 +26,7 @@ export default function ProductDetails() {
   const product = data?.data;
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const discount = sessionStorage.getItem("discount");
 
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
@@ -100,7 +101,7 @@ export default function ProductDetails() {
         selectedColor,
         quantity: selectedQuantity || 1,
         price: selectedPrice,
-        discount: product?.discount,
+        discount,
         stock: selectedStock,
         sku: selectedSku,
       }),
@@ -137,7 +138,7 @@ export default function ProductDetails() {
         selectedColor,
         quantity: selectedQuantity || 1,
         price: selectedPrice,
-        discount: product?.discount,
+        discount,
         stock: selectedStock,
         sku: selectedSku,
       }),
@@ -203,20 +204,17 @@ export default function ProductDetails() {
             {/* Price */}
             <div className="mt-6">
               <div className="flex items-center gap-2 text-lg">
-                {product?.discount > 0 ? (
+                {discount > 0 ? (
                   <>
                     <p className="text-lg">
                       {currencyFormatter(
-                        selectedPrice -
-                          (selectedPrice * product?.discount) / 100,
+                        selectedPrice - (selectedPrice * discount) / 100,
                       )}
                     </p>
                     <del className="text-[15px] text-neutral-content opacity-80">
                       {currencyFormatter(selectedPrice)}
                     </del>
-                    <p className="text-[15px] text-red-500">
-                      {product?.discount}% off
-                    </p>
+                    <p className="text-[15px] text-red-500">{discount}% off</p>
                   </>
                 ) : (
                   <p>{currencyFormatter(selectedPrice)}</p>

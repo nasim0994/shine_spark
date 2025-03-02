@@ -172,10 +172,10 @@ export default function Footer() {
 
           <div className="mt-10 text-center text-sm opacity-70">
             <p>
-              © {businessInfo?.companyStartYear} - {yearNow}
+              © {businessInfo?.companyStartYear} - {yearNow}{" "}
               {businessInfo?.companyName} All Rights Reserved. Developed by{" "}
               <Link
-                to="https://www.emanagerit.com/"
+                to="https://www.emanagerit.com"
                 target="_blank"
                 className="underline"
               >

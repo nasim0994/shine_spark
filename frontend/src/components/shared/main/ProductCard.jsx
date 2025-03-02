@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 import WishlistBtn from "./WishlistBtn";
 
-export default function ProductCard({ product }) {
+export default function ProductCard({ product, discount: flashDiscount = 0 }) {
+  const newDiscount = parseInt(flashDiscount) + product?.discount;
+
   return (
     <div className="group">
       <div className="relative overflow-hidden">
@@ -9,7 +11,12 @@ export default function ProductCard({ product }) {
           <WishlistBtn product={product} color="#fff" />
         </div>
 
-        <Link to={`/product/${product?.slug}`}>
+        <Link
+          onClick={() => {
+            sessionStorage.setItem("discount", newDiscount);
+          }}
+          to={`/product/${product?.slug}`}
+        >
           <img
             src={`${import.meta.env.VITE_BACKEND_URL}/products/${product?.thumbnail}`}
             alt={product?.title}
@@ -22,21 +29,26 @@ export default function ProductCard({ product }) {
           </button>
         </Link>
       </div>
-      <Link href={`/product/${`slug`}`}>
+      <Link
+        onClick={() => {
+          sessionStorage.setItem("discount", newDiscount);
+        }}
+        href={`/product/${`slug`}`}
+      >
         <h2 className="mt-2 text-[15px] text-neutral">{product?.title}</h2>
         <div className="mt-1 flex items-center gap-2">
-          {product?.discount > 0 ? (
+          {newDiscount > 0 ? (
             <>
               <p>
                 {parseInt(
                   product?.sellingPrice -
-                    (product?.sellingPrice * product?.discount) / 100,
+                    (product?.sellingPrice * newDiscount) / 100,
                 )}
               </p>
               <del className="text-sm text-neutral-content opacity-80">
                 {product?.sellingPrice}
               </del>
-              <p className="text-red-500">{product?.discount}%</p>
+              <p className="text-red-500">{newDiscount}%</p>
             </>
           ) : (
             <p>{product?.sellingPrice}</p>

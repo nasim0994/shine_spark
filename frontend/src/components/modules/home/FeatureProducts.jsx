@@ -7,7 +7,7 @@ export default function FeatureProducts() {
   const products = data?.data;
 
   return (
-    <section className="py-2 lg:py-5">
+    <section className="py-5 lg:py-10">
       <div className="container">
         <h2 className="mb-3 text-center text-xl sm:mb-6 sm:text-2xl">
           Feature Collections

@@ -269,7 +269,7 @@ export default function Sidebar() {
           <img
             src="/images/logo.png"
             alt="logo"
-            className="my-3 w-24 sm:w-32"
+            className="mx-auto my-3 w-24 sm:w-32"
           />
         </Link>
 

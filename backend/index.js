@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 require("dotenv").config();
-const port = process.env.PORT || 5001;
+const port = process.env.PORT || 1001;
 const apiRoutes = require("./src/routes/index");
 const { defaultAdminCreate } = require("./src/controllers/adminControllers");
 

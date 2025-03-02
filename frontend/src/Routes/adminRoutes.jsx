@@ -2,7 +2,7 @@
 import React, { Suspense } from "react";
 import Spinner from "@/components/shared/Spinner/Spinner";
 import { Navigate } from "react-router-dom";
-import Editcategory from "@/pages/Admin/Category/Categories/EditCategory";
+import Editcategory from "@/pages/Admin/Category/Categories/Editcategory";
 
 const AdminLayout = React.lazy(() => import("@/Layout/AdminLayout"));
 const AdminRoute = React.lazy(() => import("@/PrivateRoute/AdminRoute"));

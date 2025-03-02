@@ -341,7 +341,10 @@ export default function ProductDetails() {
           </div>
         </div>
 
-        <SimilarProducts category={product?.category?._id} />
+        <SimilarProducts
+          category={product?.category?.slug}
+          currentProduct={product?._id}
+        />
       </div>
     </section>
   );

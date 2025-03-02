@@ -3,18 +3,14 @@ import { useSelector } from "react-redux";
 import Spinner from "@/components/shared/Spinner/Spinner";
 
 export default function AdminRoute({ children }) {
-  const { loggedUser, token } = useSelector((state) => state.user);
+  const { loggedUser } = useSelector((state) => state.user);
   const location = useLocation();
 
   let admin =
     loggedUser?.data?.role === "admin" ||
     loggedUser?.data?.role === "superAdmin";
 
-  if (!loggedUser?.success && token) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-
-  if (!loggedUser?.success && !token) {
+  if (!loggedUser?.success) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
@@ -22,9 +18,7 @@ export default function AdminRoute({ children }) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (loggedUser?.success && admin) {
-    return children;
-  }
+  if (loggedUser?.success && admin) return children;
 
   return <Spinner />;
 }

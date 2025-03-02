@@ -16,12 +16,14 @@ import { useEffect, useState } from "react";
 import { loginZodValidation } from "./loginZodValidation";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useLoginMutation } from "@/Redux/user/authApi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
+import { userLoggedIn } from "@/Redux/user/userSlice";
 
 export default function LoginForm() {
   const [showPass, setShowPass] = useState(false);
   const form = useForm({ resolver: zodResolver(loginZodValidation) });
+  const dispatch = useDispatch();
 
   const { loggedUser } = useSelector((state) => state.user);
   const [login, { isLoading }] = useLoginMutation();
@@ -50,6 +52,7 @@ export default function LoginForm() {
 
     if (res?.data?.success) {
       toast.success(res?.data?.message || "Logged in successfully");
+      dispatch(userLoggedIn(res, res?.token));
     } else {
       setError(res?.data?.message);
       console.log(res);

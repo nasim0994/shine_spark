@@ -197,7 +197,9 @@ export default function ProductDetails() {
           <div className="lg:col-span-2">
             <h2 className="text-2xl font-medium">{product?.title}</h2>
             <div className="flex items-center justify-between">
-              <p className="text-neutral">Style No SG263271</p>
+              {product?.code && (
+                <p className="text-neutral">Code: {product?.code}</p>
+              )}
               <WishlistBtn product={product} />
             </div>
 

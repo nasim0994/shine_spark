@@ -29,6 +29,7 @@ export default function AddProduct() {
   const [thumbnailUrl, setThumbnailUrl] = useState(null);
   const [galleries, setGalleries] = useState([]);
   const [sizeChart, setSizeChart] = useState(null);
+  const [code, setCode] = useState("");
 
   const handleFileChange = (event) => {
     if (event.target.files[0].size > 1024 * 1024) {
@@ -120,6 +121,7 @@ export default function AddProduct() {
     formData.append("purchasePrice", purchasePrice);
     formData.append("totalStock", totalStock);
     formData.append("discount", discount);
+    formData.append("code", code);
 
     formData.append("featured", featured);
     formData.append("description", details);
@@ -329,6 +331,15 @@ export default function AddProduct() {
                       </option>
                     ))}
                 </select>
+              </div>
+
+              <div>
+                <p className="text-sm">Code No</p>
+                <input
+                  type="text"
+                  name="code"
+                  onChange={(e) => setCode(e.target.value)}
+                />
               </div>
             </div>
           </div>

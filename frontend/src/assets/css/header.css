@@ -5,7 +5,7 @@
 }
 
 .category a:hover {
-  background-color: var(--secondary);
+  background-color: var(--primary);
   color: var(--base100);
 }
 

@@ -27,7 +27,7 @@ export default function Search() {
             search product...
           </p>
         </div>
-        <div className="flex w-8 items-center justify-center bg-secondary px-3 text-base-100">
+        <div className="flex w-8 items-center justify-center bg-primary px-3 text-base-100">
           <p>
             <BiSearch />
           </p>

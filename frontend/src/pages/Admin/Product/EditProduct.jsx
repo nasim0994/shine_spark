@@ -33,6 +33,7 @@ export default function EditProduct() {
   const [subSubCategoryId, setSubSubCategoryId] = useState("");
   const [brand, setBrand] = useState("");
   const [discount, setDiscount] = useState(0);
+  const [code, setCode] = useState("");
 
   const [featured, setFeatured] = useState(false);
   const [details, setDetails] = useState("");
@@ -83,6 +84,7 @@ export default function EditProduct() {
       setPurchasePrice(product?.purchasePrice);
       setStock(product?.totalStock);
       setSizeChartDBUrl(product?.sizeChart);
+      setCode(product?.code);
 
       if (product?.galleries?.length > 0) {
         setGalleriesUrl(product?.galleries);
@@ -176,6 +178,7 @@ export default function EditProduct() {
     formData.append("purchasePrice", purchasePrice);
     formData.append("totalStock", totalStock);
     formData.append("discount", discount);
+    formData.append("code", code);
 
     formData.append("featured", featured);
     formData.append("description", details);
@@ -431,6 +434,16 @@ export default function EditProduct() {
                       </option>
                     ))}
                 </select>
+              </div>
+
+              <div>
+                <p className="text-sm">Code No</p>
+                <input
+                  type="text"
+                  name="code"
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                />
               </div>
             </div>
           </div>

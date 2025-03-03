@@ -4,7 +4,7 @@ import CampaignBanner1 from "@/components/modules/home/CampaignBanner1";
 import FeatureProducts from "@/components/modules/home/FeatureProducts";
 import CampaignBanner2 from "@/components/modules/home/CampaignBanner2";
 import Products from "@/components/modules/home/Products";
-import CustomerStories from "@/components/modules/home/CustomerStories";
+// import CustomerStories from "@/components/modules/home/CustomerStories";
 import Banner from "@/components/modules/home/Banner";
 import FlashSale from "@/components/modules/home/FlashSale/FlashSale";
 
@@ -21,7 +21,7 @@ export default function Home() {
       <CampaignBanner1 />
       <Products />
       <CampaignBanner2 />
-      <CustomerStories />
+      {/* <CustomerStories /> */}
     </>
   );
 }

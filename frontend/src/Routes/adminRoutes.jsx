@@ -2,7 +2,20 @@
 import React, { Suspense } from "react";
 import Spinner from "@/components/shared/Spinner/Spinner";
 import { Navigate } from "react-router-dom";
-import Editcategory from "@/pages/Admin/Category/Categories/Editcategory";
+
+const Editcategory = React.lazy(
+  () => import("@/pages/Admin/Category/Categories/Editcategory"),
+);
+
+const AllTopHeader = React.lazy(
+  () => import("@/pages/Admin/TopHeader/AllTopHeader"),
+);
+const AddTopHeader = React.lazy(
+  () => import("@/pages/Admin/TopHeader/AddTopHeader"),
+);
+const EditTopHeader = React.lazy(
+  () => import("@/pages/Admin/TopHeader/EditTopHeader"),
+);
 
 const AdminLayout = React.lazy(() => import("@/Layout/AdminLayout"));
 const AdminRoute = React.lazy(() => import("@/PrivateRoute/AdminRoute"));
@@ -344,6 +357,20 @@ export const adminRoutes = {
     {
       path: "/admin/pages/faq/edit/:id",
       element: <UpdateFaq />,
+    },
+
+    //-------------Top Header
+    {
+      path: "/admin/business/section/topHeader/all",
+      element: <AllTopHeader />,
+    },
+    {
+      path: "/admin/business/section/topHeader/add",
+      element: <AddTopHeader />,
+    },
+    {
+      path: "/admin/business/section/topHeader/edit/:id",
+      element: <EditTopHeader />,
     },
 
     //-------------Banner

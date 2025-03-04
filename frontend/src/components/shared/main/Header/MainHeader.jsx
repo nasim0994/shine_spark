@@ -12,8 +12,11 @@ import { useGetCategoriesQuery } from "@/Redux/category/categoryApi";
 import { useSelector } from "react-redux";
 import { useGetMainLogoQuery } from "@/Redux/logo/logoApi";
 import { useGetContactQuery } from "@/Redux/contact/contactApi";
+import { useState } from "react";
+import HeaderMobileSidebar from "./HeaderMobileSidebar";
 
 export default function MainHeader() {
+  const [showSidebar, setShowSidebar] = useState(false);
   const { loggedUser } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const { data } = useGetCategoriesQuery();
@@ -56,9 +59,15 @@ export default function MainHeader() {
           {/* Logo */}
           <div className="flex items-center gap-3 lg:w-1/5">
             <div className="lg:hidden">
-              <button>
+              <button onClick={() => setShowSidebar(true)}>
                 <CgMenuLeftAlt className="text-2xl" />
               </button>
+
+              <HeaderMobileSidebar
+                setShowSidebar={setShowSidebar}
+                categories={categories}
+                showSidebar={showSidebar}
+              />
             </div>
 
             <Link to="/">
@@ -82,8 +91,8 @@ export default function MainHeader() {
             </Link>
           </div>
 
-          {/*  */}
-          <div className="flex items-center justify-end gap-5 text-neutral-content lg:w-2/5">
+          {/* buttons */}
+          <div className="flex items-center justify-end gap-3 text-neutral-content sm:gap-5 lg:w-2/5">
             <Search />
             <Link to={`https://wa.me/${whatsapp}`} target="_blank">
               <IWhatsapp width={23} height={23} />

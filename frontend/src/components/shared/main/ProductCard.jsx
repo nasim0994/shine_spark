@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import WishlistBtn from "./WishlistBtn";
+import { currencyFormatter } from "@/lib/currencyFormatter";
 
 export default function ProductCard({ product, discount: flashDiscount = 0 }) {
   const newDiscount = parseInt(flashDiscount) + product?.discount;
@@ -40,18 +41,18 @@ export default function ProductCard({ product, discount: flashDiscount = 0 }) {
           {newDiscount > 0 ? (
             <>
               <p>
-                {parseInt(
+                {currencyFormatter(
                   product?.sellingPrice -
                     (product?.sellingPrice * newDiscount) / 100,
                 )}
               </p>
               <del className="text-sm text-neutral-content opacity-80">
-                {product?.sellingPrice}
+                {currencyFormatter(product?.sellingPrice)}
               </del>
               <p className="text-red-500">{newDiscount}%</p>
             </>
           ) : (
-            <p>{product?.sellingPrice}</p>
+            <p>{currencyFormatter(product?.sellingPrice)}</p>
           )}
         </div>
       </Link>

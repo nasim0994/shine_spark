@@ -44,6 +44,7 @@ export default function HeaderMobileSidebar({
             {selectedCategory?.subCategories?.map((subCategory) => (
               <li key={subCategory?._id}>
                 <Link
+                  onClick={() => setShowSidebar(false)}
                   to={`/shops?category=${selectedCategory?.slug}&subCategory=${subCategory?.slug}`}
                   className="flex p-1"
                 >

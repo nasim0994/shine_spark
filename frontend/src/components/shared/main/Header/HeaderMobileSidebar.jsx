@@ -10,7 +10,9 @@ export default function HeaderMobileSidebar({
   const [selectedCategory, setSelectedCategory] = useState(null);
 
   useEffect(() => {
-    setSelectedCategory(categories[0]);
+    if(categories?.length > 0) {
+      setSelectedCategory(categories[0]);
+    }
   }, [categories]);
 
   return (

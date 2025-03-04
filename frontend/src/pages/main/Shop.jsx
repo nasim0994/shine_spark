@@ -89,11 +89,31 @@ export default function Shop() {
         <div className="mt-2 flex items-start gap-4 md:mt-4">
           <>
             <div className={`shop_sidebar ${sidebar && "shop_sidebar_show"}`}>
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg uppercase">Filter</h2>
-                <button className="md:hidden" onClick={() => setSidebar(false)}>
+              <div className="flex justify-end md:hidden">
+                <button onClick={() => setSidebar(false)}>
                   <AiOutlineClose className="opacity-60" />
                 </button>
+              </div>
+
+              <div className="mt-2 flex items-center justify-between">
+                <h2 className="text-lg uppercase">Filter</h2>
+
+                {/* if any filter then show button */}
+                {(category ||
+                  subCategory ||
+                  subSubCategory ||
+                  brand ||
+                  search) && (
+                  <button
+                    onClick={() => {
+                      navigate("/shops");
+                      setSidebar(false);
+                    }}
+                    className="text-sm text-primary"
+                  >
+                    Clear All
+                  </button>
+                )}
               </div>
 
               <div className="mt-3">

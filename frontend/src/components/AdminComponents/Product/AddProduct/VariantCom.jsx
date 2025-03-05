@@ -380,69 +380,68 @@ export default function VariantCom({
             )}
           </div>
 
-          {isColor ||
-            (isSize && (
-              <div className="mt-2 rounded border p-3">
-                <div className="relative mt-3 overflow-x-auto">
-                  <table className="border_table">
-                    <thead>
-                      <tr>
-                        <th>SKU</th>
-                        <th>Selling Price</th>
-                        <th>Purchase Price</th>
-                        <th>Stock</th>
-                      </tr>
-                    </thead>
+          {(isColor || isSize) && (
+            <div className="mt-2 rounded border p-3">
+              <div className="relative mt-3 overflow-x-auto">
+                <table className="border_table">
+                  <thead>
+                    <tr>
+                      <th>SKU</th>
+                      <th>Selling Price</th>
+                      <th>Purchase Price</th>
+                      <th>Stock</th>
+                    </tr>
+                  </thead>
 
-                    <tbody>
-                      {variants?.map((variant, i) => (
-                        <tr key={i}>
-                          <td className="whitespace-nowrap">{variant?.sku}</td>
-                          <td>
-                            <input
-                              type="number"
-                              onChange={(e) =>
-                                handleVariantChange(
-                                  e,
-                                  variant?.sku,
-                                  "sellingPrice",
-                                )
-                              }
-                              required
-                              defaultValue={variant?.sellingPrice}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="number"
-                              onChange={(e) =>
-                                handleVariantChange(
-                                  e,
-                                  variant?.sku,
-                                  "purchasePrice",
-                                )
-                              }
-                              required
-                              defaultValue={variant?.purchasePrice}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="number"
-                              onChange={(e) =>
-                                handleVariantChange(e, variant?.sku, "stock")
-                              }
-                              required
-                              defaultValue={variant?.stock}
-                            />
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                  <tbody>
+                    {variants?.map((variant, i) => (
+                      <tr key={i}>
+                        <td className="whitespace-nowrap">{variant?.sku}</td>
+                        <td>
+                          <input
+                            type="number"
+                            onChange={(e) =>
+                              handleVariantChange(
+                                e,
+                                variant?.sku,
+                                "sellingPrice",
+                              )
+                            }
+                            required
+                            defaultValue={variant?.sellingPrice}
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="number"
+                            onChange={(e) =>
+                              handleVariantChange(
+                                e,
+                                variant?.sku,
+                                "purchasePrice",
+                              )
+                            }
+                            required
+                            defaultValue={variant?.purchasePrice}
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="number"
+                            onChange={(e) =>
+                              handleVariantChange(e, variant?.sku, "stock")
+                            }
+                            required
+                            defaultValue={variant?.stock}
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-            ))}
+            </div>
+          )}
         </>
       )}
     </div>

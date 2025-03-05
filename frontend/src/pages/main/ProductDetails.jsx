@@ -18,10 +18,10 @@ import WishlistBtn from "@/components/shared/main/WishlistBtn";
 import { FiMinusCircle, FiPlusCircle } from "react-icons/fi";
 
 export default function ProductDetails() {
+  const { slug } = useParams();
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
-  const { slug } = useParams();
+  }, [slug]);
   const { data, isLoading } = useGetProductBySlugQuery(slug);
   const product = data?.data;
   const dispatch = useDispatch();
@@ -161,8 +161,8 @@ export default function ProductDetails() {
                 ? product?.galleries?.map((gallery, i) => (
                     <img
                       key={i}
-                      src={`${import.meta.env.VITE_BACKEND_URL}/products/${gallery}`}
-                      onClick={() => setShowImage(gallery)}
+                      src={`${import.meta.env.VITE_BACKEND_URL}/products/${gallery?.url}`}
+                      onClick={() => setShowImage(gallery?.url)}
                       alt={product?.title}
                       width={100}
                       height={60}

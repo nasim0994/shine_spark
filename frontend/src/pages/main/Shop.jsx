@@ -21,11 +21,9 @@ import {
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useGetAllProductsQuery } from "@/Redux/product/productApi";
 import ProductCards from "@/components/shared/Skeleton/ProductCards/ProductCards";
+import Pagination from "@/components/Pagination/Pagination";
 
 export default function Shop() {
-  useEffect(() => {
-    window.scroll(0, 0);
-  }, []);
   const [sidebar, setSidebar] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -33,6 +31,8 @@ export default function Shop() {
     () => new URLSearchParams(location.search),
     [location.search],
   );
+
+  const [currentPage, setCurrentPage] = useState(1);
   const category = queryParams.get("category");
   const subCategory = queryParams.get("subCategory");
   const subSubCategory = queryParams.get("subSubCategory");
@@ -43,11 +43,17 @@ export default function Shop() {
   const [maxPrice, setMaxPrice] = useState(queryParams.get("maxPrice") || "");
 
   useEffect(() => {
+    window.scroll(0, 0);
+  }, [currentPage]);
+
+  useEffect(() => {
     setMinPrice(queryParams.get("minPrice") || "");
     setMaxPrice(queryParams.get("maxPrice") || "");
   }, [queryParams]);
 
   let query = {};
+  query.page = currentPage;
+  query.limit = 16;
   if (category) query.category = category;
   if (subCategory) query.subCategory = subCategory;
   if (subSubCategory) query.subSubCategory = subSubCategory;
@@ -185,6 +191,14 @@ export default function Shop() {
                   <ProductCard key={product?._id} product={product} />
                 ))}
             </div>
+
+            {meta?.pages > 1 && (
+              <Pagination
+                pages={meta?.pages}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+              />
+            )}
           </div>
         </div>
       </div>

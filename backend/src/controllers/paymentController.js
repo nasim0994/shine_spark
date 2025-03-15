@@ -1,5 +1,4 @@
 const axios = require("axios");
-const User = require("../models/userModel");
 const { v4: uuidv4 } = require("uuid");
 const Order = require("../models/orderModel");
 const Product = require("../models/productModel");
@@ -7,16 +6,7 @@ const mongoose = require("mongoose");
 
 exports.initPayment = async (req, res) => {
   const orderData = req?.body;
-  const { userId, shippingInfo, totalPrice } = orderData;
-
-  const user = await User.findById(userId);
-
-  if (!user) {
-    return res.json({
-      success: false,
-      message: "User does not exist!",
-    });
-  }
+  const { user, shippingInfo, totalPrice, currency } = orderData;
 
   try {
     const transactionId = uuidv4();
@@ -25,27 +15,27 @@ exports.initPayment = async (req, res) => {
       store_id: process.env.STORE_ID,
       store_passwd: process.env.STORE_PASSWORD,
       total_amount: totalPrice,
-      currency: "BDT",
+      currency: currency,
       tran_id: transactionId,
       success_url: `${process.env.BACKEND_URL}/payment/payment-success?transactionId=${transactionId}`,
       fail_url: `${process.env.BACKEND_URL}/payment-fail?transactionId=${transactionId}`,
       cancel_url: `${process.env.BACKEND_URL}/payment-fail?transactionId=${transactionId}`,
-      ipn_url: "http://localhost:3030/ipn",
+      ipn_url: `${process.env.BACKEND_URL}/ipn`,
       shipping_method: "",
-      product_name: "",
-      product_category: "",
+      product_name: "product",
+      product_category: "category",
       product_profile: "general",
       cus_name: user?.name,
       cus_email: user?.email,
-      cus_add1: shippingInfo?.street,
+      cus_add1: shippingInfo?.address,
       cus_add2: "",
-      cus_city: shippingInfo?.city,
-      cus_state: shippingInfo?.district,
+      cus_city: "Dhaka",
+      cus_state: "Dhaka",
       cus_postcode: "1000",
       cus_country: "Bangladesh",
       cus_phone: user?.phone,
-      cus_fax: "01711111111",
-      ship_name: "Customer Name",
+      cus_fax: "",
+      ship_name: user?.name,
       ship_add1: "Dhaka",
       ship_add2: "Dhaka",
       ship_city: "Dhaka",
@@ -55,7 +45,7 @@ exports.initPayment = async (req, res) => {
     };
 
     const response = await axios({
-      method: "post",
+      method: "POST",
       url: process.env.PAYMENT_URL,
       data: data,
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -101,13 +91,14 @@ exports.initPayment = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: "Payment initialization successfull",
+      message: "Payment initialization successful",
       data: response?.data?.GatewayPageURL,
     });
   } catch (error) {
     res.json({
       success: false,
       message: error.message,
+      error,
     });
   }
 };
@@ -202,7 +193,6 @@ exports.paymentSuccess = async (req, res) => {
         );
       } else {
         const updatedQuantity = selectedProduct?.quantity - quantity;
-        // console.log(selectedProduct?.quantity, "quantity");
 
         await Product.findByIdAndUpdate(
           productId,
@@ -224,7 +214,7 @@ exports.paymentSuccess = async (req, res) => {
     throw error;
   }
 
-  res.redirect(`${process.env.FRONTEND_URL}/payment-result/${transactionId}`);
+  res.redirect(`${process.env.FRONTEND_URL}/payment/success/${transactionId}`);
 };
 
 exports.paymentFailed = async (req, res) => {
@@ -233,9 +223,7 @@ exports.paymentFailed = async (req, res) => {
   try {
     await Order.findOneAndDelete({ transactionId });
 
-    res.redirect(
-      `${process.env.FRONTEND_URL}/payment-result/${transactionId}`
-    );
+    res.redirect(`${process.env.FRONTEND_URL}/payment/failed/${transactionId}`);
   } catch (error) {
     res.json({
       success: false,

@@ -312,7 +312,15 @@ exports.getOrderByTransactionId = async (req, res) => {
   const transactionId = req?.params?.transactionId;
 
   try {
-    const order = await Order.findOne({ transactionId });
+    const order = await Order.findOne({ transactionId }).populate({
+      path: "products.productId",
+      select: "title thumbnail sellingPrice isVariant variants",
+
+      populate: {
+        path: "category",
+        select: "name",
+      },
+    });
 
     res.status(200).json({
       success: true,

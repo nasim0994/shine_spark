@@ -3,7 +3,7 @@ import ProductCards from "@/components/shared/Skeleton/ProductCards/ProductCards
 import { useGetFeaturedProductsQuery } from "@/Redux/product/productApi";
 
 export default function FeatureProducts() {
-  const { data, isLoading } = useGetFeaturedProductsQuery();
+  const { data, isLoading } = useGetFeaturedProductsQuery({ limit: 5 });
   const products = data?.data;
 
   return (

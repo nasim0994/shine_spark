@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 require("dotenv").config();
-const port = process.env.PORT || 1001;
+const port = process.env.PORT || 1000;
 const apiRoutes = require("./src/routes/index");
 const { defaultAdminCreate } = require("./src/controllers/adminControllers");
 
@@ -15,7 +15,7 @@ app.use(express.static("uploads"));
 // Connect Database
 mongoose.connect(process.env.DB_URL).then(() => {
   console.log("Database connection is successful");
-  defaultAdminCreate()
+  defaultAdminCreate();
 });
 
 // API Routes

@@ -3,7 +3,7 @@ import ProductCards from "@/components/shared/Skeleton/ProductCards/ProductCards
 import { useGetAllProductsQuery } from "@/Redux/product/productApi";
 
 export default function Products() {
-  const { data, isLoading } = useGetAllProductsQuery();
+  const { data, isLoading } = useGetAllProductsQuery({ limit: 10 });
   const products = data?.data;
 
   return (

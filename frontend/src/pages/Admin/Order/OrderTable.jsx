@@ -41,6 +41,7 @@ export default function OrderTable({ orders }) {
           <th>Customer</th>
           <th>Products</th>
           <th>Total Price</th>
+          <th>Payment</th>
           <th>Status</th>
           <th>Action</th>
         </tr>
@@ -78,6 +79,12 @@ export default function OrderTable({ orders }) {
               </div>
             </td>
             <td>{currencyFormatter(order?.totalPrice)}</td>
+            <td>
+              <p className="text-sm">Payment Method - {order?.paymentMethod}</p>
+              <p className="text-sm">
+                Payment Status - {order?.isPaid ? "Paid" : "Not Paid"}
+              </p>
+            </td>
             <td>
               {statusLoading ? (
                 "Loading..."

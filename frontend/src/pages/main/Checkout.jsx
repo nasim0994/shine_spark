@@ -3,7 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import usePageView from "@/hooks/usePageView";
-import { useAddOrderMutation } from "@/Redux/order/orderApi";
+import {
+  useAddOrderMutation,
+  useInitSslPaymentMutation,
+} from "@/Redux/order/orderApi";
 import { useApplyCouponMutation } from "@/Redux/coupon/couponApi";
 import { useGetShippingConfigQuery } from "@/Redux/shippingConfigApi";
 import Swal from "sweetalert2";
@@ -57,6 +60,8 @@ export default function Checkout() {
   }, [carts, navigate]);
 
   const [addOrder, { isLoading }] = useAddOrderMutation();
+  const [initSslPayment, { isLoading: sslPaymentLoading }] =
+    useInitSslPaymentMutation();
 
   const [applyCoupon, { isLoading: couponLoading }] = useApplyCouponMutation();
 
@@ -69,13 +74,14 @@ export default function Checkout() {
   const [couponCode, setCouponCode] = useState("");
   const [couponError, setCouponError] = useState("");
   const [discount, setDiscount] = useState(0);
-  const [shipping, setShipping] = useState(0);
+  const [shipping, setShipping] = useState(null);
 
   const [paymentMethod, setPaymentMethod] = useState("cod");
 
   const tax = 0;
-  const discountTk = ((subTotal + tax + parseInt(shipping)) * discount) / 100;
-  const grandTotal = subTotal + tax + parseInt(shipping) - discountTk;
+  const discountTk =
+    ((subTotal + tax + parseInt(shipping || 0)) * discount) / 100;
+  const grandTotal = subTotal + tax + parseInt(shipping || 0) - discountTk;
 
   const handelDiscount = async () => {
     const couponInfo = {
@@ -100,7 +106,7 @@ export default function Checkout() {
   const handelPlaceOrder = async (e) => {
     e.preventDefault();
 
-    if (shipping == 0) {
+    if (shipping == null) {
       return toast.error("Please select shipping area");
     }
 
@@ -135,6 +141,7 @@ export default function Checkout() {
       },
       paymentMethod,
       products,
+      currency: "BDT",
       totalPrice: grandTotal,
       shippingCharge: shipping,
       couponDiscountTK: discountTk,
@@ -198,6 +205,13 @@ export default function Checkout() {
       } else {
         toast.error("Something Wrong");
         console.log(res);
+      }
+    } else if (paymentMethod === "ssl") {
+      const res = await initSslPayment(order);
+      if (res?.data?.success) {
+        dispatch(clearCart());
+        form.reset();
+        window.location.href = res?.data?.data;
       }
     }
   };
@@ -344,25 +358,25 @@ export default function Checkout() {
                   </div>
                 </li>
 
-                {/* <li className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <input
-                        id="ssl"
-                        type="radio"
-                        name="payment_method"
-                        className="w-3 h-3 cursor-pointer"
-                        checked={paymentMethod === "ssl" && true}
-                        onClick={() => setPaymentMethod("ssl")}
-                      />
-                      <label htmlFor="ssl" className="ms-2 cursor-pointer">
-                        SSL
-                      </label>
-                    </div>
+                <li className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <input
+                      id="ssl"
+                      type="radio"
+                      name="payment_method"
+                      className="h-3 w-3 cursor-pointer"
+                      checked={paymentMethod === "ssl" && true}
+                      onClick={() => setPaymentMethod("ssl")}
+                    />
+                    <label htmlFor="ssl" className="ms-2 cursor-pointer">
+                      SSL
+                    </label>
+                  </div>
 
-                    <div>
-                      <img src="/images/ssl.png" alt="" className="h-4" />
-                    </div>
-                  </li> */}
+                  <div>
+                    <img src="/images/ssl.png" alt="" className="h-4" />
+                  </div>
+                </li>
               </ul>
             </div>
 
@@ -387,7 +401,7 @@ export default function Checkout() {
                     <option value="0">Select Shipping Area</option>
                     {shippingConfig?.map((shipping) => (
                       <option key={shipping?._id} value={shipping?.charge}>
-                        {shipping?.area}
+                        {shipping?.area} - {currencyFormatter(shipping?.charge)}
                       </option>
                     ))}
                   </select>
@@ -415,7 +429,13 @@ export default function Checkout() {
               type="submit"
               className="flex w-full justify-center rounded bg-primary py-2 text-base-100 shadow"
             >
-              {isLoading ? <ButtonSpinner /> : "PLACE ORDER"}
+              {isLoading || sslPaymentLoading ? (
+                <ButtonSpinner />
+              ) : paymentMethod === "cod" ? (
+                "PLACE ORDER"
+              ) : (
+                "Complete Payment"
+              )}
             </button>
           </div>
         </form>

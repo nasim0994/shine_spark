@@ -11,10 +11,10 @@ export default defineConfig({
   },
   build: { chunkSizeWarningLimit: 2000 },
   server: {
-    port: 1000,
+    port: 1001,
   },
   preview: {
-    port: 1000,
+    port: 1001,
   },
   optimizeDeps: {
     include: ["redux", "@reduxjs/toolkit"],

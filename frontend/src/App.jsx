@@ -8,6 +8,7 @@ import { mainRoutes } from "./Routes/mainRoutes";
 import { accountRoutes } from "./Routes/accountRoutes";
 import { rootRoutes } from "./Routes/rootRoutes";
 import { adminRoutes } from "./Routes/adminRoutes";
+import { useDispatch } from "react-redux";
 
 const router = createBrowserRouter([
   mainRoutes,
@@ -18,6 +19,17 @@ const router = createBrowserRouter([
 
 export default function App() {
   useAuthCheck();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    fetch(`http://ip-api.com/json`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.status === "success") {
+          localStorage.setItem("countryCode", data.countryCode);
+        }
+      });
+  }, [dispatch]);
 
   const { data: favicon } = useGetFaviconQuery();
   const icon = favicon?.data?.icon;

@@ -53,6 +53,8 @@ export const orderApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["order"],
     }),
+
+    // payment ssl
     initSslPayment: builder.mutation({
       query: (order) => ({
         url: `/payment/ssl-payment`,
@@ -86,9 +88,10 @@ export const {
   useGetOrderByIdQuery,
   useDeleteOrderMutation,
   useStatusUpdateMutation,
+
   useInitSslPaymentMutation,
   useGetOrderByTransactionIdQuery,
-  useGetTodayOrdersQuery,
 
+  useGetTodayOrdersQuery,
   useGetReportProductWayQuery,
 } = orderApi;

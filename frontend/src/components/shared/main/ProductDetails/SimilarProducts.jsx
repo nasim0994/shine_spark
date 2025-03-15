@@ -4,7 +4,7 @@ import ProductCard from "../ProductCard";
 import { useEffect, useState } from "react";
 
 export default function SimilarProducts({ category, currentProduct }) {
-  const { data, isLoading } = useGetAllProductsQuery({ category });
+  const { data, isLoading } = useGetAllProductsQuery({ category, limit: 10 });
   const products = data?.data;
   const [targetedProducts, setTargetedProducts] = useState([]);
   useEffect(() => {

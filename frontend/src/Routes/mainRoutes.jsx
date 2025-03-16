@@ -5,7 +5,7 @@ import Spinner from "@/components/shared/Spinner/Spinner";
 import MainLayout from "@/Layout/MainLayout";
 import Home from "@/pages/main/Home";
 import PaymentSuccess from "@/pages/main/PaymentSuccess";
-import PaymentFailed from "@/pages/main/paymentFailed";
+import PaymentFailed from "@/pages/main/PaymentFailed";
 
 // import AboutUs from "@/pages/main/AboutUs";
 // import ContactUs from "@/pages/main/ContactUs";
